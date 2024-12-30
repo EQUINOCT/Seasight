@@ -115,7 +115,6 @@ const ImpactAnalytics: React.FC = () => {
                 <FormControl sx={{ width : '150px', height: '100%', bgcolor: '#18181b',opacity: '95%', borderRadius: '5px'}}>
                   {/* <InputLabel shrink={true} id='panchayat-select-label' sx={{color:'white'}}>Panchayat</InputLabel> */}
                   <Select 
-                    // placeholder='panchayat'
                     labelId='panchayat-select-label'
                     id="panchayat-select"
                     value={selectedPanchayat}

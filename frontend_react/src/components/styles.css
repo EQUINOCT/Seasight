@@ -31,15 +31,15 @@
 
 .main-display {
   flex-grow: 1;
-  border-radius: 15px;
+  /* border-radius: 15px; */
   position: absolute;
-  left: 88px;
-  top:62px;
-  bottom:20px;
-  right:20px;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
   background-color: white;
-  width: calc(100%-89px);
-  height: calc(100%-63px);
+  /* width: calc(100%-89px);
+  height: calc(100%-63px); */
 }
 
 .nav-bar {

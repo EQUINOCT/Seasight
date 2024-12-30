@@ -1,8 +1,8 @@
 import React from "react";
-import ImpactScreen from './ImpactScreen';
+import ImpactScreen from './AnalyticsScreen';
 import ForecastMap from "../Maps/ForecastMap";
 import ForecastScreen from "./ForecastScreen";
-import MonitorScreen from "./MonitorScreen";
+import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {
     activeControl: string;
@@ -13,26 +13,19 @@ interface MainDisplayProps {
 
 const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl, activeView, onWidgetToggle, visibleWidgets }) => {
   // Render based on active control and active view
-  if (activeControl === 'Monitor') {
-    if (activeView === 'Visualization') return <MonitorScreen onWidgetToggle={onWidgetToggle} visibleWidgets={visibleWidgets} />;
+  if (activeControl === 'map') {
+     return <MapScreen/>;
     // Add conditions for other views like analytics, settings, etc.
 }
-if (activeControl === 'Forecast') {
-    if (activeView === 'Visualization') return <ForecastScreen />;
-   
-}
-if (activeControl === 'Impact') {
-    if (activeView === 'Visualization') return <ImpactScreen />;
+// if (activeControl === 'Forecast') {
+//     if (activeView === 'Visualization') return <ForecastScreen />;
+// }
+if (activeControl === 'analytics') {
+    return <ImpactScreen />;
 }
 
 // Default to the Monitoring map if no matching case
-return <MonitorScreen visibleWidgets={{
-    alerts: false,
-    layers: false,
-    legend: false
-}} onWidgetToggle={function (widget: "alerts" | "layers" | "legend", isVisible: boolean): void {
-    throw new Error("Function not implemented.");
-} } />;
+return <MapScreen/>;
 };
 
 export default MainDisplay;

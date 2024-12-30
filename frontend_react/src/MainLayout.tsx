@@ -10,10 +10,10 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({onWidgetToggle, visibleWidgets}) => {
-  const [activeControl, setActiveControl] = useState('monitor'); // Monitor, Forecast, Impact
+  const [activeControl, setActiveControl] = useState('map'); // Monitor, Forecast, Impact
   const [activeView, setActiveView] = useState('visualization'); // Visualization, Analytics, etc.
-  const menuItems = ['Monitor','Forecast','Impact'];
-  // console.log('Testing');
+  const menuItems = ['Map','Analytics'];
+  
   return (
     <div className="app-container w-full h-screen relative bg-zinc-900 bg-opacity-98">
       <div className="fixed top-0 left-0 w-full z-10">
@@ -28,9 +28,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({onWidgetToggle, visibleWidgets})
         />
       </div>
 
-      <div className="fixed left-0 top-[62px] h-[calc(100%-62px] z-10">
+      {/* <div className="fixed left-0 top-[62px] h-[calc(100%-62px] z-10">
        <MenuList activeControl={activeControl} activeView={activeView} setActiveView={setActiveView}/>
-       </div>
+       </div> */}
 
       <div className="main-display absolute">
         {/* This will render the content based on the current route */}
