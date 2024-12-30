@@ -9,7 +9,7 @@ const icons = [
   { object: Map, string: "Visualization", view: "visualization"},
   { object: Dashboard, string: "Analytics", view: "analytics" },
   { object: About, string: "About", view: "about" },
-  { object: Settings, string: "Settings", view: "settings" },
+  // { object: Settings, string: "Settings", view: "settings" },
 ];
 
 interface MenuListProps {
@@ -21,7 +21,7 @@ interface MenuListProps {
 const MenuList: React.FC<MenuListProps> = ({activeControl, activeView, setActiveView}) => {
   return(
   <div className={`flex flex-col justify-center w-[88px] h-screen` }>
-    <div className="flex flex-grow flex-col mb-[100px] items-center justify-center w-full">
+    <div className="flex flex-grow flex-col mb-[100px] ml-[15px] items-center justify-center w-full">
       <ul className="flex flex-col items-center pr-[35px] gap-6" style={{ listStyle: 'none' }}>
         {icons.map((icon, index) => (
           <li key={index} className="relative">

@@ -1,6 +1,5 @@
 import React from 'react';
 import NavigationBar from './NavigationBar';
-import { useNavigate } from 'react-router-dom';
 
 interface NavComponentProps {
   activeControl: string;
@@ -19,7 +18,7 @@ const NavComponent: React.FC<NavComponentProps> = ({
   onWidgetToggle,
   visibleWidgets,
 }) => {
-  const menuItems = ['Monitor', 'Forecast', 'Impact'];
+  const menuItems = ['Monitor', 'Impact'];
 
   return (
     <div className="flex flex-col font-semibold rounded-none">
