@@ -189,3 +189,7 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react,python
+
+# Custom - Backend
+
+backend_fastapi/config.yaml

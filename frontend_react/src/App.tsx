@@ -3,14 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useConfig } from './ConfigContext'; // Import the useConfig hook
 import MapScreen from './components/Screens/MapScreen';
-import ForecastScreen from './components/Screens/ForecastScreen';
 import AnalyticsScreen from './components/Screens/AnalyticsScreen';
 import AboutScreen from './components/Screens/AboutScreen';
 import SettingScreen from './components/Screens/SettingScreen';
 import MainLayout from './MainLayout';
-import MonitorAnalyticsScreen from './components/Screens/MonitorAnalyticsScreen';
-import ForecastAnalyticsScreen from './components/Screens/ForecastAnalyticsScreen';
-import ImpactAnalyticsScreen from './components/Screens/ImpactAnalyticsScreen';
+
 
 const App: React.FC = () => {
    const { updateConfig } = useConfig(); // Get the updateConfig function from context

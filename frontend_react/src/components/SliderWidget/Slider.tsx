@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState, useEffect} from 'react';
 import Slider from '@mui/material/Slider';
 import { Box, Typography } from '@mui/material';
 
@@ -22,6 +23,33 @@ function valuetext(value: number) {
 }
 
 const SliderWidget: React.FC = () => {
+  const [currentLevel, setCurrentLevel] = useState([1.2]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/current-level')
+      .then(response => response.json())
+      .then(data => {
+        setCurrentLevel([Number(data.level.toFixed(1))]);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching current level:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  // Calculate the height percentage based on current value
+  const getTrackHeight = () => {
+    const min = 1;
+    const max = 2;
+    const percentage = ((currentLevel[0] - min) / (max - min)) * 100;
+    return `${percentage}%`;
+  };
+
+  if (loading) {
+    return <div className="flex justify-center p-4">Loading...</div>;
+  }
     return (
     
     <Box
@@ -63,7 +91,7 @@ const SliderWidget: React.FC = () => {
           </div>
           <Slider
               aria-label="Restricted values"
-              defaultValue={1.2}
+              defaultValue={currentLevel}
               getAriaValueText={valuetext}
               orientation="vertical"
               valueLabelDisplay="auto"
@@ -80,6 +108,10 @@ const SliderWidget: React.FC = () => {
                     backgroundColor: '#fff', // Color of the thumb
                   },
                   '& .MuiSlider-track': {
+                    style: {
+                      height: getTrackHeight(),
+                      bottom: 0
+                    },
                     backgroundColor: '#61B3FF', // Color of the track
                   },
                   '& .MuiSlider-rail': {
