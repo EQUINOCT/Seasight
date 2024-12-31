@@ -193,3 +193,6 @@ sketch
 # Custom - Backend
 
 backend_fastapi/config.yaml
+
+#Shapefiles & Assets
+frontend_react/public/Coastal_Roads_geojson
