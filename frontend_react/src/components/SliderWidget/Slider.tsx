@@ -2,37 +2,36 @@ import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import { Box, Typography } from '@mui/material';
 
-const marks = [
-  {
-    value: 0,
-    label: '0m',
-  },
-  {
-    value: 1.2,
-    label: '1.2m',
-  },
-  {
-    value: 2,
-    label: '2m',
-  },
-];
+const min = 1;
+const max = 2;
+const step = 0.1;
+
+const marks = Array.from({ length: (max-min)/step+1}, (_, index) => ({
+ value: min + index * step,
+ label: index === 0 || index === (max-min)/step ? `${min + index * step}m`: undefined,
+}))
 
 function valuetext(value: number) {
-  return `${value}°C`;
+  return `${value}m`;
 }
 
 const SliderWidget: React.FC = () => {
+  const [sliderValue, setSliderValue] = React.useState<number>(1.2);
+
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    setSliderValue(newValue as number);
+  };
+
     return (
-    
     <Box
-    sx={{ 
-      display: 'flex',
-      flexDirection: 'row',
-      width: '250px',
-      height: '100%',
-      backgroundColor: 'rgb(0, 0, 0, 0.8)',
-      borderRadius: '15px'
-      }}
+      sx={{ 
+        display: 'flex',
+        flexDirection: 'row',
+        width: '250px',
+        height: '100%',
+        backgroundColor: 'rgb(0, 0, 0, 0.8)',
+        borderRadius: '15px'
+        }}
   >
       <div style={{
           display: 'flex',
@@ -63,15 +62,15 @@ const SliderWidget: React.FC = () => {
           </div>
           <Slider
               aria-label="Restricted values"
-              defaultValue={1.2}
+              value={sliderValue}
               getAriaValueText={valuetext}
               orientation="vertical"
-              valueLabelDisplay="auto"
-              marks
-              shiftStep={30}
-              step={0.1}
-              min={1}
-              max={2}
+              valueLabelDisplay="on"
+              marks={marks}
+              step={step}
+              min={min}
+              max={max}
+              onChange={handleSliderChange} 
               sx={{
                   color: '#61B3FF', // Change the slider color if needed
                   height: '90%',

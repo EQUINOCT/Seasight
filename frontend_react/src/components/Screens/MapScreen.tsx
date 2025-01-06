@@ -1,11 +1,9 @@
 import React, {useState} from "react";
-import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayerComponent from "../LayerWidget/LayersComponent";
-import Legend from "../LegendWidget/Legend";
-import { MonitoringMapComponent } from "../Maps/MonitoringMapComponent";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import EQLogo from './Logo.png';
 import Slider from "../SliderWidget/Slider";
+import ButtonComponent from "../MoonWidget/MoonWidget";
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
@@ -35,6 +33,9 @@ const MonitorScreen: React.FC = () => {
       </div>
       <div className="absolute top-1/2 left-0 ml-[20px] transform -translate-y-1/2">
         <Slider/>
+      </div>
+      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
+        <ButtonComponent/>
       </div>
       {/* Alerts */}
       {/* <div style={{ position: "absolute", top: "30px", left: "20px" }}>
