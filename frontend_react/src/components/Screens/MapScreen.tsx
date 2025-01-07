@@ -5,6 +5,7 @@ import Legend from "../LegendWidget/Legend";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
+import ButtonComponent from "../MoonWidget/MoonWidget";
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
@@ -42,6 +43,12 @@ const MonitorScreen: React.FC = () => {
           tidalLevel = {tidalLevel}
           setTidalLevel={setTidalLevel}
         />
+      </div>
+      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
+        <ButtonComponent/>
+      </div>
+      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
+        <ButtonComponent/>
       </div>
       {/* Alerts */}
       {/* <div style={{ position: "absolute", top: "30px", left: "20px" }}>

@@ -3,34 +3,69 @@ import HighlightComponent from "../BasinHighlights/HighlightComponent";
 import ButtonComponent from "../LevelNav/ImpactButtons";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import Slider from "../SliderWidget/Slider";
+import { Card, CardContent, ThemeProvider, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
+import theme from "../theme";
 
+// Previously impact-visualization screen in Insight Gather
 const ImpactScreen: React.FC = () => {
   
   return (
     <div className="monitor-screen w-full h-full relative bg-white flex flex-col rounded-[15px] overflow-hidden">
-      {/* <div className="absolute w-full h-full rounded-[15px] overflow-hidden">
-        <ImpactMapComponent
-          selectedMap = {selectedMap}
-        />
-      </div> */}
-      {/* <div className="absolute w-full h-full rounded-[15px] overflow-hidden">
-        {selectedMap === 'flood-inundation' && <img src={floodInundation} alt="Flood Inundation" className="w-full h-full object-cover"/>}
-        {selectedMap === 'population' && <img src={population} alt=" " className="w-full h-full object-cover"/>}
-        {selectedMap === 'households' && <img src={households} alt=" " className="w-full h-full object-cover"/>}
-        {selectedMap === 'agriculture' && <img src={agriculture} alt=" " className="w-full h-full object-cover"/>}
-      </div> */}
+      <ThemeProvider theme={theme}>
+        {/* Top widgets */}
+        <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
+          <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
+            <Grid size={{xs: 12, md: 9}}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography>Current Level</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid size={{xs: 12, md: 3}}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography>Map</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+          <Grid size={{xs:12}} sx={{ height: '49%' }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>Historic Data</CardContent>
+            </Card>
+          </Grid>
+        </Grid>
 
-      {/* <div style={{ position: "absolute", top: "0px", left: "0px"}}>
-        <ButtonComponent setSelectedMap={setSelectedMap}/>
-      </div> */}
+        {/* Right Side Stats */}
+        {/* <Grid size={{xs: 12, md: 8}} container direction="column" spacing={1} sx={{ height: '100%' }}> */}
+          {/* Current Station Cards */}
+          
+            {/* <Grid sx={{ height: '80%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ flexGrow: 1, height: '50%'}}>
+                <CardContent>
+                    <Typography >Tidal Station Data</Typography>
+                </CardContent>
+                </Card>
+                <Card sx={{ flexGrow: 1, mt: 1, height: '50%' }}>
+                <CardContent>
+                    <Typography >Thunacadavu Regulator</Typography>
+                </CardContent>
+                </Card>
+            </Grid> */}
+            
 
-      {/* <div className="absolute font-inter top-0 right-0 mt-[10px] mr-[20px] flex flex-col items-end">
-        <HighlightComponent/>
-      </div> */}
-
-      {/* <div style={{position: "absolute", bottom: "10px", left: "10px"}}>
-        <Slider/>
-      </div> */}
+          {/* Basin Details */}
+          {/* <Grid sx={{ height: '18%' }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography>Basin Details</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid> */}
+    </ThemeProvider>
     </div>
   );
 };

@@ -44,7 +44,6 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
                to={`/${item.toLowerCase()}`}
                className={` text-white no-underline font-inter bg-transparent w-full block text-center relative z-10 ${ activeControl.toLowerCase() === item.toLowerCase() ? "font-semibold text-[17px]" : "text-base"}`}
                onClick={()=> {
-                
                 setActiveControl(item);
                 // setActiveView('visualization');
               }}
@@ -58,7 +57,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
 
       <div className="flex pr-[15px] gap-1.5 items-center justify-end">
         <div className="widget-selector-container" style={{ width: 100 }}>
-          {activeControl.toLowerCase() === "monitor" && activeView.toLowerCase() === "visualization" && (
+          {activeControl.toLowerCase() === "map" && (
               <WidgetSelector 
                 onWidgetToggle={onWidgetToggle}
                 visibleWidgets={visibleWidgets}

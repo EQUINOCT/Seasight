@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import LocationCity from '@mui/icons-material/LocationCity';
 import { MdAgriculture } from "react-icons/md";
 import { FaRoad } from "react-icons/fa";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Water } from "@mui/icons-material";
 
 
@@ -40,6 +40,28 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
             </div>
         {/* </header> */}
         <Stack direction="column" spacing={1} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
+              <Button
+              sx={{
+                mt: -1,
+                textTransform: 'none',
+                color: '#fff',
+                p:0,
+                border: '0.5px solid rgba(250, 250, 250, 0.8)'
+              }}
+              >
+                Admin
+              </Button>
+              <Button 
+              sx={{
+                mt: -1,
+                mb: 1,
+                textTransform: 'none',
+                color: '#fff',
+                p: 0,
+                border: '0.5px solid rgba(250, 250, 250, 0.8)'
+              }}>
+                Block
+              </Button>
               {icons.map(({ label, icon }) => (
                 <React.Fragment key={label}>
                   <IconButton
