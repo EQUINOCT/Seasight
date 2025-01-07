@@ -5,17 +5,15 @@ import '../styles.css';
 import { useConfig } from "../../ConfigContext";
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import { addBoundaryLayer, addBoundaryLayerLocal, addBoundarySource, removeBoundaryLayer } from '../../layers/PolygonLayer';
+import { addLayerLocal, removeLayer } from '../../layers/PolygonLayer';
 
 interface ImpactMapComponentProps {
-  selectedMap: string
+  selectedLayer: string[];
+  tidalLevel: number;
 }
 
-// Define your layers
-const layers = ['flood-inundation', 'population', 'households', 'agriculture'];
 
-
-const ImpactMapComponent: React.FC<ImpactMapComponentProps> = () => {
+const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({selectedLayer, tidalLevel}) => {
   const { config } = useConfig();
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -24,7 +22,13 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = () => {
   const zoom = config.MAP_CONFIG.ZOOM;
   const API_KEY = config.MAPTILER_API_KEY;
   const mapStyleUrl = config.MAPS.IMPACT;
-  const [currentFeatureLayerId, setCurrentFeatureLayerId] = useState<string | null>(null);
+  const [activeLayers, setActiveLayers] = useState<{[key: string]: boolean}>(
+    {'Roads': false,
+     'Buildings': false,
+     'Landcover': false,
+     'Inundation': false
+    }
+  );
 
   useEffect(() => {   
     if (mapContainer.current) {
@@ -32,18 +36,12 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = () => {
         container: mapContainer.current,
         style: mapStyleUrl,
         center: [lng, lat],
-        zoom: 15,
+        zoom: zoom
       });   
 
       map.on('load', async () => {
         setMap(map);
-
-        // Add boundary sources
-        // addBoundarySource(map, 'roads', config);
-        // addBoundarySource(map, 'population', config);
-        // addBoundarySource(map, 'P', config);
-        addBoundaryLayerLocal(map, 'ROADS', config);
-
+        
       });
 
       return () => {
@@ -52,25 +50,50 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = () => {
     }
   }, []); 
 
-  // useEffect(() => {
-  //   if (!map) return; // Exit if the map is not initialize
+  useEffect(() => {
+    if (!map) return; // Exit if the map is not initialize
 
+    const newLayers = { ...activeLayers };
+    console.log(selectedLayer, tidalLevel);
 
-  //   // // Determine the current layer based on selectedMap
-  //   const newLayerId = config.LAYERS.BOUNDARY[selectedMap];
+    Object.keys(activeLayers).forEach(layer => {
+      if (!selectedLayer.includes(layer)) {
+        removeLayer(map, config, layer);
+        newLayers[layer] = false;
+      } else {
+        removeLayer(map, config, layer);
+        addLayerLocal(map, layer, config, tidalLevel);
+      }
+    });
 
-  //   // If a new layer is selected and it differs from the current one
-  //   if (newLayerId && newLayerId !== currentFeatureLayerId) {
-  //     // Remove the current layer if it exists
-  //     if (currentFeatureLayerId) {
-  //       removeBoundaryLayer(map, currentFeatureLayerId);
-  //     }
+    setActiveLayers(newLayers);
+    
+    // selectedLayer.forEach(layer => {
+    //   removeLayer(map, config, layer);
+    //   if(!activeLayers[layer] === true) {
+    //     // const fileUrl = `/Coastal_Roads_geojson/coastal_roads${tidalLevel.toString().replace(/\./g, '_')}.geojson`;
 
-  //     // Add the new layer and update the state
-  //     const addedLayerId = addBoundaryLayer(map, 'roads', null, config);
-  //     setCurrentFeatureLayerId(addedLayerId);
-  //   }
-  // }, [selectedMap, map, currentFeatureLayerId]); // Depend on selectedMap, map, and currentFeatureLayerId
+    //     addLayerLocal(map, layer, config, tidalLevel); 
+    //     newLayers[layer] = true;
+    //   }
+    // })
+  }, [selectedLayer, map, tidalLevel]); // Depend on selectedMap, map, and currentFeatureLayerId
+
+    // Update existing layers when tidal level changes
+  useEffect(() => {
+    if (!map) return;
+
+    Object.keys(activeLayers).forEach(layer => {
+      if (activeLayers[layer] === true) {
+        removeLayer(map, config, layer);
+        addLayerLocal(map, layer, config, tidalLevel);
+        setActiveLayers(prev => ({
+          ...prev,
+          [layer]: true
+        }));
+      }
+    });
+  }, [tidalLevel, map]);
 
   return (
     <div className='map-wrap'>

@@ -9,12 +9,16 @@ import { Typography } from "@mui/material";
 import { Water } from "@mui/icons-material";
 
 
-const LayersComponent: React.FC = () => {
-  const [selected, setSelected] = useState<string[]>([]);
+interface LayersComponentProps {
+  selectedLayer: string[];
+  setSelectedLayer: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer}) => {
   const handleSelect = (label: string) => {
-    setSelected((prev) =>
+    setSelectedLayer((prev: string[]) =>
       prev.includes(label)
-        ? prev.filter((item) => item !== label) // Remove if already selected
+        ? prev.filter((item: string) => item !== label) // Remove if already selected
         : [...prev, label] // Add if not selected
     );
   };
@@ -22,7 +26,7 @@ const LayersComponent: React.FC = () => {
   const icons = [
     { label: 'Inundation', icon: <Water /> },
     { label: 'Buildings', icon: <LocationCity /> },
-    { label: 'Agriculture', icon: <MdAgriculture /> },
+    { label: 'Landcover', icon: <MdAgriculture /> },
     { label: 'Roads', icon: <FaRoad /> },
   ];
   
@@ -43,10 +47,10 @@ const LayersComponent: React.FC = () => {
                     size="large"
                     onClick={() => handleSelect(label)}
                     sx={{
-                      backgroundColor: selected.includes(label) ? 'white' : '#97C7D6',
+                      backgroundColor: selectedLayer.includes(label) ? 'white' : '#97C7D6',
                       color: '#2B4A54',
                       '&:hover': {
-                        backgroundColor: selected.includes(label) ? 'rgba(255, 255, 255, 0.8)' : 'rgba(208, 236, 245, 1)',
+                        backgroundColor: selectedLayer.includes(label) ? 'rgba(255, 255, 255, 0.8)' : 'rgba(208, 236, 245, 1)',
                       },
                       borderRadius: '50%',
                       padding: '8px',

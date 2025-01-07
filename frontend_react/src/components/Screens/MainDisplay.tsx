@@ -1,7 +1,5 @@
 import React from "react";
 import ImpactScreen from './AnalyticsScreen';
-import ForecastMap from "../Maps/ForecastMap";
-import ForecastScreen from "./ForecastScreen";
 import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {

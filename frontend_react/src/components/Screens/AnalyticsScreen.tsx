@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import HighlightComponent from "../BasinHighlights/HighlightComponent";
 import ButtonComponent from "../LevelNav/ImpactButtons";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
-import { addBoundaryLayer, removeBoundaryLayer } from "../../layers/PolygonLayer";
 import Slider from "../SliderWidget/Slider";
 
 const ImpactScreen: React.FC = () => {

@@ -22,15 +22,19 @@ function valuetext(value: number) {
   return `${value}°C`;
 }
 
-const SliderWidget: React.FC = () => {
-  const [currentLevel, setCurrentLevel] = useState([1.2]);
+interface SliderWidgetProps {
+  tidalLevel: number;
+  setTidalLevel: (value: number) => void;
+}
+
+const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:8000/api/current-level')
       .then(response => response.json())
       .then(data => {
-        setCurrentLevel([Number(data.level.toFixed(1))]);
+        setTidalLevel(Number(data.level.toFixed(1)));
         setLoading(false);
       })
       .catch(error => {
@@ -43,8 +47,12 @@ const SliderWidget: React.FC = () => {
   const getTrackHeight = () => {
     const min = 1;
     const max = 2;
-    const percentage = ((currentLevel[0] - min) / (max - min)) * 100;
+    const percentage = ((tidalLevel - min) / (max - min)) * 100;
     return `${percentage}%`;
+  };
+
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    setTidalLevel(newValue as number); // Update tidalLevel when slider changes
   };
 
   if (loading) {
@@ -91,7 +99,8 @@ const SliderWidget: React.FC = () => {
           </div>
           <Slider
               aria-label="Restricted values"
-              defaultValue={currentLevel}
+              defaultValue={1.2}
+              onChange={handleSliderChange}
               getAriaValueText={valuetext}
               orientation="vertical"
               valueLabelDisplay="auto"

@@ -1,127 +1,71 @@
 {
     "MAPTILER_API_KEY": "rOzi4RnlGlqlLc5ozKz4",
     "MAP_CONFIG": {
-        "LAT": 10.650040024763096, 
-        "LON": 76.35211754905616,
-        "ZOOM": 7
+        "LAT": 9.983942281729938,  
+        "LON": 76.23209458220502,
+        "ZOOM": 13
     },
     "MAPS": {
         "MONITORING": "https://api.maptiler.com/maps/streets-v2/style.json?key=rOzi4RnlGlqlLc5ozKz4",
-        "IMPACT": "https://api.maptiler.com/maps/backdrop/style.json?key=rOzi4RnlGlqlLc5ozKz4"
+        "IMPACT": "https://api.maptiler.com/maps/d3e5fed5-e94f-41c0-bd75-7ba8f2687960/style.json?key=rOzi4RnlGlqlLc5ozKz4"
     },
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
-    "LAYERS": {
-        "STATION": {
-            "PRECIPITATION": {
-                "LAYER_ID": "precipitation-station-layer",
-                "SOURCE_ID": "precipitation",
-                "URL": "https://api.maptiler.com/data/2c04ffe4-54f1-4367-bf6a-f15355d887e6/features.json?key=rOzi4RnlGlqlLc5ozKz4",
-                "COLOR": "#41f0d4",
-                "MARKER_ID": "precipitation-station-marker",
-                "MARKER_PATH": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/precipitation_station_augzbc.svg"
+    "IMPACT": {
+        "Buildings": { 
+            "LAYER_ID": "buildings-layer",
+            "OUTLINE_LAYER_ID": "buildings-outline",
+            "SOURCE_ID": "buildings-data",
+            "URL_PREFIX": "/Coastal_Buildings/coastal_buildings",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "COLOR_PARAM": "fill-color",
+            "COLOR": "blue",
+            "OUTLINE_COLOR": "black",
+            "OPACITY_PARAM": "fill-opacity",
+            "OPACITY": 1,
+            "OBJECT_NAME": "Type"
+        },
+        "Roads": {
+            "LAYER_ID": "roads-layer",
+            "OUTLINE_LAYER_ID": "roads-outline",
+            "SOURCE_ID": "roads-data",
+            "URL_PREFIX": "/Coastal_Roads/coastal_roads",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "line",
+            "COLOR_PARAM": "line-color",
+            "COLOR": "red",
+            "OUTLINE_COLOR": "red",
+            "OPACITY_PARAM": "line-opacity",
+            "OPACITY": 1,
+            "OBJECT_NAME": "NAME"
+        },
+        "Landcover": {
+            "LAYER_ID": "landcover-layer",
+            "OUTLINE_LAYER_ID": "landcover-outline",
+            "SOURCE_ID": "landcover-data",
+            "URL_PREFIX": "/Coastal_Landcover/coastal_landcover",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "COLOR_PARAM": "fill-color",
+            "COLOR": "green",
+            "OUTLINE_COLOR": "red",
+            "OPACITY_PARAM": "fill-opacity",
+            "OPACITY": 0.5,
+            "OBJECT_NAME": "NAME"
 
-            },
-            "RESERVOIR": {
-                "LAYER_ID": "reservoir-station-layer",
-                "SOURCE_ID": "reservoir",
-                "URL": "https://api.maptiler.com/data/92a6f649-4245-4d12-89ea-1ce359a38b82/features.json?key=rOzi4RnlGlqlLc5ozKz4",
-                "COLOR": "red",
-                "MARKER_ID": "reservoir-station-marker",
-                "MARKER_PATH": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639730/reservoir_station_rokel7.svg"
-
-            },
-            "RIVER": {
-                "LAYER_ID": "river-station-layer",
-                "SOURCE_ID": "river-station",
-                "URL": "https://api.maptiler.com/data/bbc6f9dd-4596-4ba1-a45f-f21de2acd750/features.json?key=rOzi4RnlGlqlLc5ozKz4",
-                "COLOR": "black",
-                "MARKER_ID": "river-station-marker",
-                "MARKER_PATH": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639730/tidal_station_r8strs.svg"
-            }
         },
-        "DATA": {
-            "1": {
-                "NAME": "IMD_GRID"
-            },
-            "2": {
-                "NAME": "SENTINEL_GRID"
-            }
-        },
-        "BOUNDARY": {
-            "RIVER_BASIN": { 
-                "LAYER_ID": "river-basin-layer",
-                "OUTLINE_LAYER_ID": "river-basin-outline",
-                "SOURCE_ID": "river-basin-boundary",
-                "URL": "https://api.maptiler.com/data/1867a4c6-1cde-4fc1-96c3-787d393e83e2/features.json?key=rOzi4RnlGlqlLc5ozKz4",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "#ae9eea",
-                "LINECOLOR": "black",
-                "OPACITY": 0.5,
-                "OBJECT_NAME": "Type"
-            },
-            "STATE": {
-                "LAYER_ID": "state-layer",
-                "URL": ""
-            },
-            "DISTRICT": {
-                "LAYER_ID": "district-layer",
-                "OUTLINE_LAYER_ID": "district-outline",
-                "SOURCE_ID": "district-boundary",
-                "URL": "https://api.maptiler.com/data/dba9d3aa-822d-47c0-ad1c-55d46581bc26/features.json?key=rOzi4RnlGlqlLc5ozKz4",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "#49988c",
-                "LINECOLOR": "black",
-                "OPACITY": 0.3,
-                "OBJECT_NAME": "NAME"
-            },
-            "PANCHAYAT": {
-                "LAYER_ID": "panchayat-layer",
-                "OUTLINE_LAYER_ID": "panchayat-outline",
-                "SOURCE_ID": "panchayat-boundary",
-                "URL": "https://api.maptiler.com/data/a6e8358e-8a27-404a-a9bb-3fa6925d6a58/features.json?key=LeHROw9A9tlzTce42MfL",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "#acb7f7",
-                "LINECOLOR": "grey",
-                "OPACITY": 0.3,
-                "OBJECT_NAME": "NAME"
-            }
-        },
-        "IMPACT": {
-            "households": { 
-                "LAYER_ID": "buildings-layer",
-                "OUTLINE_LAYER_ID": "buildings-outline",
-                "SOURCE_ID": "buildings-data",
-                "URL": "/shapefiles/buildings_5_0.geojson",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "green",
-                "OUTLINE_COLOR": "black",
-                "OPACITY": 0.5,
-                "OBJECT_NAME": "Type"
-            },
-            "ROADS": {
-                "LAYER_ID": "roads-layer",
-                "OUTLINE_LAYER_ID": "roads-outline",
-                "SOURCE_ID": "roads-data",
-                "URL": "/shapefiles/Roads_5_0.geojson",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "red",
-                "OUTLINE_COLOR": "red",
-                "OPACITY": 0.5,
-                "OBJECT_NAME": "NAME"
-            },
-            "POPULATION": {
-                "LAYER_ID": "panchayat-layer",
-                "OUTLINE_LAYER_ID": "panchayat-outline",
-                "SOURCE_ID": "panchayat-boundary",
-                "URL": "/shapefiles/panchayats.geojson",
-                "MAP_OBJECT": "geojson",
-                "COLOR": "blue",
-                "OUTLINE_COLOR": "grey",
-                "OPACITY": 0.3,
-                "OBJECT_NAME": "NAME"
-            }
-        }  
-    }
+        "Inundation": {
+            "LAYER_ID": "inundation-layer",
+            "OUTLINE_LAYER_ID": "inundation-outline",
+            "SOURCE_ID": "inundation-boundary",
+            "URL": "/Flood_Inundation/tidal_dem_coastal_elevation.tif",
+            "MAP_OBJECT": "raster",
+            "COLOR": "blue",
+            "OUTLINE_COLOR": "grey",
+            "OPACITY": 0.3,
+            "OBJECT_NAME": "NAME"
+        }
+    }  
 }
