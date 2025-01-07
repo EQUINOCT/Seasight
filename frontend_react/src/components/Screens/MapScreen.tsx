@@ -47,9 +47,6 @@ const MonitorScreen: React.FC = () => {
       <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
         <ButtonComponent/>
       </div>
-      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
-        <ButtonComponent/>
-      </div>
       {/* Alerts */}
       {/* <div style={{ position: "absolute", top: "30px", left: "20px" }}>
         {visibleWidgets.alerts && (
