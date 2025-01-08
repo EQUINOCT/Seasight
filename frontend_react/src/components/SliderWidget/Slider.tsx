@@ -27,16 +27,12 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({onValueChange}) => {
     onValueChange(newValue as number);
   };
 
-  const calculateGradientPercentage = (value: number) => {
-    return ((value - min) / (max - min)) * 100; 
-  };
-
  return (
     <Box
       sx={{ 
         display: 'flex',
         flexDirection: 'row',
-        width: '250px',
+        width: sliderValue === 1.2 ? '250px' : '75px',
         height: '100%',
         backgroundColor: 'rgb(0, 0, 0, 0.8)',
         borderRadius: '15px'
@@ -88,15 +84,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({onValueChange}) => {
                     backgroundColor: '#fff', // Color of the thumb
                   },
                   '& .MuiSlider-track': {
-                    backgroundColor: sliderValue > 1.2 ? '#ff5722' : '#61B3FF',
-                    '&:before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: `${(sliderValue - 1.2) * 100}%`,
-                      bottom: 0,
-                      backgroundColor: '#61B3FF',
-                      width: '100%',
-                    },
+                    backgroundColor: '#61B3FF',
                   },
                   '& .MuiSlider-rail': {
                     backgroundColor: '#61B3FF', // Color of the rail
@@ -109,17 +97,21 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({onValueChange}) => {
           />
           </Box>
       </div>
+      {sliderValue === 1.2 && (
       <div style={{
           // background: '#fff000',
           // opacity: '30%',
           width: '100%',
           display: 'flex',
-          
           flexDirection: 'column',
           alignItems: 'center'
           }}>
           <Typography sx={{fontSize: 12, color: '#fff', mt: 2}}>Information</Typography>
+          <Typography  sx={{fontSize: 10, color: '#fff', mt: 2}}>
+            Current Sea Level Value at: 
+          </Typography>
       </div>
+      )}
     </Box>
   );
  };
