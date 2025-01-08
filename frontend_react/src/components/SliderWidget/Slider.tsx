@@ -15,14 +15,23 @@ function valuetext(value: number) {
   return `${value}m`;
 }
 
-const SliderWidget: React.FC = () => {
+interface SliderWidgetProps { 
+  onValueChange: (value: number) => void;
+}
+
+const SliderWidget: React.FC<SliderWidgetProps> = ({onValueChange}) => {
   const [sliderValue, setSliderValue] = React.useState<number>(1.2);
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setSliderValue(newValue as number);
+    onValueChange(newValue as number);
   };
 
-    return (
+  const calculateGradientPercentage = (value: number) => {
+    return ((value - min) / (max - min)) * 100; 
+  };
+
+ return (
     <Box
       sx={{ 
         display: 'flex',
@@ -79,7 +88,15 @@ const SliderWidget: React.FC = () => {
                     backgroundColor: '#fff', // Color of the thumb
                   },
                   '& .MuiSlider-track': {
-                    backgroundColor: '#61B3FF', // Color of the track
+                    backgroundColor: sliderValue > 1.2 ? '#ff5722' : '#61B3FF',
+                    '&:before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: `${(sliderValue - 1.2) * 100}%`,
+                      bottom: 0,
+                      backgroundColor: '#61B3FF',
+                      width: '100%',
+                    },
                   },
                   '& .MuiSlider-rail': {
                     backgroundColor: '#61B3FF', // Color of the rail
@@ -108,5 +125,3 @@ const SliderWidget: React.FC = () => {
  };
 
  export default SliderWidget;
-
- 
