@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 
 const ButtonComponent: React.FC = () => {
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
-  const [moonPhaseImages, setMoonPhaseImages] = React.useState<{ [key: string]: string }>({});
+  const [moonPhaseData, setMoonPhaseData] = React.useState<{ [key: string]: string }>({});
+  const canvasRef = React.useRef<HTMLDivElement | null>(null);
 
     const highTideDays = [
         new Date('2024-12-15'),
@@ -18,7 +19,18 @@ const ButtonComponent: React.FC = () => {
     const today = new Date();
     const daysToDisplay = [...highTideDays, today];
 
-    const fetchMoonPhaseImages = async () => {
+    const shadowSizeMapping: { [key: string]: number } = {
+        'New Moon': 0,
+        'Waxing Crescent': 0.25,
+        'First Quarter': 0.5,
+        'Waxing Gibbous': 0.75,
+        'Full Moon': 1.0,
+        'Waning Gibbous': 0.75,
+        'Last Quarter': 0.5,
+        'Waning Crescent': 0.25,
+    };
+
+    const fetchMoonPhaseData = async () => {
      const moonPhaseData = await Promise.all(
         daysToDisplay.map(async (date)=>{
             const response = await fetch(`https://api.farmsense.net/v1/moonphases/?d=${Math.floor(date.getTime() / 1000)}`);
@@ -29,52 +41,53 @@ const ButtonComponent: React.FC = () => {
                 return {
                     date: date.toDateString(),
                     phase: phase,
-                    image: getMoonPhaseImage(phase),
+                    // image: getMoonPhaseImage(phase),
                 };
             }
             console.log('Logging moon phase data:',data);
             return{
                 date: date.toDateString(),
                 phase: 'Unknown',
-                image: getMoonPhaseImage('Unknown'),
+                // image: getMoonPhaseImage('Unknown'),
             };
         })
-     );
+     );   
 
-     const images: { [key:string]: string } = {};
+     const phaseData: { [key:string]: string } = {};
      moonPhaseData.forEach((item) => {
-        images[item.date] = item.image;
+        phaseData[item.date] = item.phase;
      });
-    //  console.log(images);
-     setMoonPhaseImages(images);
+     console.log('Phase Data:', phaseData);
+     setMoonPhaseData(phaseData);
     };
 
-    const getMoonPhaseImage = (phase: string) => {
-        switch (phase) {
-            case 'New Moon':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/New_Moon.png/1200px-New_Moon.png'; 
-            case 'Waxing Crescent':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Waxing_Crescent_Moon.png/1200px-Waxing_Crescent_Moon.png';
-            case 'First Quarter':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/First_Quarter_Moon.png/1200px-First_Quarter_Moon.png';
-            case 'Waxing Gibbous':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Waxing_Gibbous_Moon.png/1200px-Waxing_Gibbous_Moon.png';
-            case 'Full Moon':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Full_Moon.png/1200px-Full_Moon.png';
-            case 'Waning Gibbous':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Waning_Gibbous_Moon.png/1200px-Waning_Gibbous_Moon.png';
-            case 'Last Quarter':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Last_Quarter_Moon.png/1200px-Last_Quarter_Moon.png';
-            case 'Waning Crescent':
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Waning_Crescent_Moon.png/1200px-Waning_Crescent_Moon.png';
-            default: 
-                return 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/New_Moon.png/1200px-New_Moon.png';
+    const handleMoonPhaseSelection = (date: string) => {
+        setSelectedValue(date);
+        if (canvasRef.current) {
+            const phase = moonPhaseData[date];
+            const shadowSize = shadowSizeMapping[phase] || 0;
+            const isWaxing = phase.includes('Waxing');
+            if (window.drawPlanetPhase) {
+                canvasRef.current.innerHTML = ''; // Clear existing content
+                window.drawPlanetPhase(canvasRef.current, shadowSize, isWaxing);
+            } else {
+                console.error("drawPlanetPhase is not defined on the window object.");
+            }
         }
-    }
+    };
 
     React.useEffect(() => { 
-        fetchMoonPhaseImages();
+        fetchMoonPhaseData();
     }, []);
+
+    React.useEffect(() => {
+        if (typeof window.drawPlanetPhase !== 'function') {
+            console.error('drawPlanetPhase is not loaded!');
+        } else {
+            console.log('drawPlanetPhase is loaded and ready to use.');
+        }
+    }, []);
+    
 
   return (
     <Box
@@ -100,35 +113,60 @@ const ButtonComponent: React.FC = () => {
             },
         }}
         >
-       {daysToDisplay.map((date, index) => (
+       {daysToDisplay.map((date, index) => {
+       const formattedDate = date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+       });
+       const dayOfWeek = date.toLocaleDateString('en-US', {
+        weekday: 'short',
+      });
+      
+       return (
          <Button 
             key={index} 
-            onClick={() => setSelectedValue(date.toDateString())} 
+            onClick={() => handleMoonPhaseSelection(date.toDateString())} 
             sx={{ 
               fontSize: 'text-base', 
               fontFamily: 'Inter', 
               textTransform: 'none' ,
               backgroundColor: selectedValue === date.toDateString() ? '#18181B !important' : undefined,
               color: selectedValue === date.toDateString() ? '#fff' : undefined, 
+              flexDirection: 'column', // Aligns content vertically
+              alignItems: 'center',
               }}
             >
-            {date.toDateString()}
-         </Button>
-        ))}
-      </ButtonGroup>
-      
-      {selectedValue && moonPhaseImages[selectedValue] && (
-        <Box sx={{ mt: 2, textAlign: 'center', bgcolor: '#333', text: '16px' }}>
-            <Typography variant="h6" sx={{ color: '#fff' }}>
-                Moon Phase for {selectedValue}:
-            </Typography>
-            <img
-                src={moonPhaseImages[selectedValue]}
-                alt={`Moon Phase for ${selectedValue}`}
-                style={{ width: '100px', height: '100px', marginTop: '10px'  }} 
+            <div
+                style={{
+                width: '50px',
+                height: '50px',
+                margin: '5px',
+                }}
+                ref={(el) => {
+                if (el && moonPhaseData[date.toDateString()]) {
+                    const phase = moonPhaseData[date.toDateString()];
+                    const shadowSize = shadowSizeMapping[phase] || 0;
+                    const isWaxing = phase.includes('Waxing');
+                    el.innerHTML = ''; // Clear previous drawings
+                    window.drawPlanetPhase(el, shadowSize, isWaxing, {
+                    diameter: 50,
+                    shadowColour: '#000',
+                    lightColour: '#fff',
+                    blur: 2,
+                    });
+                  }
+                }}
             />
-            </Box>
-      )}
+                <Typography sx={{ fontSize: '14px', lineHeight: '1.2', color: '#fff' }}>
+                    {formattedDate}
+                </Typography>
+                <Typography sx={{ fontSize: '10px', lineHeight: '1.5', color: '#bbb' }}>
+                    {dayOfWeek}
+                </Typography>
+            </Button>
+          );
+        })}
+      </ButtonGroup>
     </Box>
   );
 };

@@ -39,9 +39,9 @@ const MapScreen: React.FC = () => {
       <div className="absolute top-1/2 left-0 ml-[20px] transform -translate-y-1/2">
         <Slider onValueChange={handleSliderChange}/>
       </div>
-      {/* <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
+      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
         <MoonWidget/>
-      </div> */}
+      </div>
       <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
         <div style={{
           backgroundColor: '#18181b',
