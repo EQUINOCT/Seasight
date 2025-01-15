@@ -21,35 +21,48 @@ app.add_middleware(
 )
 
 # Database connection
-engine = create_engine(f"sqlite:///{config['db']['url']}")
+def connect_to_db():
+    # Database connection parameters
+    db_params = config['db']
 
-# Assuming your table structure is something like:
-# CREATE TABLE tidal_levels (
-#     timestamp DATETIME,
-#     level FLOAT
-# )
+    try:
+        # Establish a connection to the database
+        connection_string = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
+        engine = create_engine(connection_string)
+        return engine
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+engine = connect_to_db()
 
-@app.get("/api/tidal-levels")
+@app.get("/api/analytics/realtime-data")
 def get_tidal_data():
     with engine.connect() as conn:
         sql_statement = text("""
-            SELECT timestamp, tidal_level 
-            FROM psmsl 
-            ORDER BY timestamp DESC 
-            LIMIT 24
+            SELECT timestamp, tidal_level
+            FROM (
+            SELECT timestamp, tidal_level
+            FROM ioc_observed
+            ORDER BY timestamp DESC
+            LIMIT 40
+            ) AS subquery
+            ORDER BY timestamp ASC;           
         """)
         # Fetch last 24 hours of data
         result = conn.execute(sql_statement)
+        print(result)
 
         # Format data for the frontend
+
         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
     
 @app.get("/api/current-level")
-def get_tidal_data():
+def get_current_level():
     with engine.connect() as conn:
         sql_statement = text("""
             SELECT timestamp, tidal_level 
-            FROM psmsl 
+            FROM ioc_observed
             ORDER BY timestamp DESC 
             LIMIT 1
         """)
@@ -60,3 +73,28 @@ def get_tidal_data():
         # Format data for the frontend
         return {"level": current_level}
     
+# @app.get("/api/analytics/predicted-data")
+# def get_predicted_data():
+#     with engine.connect() as conn:
+#         sql_statement = text("""
+#             SELECT timestamp, tidal_level
+#             FROM predicted
+#             ORDER BY timestamp DESC
+#             LIMIT 8
+#         """)
+
+#         result = conn.execute(sql_statement)
+#         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
+    
+
+@app.get("/api/analytics/historical-data")
+def get_predicted_data():
+    with engine.connect() as conn:
+        sql_statement = text("""
+            SELECT date_month, mean_level
+            FROM monthly_averages
+            ORDER BY date_month ASC
+        """)
+
+        result = conn.execute(sql_statement)
+        return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
