@@ -55,7 +55,7 @@
             "LAYER_ID": "landcover-layer",
             "OUTLINE_LAYER_ID": "landcover-outline",
             "SOURCE_ID": "landcover-data",
-            "URL_PREFIX": "/Coastal_Landcover_geojson/coastal_landcover",
+            "URL_PREFIX": "/Coastal_Landcover/coastal_landcover",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
