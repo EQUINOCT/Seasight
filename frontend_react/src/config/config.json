@@ -62,7 +62,7 @@
             "COLOR": "green",
             "OUTLINE_COLOR": "red",
             "OPACITY_PARAM": "fill-opacity",
-            "OPACITY": 0.5,
+            "OPACITY": 0.35,
             "OBJECT_NAME": "NAME"
 
         },
@@ -74,10 +74,10 @@
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
-            "COLOR": "red",
+            "COLOR": "#2FA9E4",
             "OUTLINE_COLOR": "grey",
             "OPACITY_PARAM": "fill-opacity",
-            "OPACITY": 0.3,
+            "OPACITY": 0.35,
             "OBJECT_NAME": "NAME"
         }
     }  
