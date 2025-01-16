@@ -135,4 +135,4 @@ def get_predicted_data():
         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
     
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080)

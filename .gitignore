@@ -195,5 +195,9 @@ sketch
 backend_fastapi/config.yaml
 
 #Shapefiles & Assets
-frontend_react/public
+frontend_react/public/shapefiles
 
+
+
+# vscode files
+*.code-workspace
