@@ -5,8 +5,9 @@
     },
     "REMOTE": {
         "DATA_SERVE_ENDPOINT": "https://seasight-backend-fastapi-833443134466.asia-south1.run.app",
-        "LAYER_URL": "/shapefiles"
+        "LAYER_URL": "https://storage.googleapis.com/impact-layer-geojsons/shapefiles"
     },
+    "LAYER_BUCKET_NAME": "impact-layer-geojsons" ,
     "MAPTILER_API_KEY": "rOzi4RnlGlqlLc5ozKz4",
     "MAP_CONFIG": {
         "LAT": 9.983942281729938,  
