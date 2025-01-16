@@ -12,6 +12,7 @@
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
+    "LAYER_URL": "/shapefiles",
     "IMPACT": {
         "Buildings": { 
             "LAYER_ID": "buildings-layer",

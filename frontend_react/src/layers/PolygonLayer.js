@@ -8,11 +8,12 @@ import { centerLatLngFromFeature, generateCustomMarker, incrementState } from '.
 
 async function addLayerLocal(map, layer, configData, tidalLevel) {
     const config = configData.IMPACT[layer];
+    const layerUrl = configData.LAYER_URL;
     // console.log(config);
 
     const loadGeoJSON = async () => {
         const tidalLevelInFilename = tidalLevel.toString().replace(/\./g, '_')
-        const fileUrl = `${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
+        const fileUrl = `${layerUrl}${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
 
 
         try {
