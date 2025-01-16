@@ -22,26 +22,11 @@ function valuetext(value: number) {
 interface SliderWidgetProps {
   tidalLevel: number;
   setTidalLevel: (value: number) => void;
+  loading: boolean;
 }
 
-const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }) => {
-  const [loading, setLoading] = useState(true);
+const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, loading }) => {
 
-  const { config } = useConfig();
-  const dataServeUrl = config[process.env.REACT_APP_ENVIRONMENT || 'LOCAL'].DATA_SERVE_ENDPOINT;
-
-  useEffect(() => {
-    fetch(`${dataServeUrl}/api/current-level`)
-      .then(response => response.json())
-      .then(data => {
-        setTidalLevel(Number(data.level.toFixed(1)));
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching current level:', error);
-        setLoading(false);
-      });
-  }, [dataServeUrl]);
 
   // Calculate the height percentage based on current value
   const getTrackHeight = () => {
@@ -63,7 +48,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }
       sx={{ 
         display: 'flex',
         flexDirection: 'row',
-        width: '250px',
+        width: tidalLevel === 1.2 ? '250px' : '75px',
         height: '100%',
         backgroundColor: 'rgb(0, 0, 0, 0.8)',
         borderRadius: '15px'
@@ -98,7 +83,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }
           </div>
           <Slider
               aria-label="Restricted values"
-              defaultValue={1.2}
+              defaultValue={tidalLevel}
               onChange={handleSliderChange}
               getAriaValueText={valuetext}
               orientation="vertical"
@@ -132,21 +117,23 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }
           />
           </Box>
       </div>
+      {tidalLevel === 1.2 && (
       <div style={{
           // background: '#fff000',
           // opacity: '30%',
           width: '100%',
           display: 'flex',
-          
           flexDirection: 'column',
           alignItems: 'center'
           }}>
           <Typography sx={{fontSize: 12, color: '#fff', mt: 2}}>Information</Typography>
+          <Typography  sx={{fontSize: 10, color: '#fff', mt: 2}}>
+            Current Sea Level Value at: 
+          </Typography>
       </div>
+      )}
     </Box>
   );
  };
 
  export default SliderWidget;
-
- 

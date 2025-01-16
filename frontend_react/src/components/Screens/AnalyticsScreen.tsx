@@ -47,34 +47,6 @@ const ImpactScreen: React.FC = () => {
             </Card>
           </Grid>
         </Grid>
-
-        {/* Right Side Stats */}
-        {/* <Grid size={{xs: 12, md: 8}} container direction="column" spacing={1} sx={{ height: '100%' }}> */}
-          {/* Current Station Cards */}
-          
-            {/* <Grid sx={{ height: '80%', display: 'flex', flexDirection: 'column' }}>
-                <Card sx={{ flexGrow: 1, height: '50%'}}>
-                <CardContent>
-                    <Typography >Tidal Station Data</Typography>
-                </CardContent>
-                </Card>
-                <Card sx={{ flexGrow: 1, mt: 1, height: '50%' }}>
-                <CardContent>
-                    <Typography >Thunacadavu Regulator</Typography>
-                </CardContent>
-                </Card>
-            </Grid> */}
-            
-
-          {/* Basin Details */}
-          {/* <Grid sx={{ height: '18%' }}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Typography>Basin Details</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid> */}
     </ThemeProvider>
     </div>
   );
