@@ -108,18 +108,18 @@ def get_current_level():
         # Format data for the frontend
         return {"level": current_level}
     
-# @app.get("/api/analytics/predicted-data")
-# def get_predicted_data():
-#     with engine.connect() as conn:
-#         sql_statement = text("""
-#             SELECT timestamp, tidal_level
-#             FROM predicted
-#             ORDER BY timestamp DESC
-#             LIMIT 8
-#         """)
+@app.get("/api/analytics/predicted-data")
+def get_predicted_data():
+    with engine.connect() as conn:
+        sql_statement = text("""
+            SELECT timestamp, tidal_level
+            FROM soi_predicted
+            ORDER BY timestamp DESC
+            LIMIT 8
+        """)
 
-#         result = conn.execute(sql_statement)
-#         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
+        result = conn.execute(sql_statement)
+        return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
     
 
 @app.get("/api/analytics/historical-data")

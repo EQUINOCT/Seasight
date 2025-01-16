@@ -149,13 +149,14 @@ const RealtimeLineChart = () => {
     const dataServeUrl = config[process.env.REACT_APP_ENVIRONMENT].DATA_SERVE_ENDPOINT;
 
     const [realtimeData, setRealtimeData] = useState([]);
+    const [predictedData, setPredictedData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (endpoint) => {
             try {
-                const response = await fetch(`${dataServeUrl}/api/analytics/realtime-data`);
+                const response = await fetch(`${dataServeUrl}${endpoint}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -164,7 +165,12 @@ const RealtimeLineChart = () => {
                     ...item,
                     timestamp: parseDate(item.timestamp),
                 }));
-                setRealtimeData(formattedData);
+                if (endpoint.includes('realtime')) {
+                    setRealtimeData(formattedData);
+                } else if (endpoint.includes('predicted')) {
+                    setPredictedData(formattedData);
+                }
+                
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -172,7 +178,8 @@ const RealtimeLineChart = () => {
             }
         };
 
-        fetchData();
+        fetchData('/api/analytics/realtime-data');
+        fetchData('/api/analytics/predicted-data');
     }, [dataServeUrl]);
 
     const parseDate = (dateString) => {
@@ -194,6 +201,7 @@ const RealtimeLineChart = () => {
             <ScatterChart>
                 <Scatter name="Tidal Level" dataKey="level" data={realtimeData} fill="#6c5cdd" shape={<CustomMarker size={3} fill={"#6c5cdd"} />} />
                 <Scatter name="Current Level" dataKey="level" data={[realtimeData[realtimeData.length - 1]]} stroke="#6c5cdd" fill="red" strokeWidth={5} shape={<CustomMarkerLast size={8} />} />
+                <Scatter name="Predicted Data" dataKey="level" data={predictedData} fill="#ffb201" shape={<CustomMarker size={6} fill={"#ffb201"} />} />
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey="timestamp" domain={['dataMin', 'dataMax']} type="number" tickFormatter={tickFormatter} />
                 <YAxis />
