@@ -5,7 +5,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 
 const ButtonComponent: React.FC = () => {
-  const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
+  const [selectedValue, setSelectedValue] = React.useState(new Date().toDateString());
   const [moonPhaseData, setMoonPhaseData] = React.useState<{ [key: string]: string }>({});
   const canvasRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -103,7 +103,7 @@ const ButtonComponent: React.FC = () => {
       <ButtonGroup variant="contained" color="primary" aria-label="Medium-sized button group"
         sx={{
             '& .MuiButton-contained': {
-            backgroundColor: '#2F2F2F', // zinc-900
+            backgroundColor: 'rgba(47, 47, 47, 0.88)', // zinc-900
             '&:hover': {
                 backgroundColor: '#232324', // zinc-900
             },
@@ -114,6 +114,7 @@ const ButtonComponent: React.FC = () => {
         }}
         >
        {daysToDisplay.map((date, index) => {
+       const isToday = date.toDateString() === new Date().toDateString();
        const formattedDate = date.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -129,17 +130,17 @@ const ButtonComponent: React.FC = () => {
             sx={{ 
               fontSize: 'text-base', 
               fontFamily: 'Inter', 
-              textTransform: 'none' ,
-              backgroundColor: selectedValue === date.toDateString() ? '#18181B !important' : undefined,
-              color: selectedValue === date.toDateString() ? '#fff' : undefined, 
+              textTransform: 'none',
+              backgroundColor: selectedValue === date.toDateString() ? 'rgb(24, 24, 24, 0.9) !important' : undefined,
+              // color: selectedValue === date.toDateString() ? '#000' : '#fff', 
               flexDirection: 'column', // Aligns content vertically
               alignItems: 'center',
               }}
             >
             <div
                 style={{
-                width: '50px',
-                height: '50px',
+                width: '40px',
+                height: '40px',
                 margin: '5px',
                 }}
                 ref={(el) => {
@@ -149,20 +150,33 @@ const ButtonComponent: React.FC = () => {
                     const isWaxing = phase.includes('Waxing');
                     el.innerHTML = ''; // Clear previous drawings
                     window.drawPlanetPhase(el, shadowSize, isWaxing, {
-                    diameter: 50,
-                    shadowColour: '#000',
-                    lightColour: '#fff',
-                    blur: 2,
+                    diameter: 40,
+                    shadowColour: 'rgb(51, 51, 51, 1)',
+                    lightColour: '#fffec8',
+                    blur: 3,
                     });
                   }
                 }}
             />
-                <Typography sx={{ fontSize: '14px', lineHeight: '1.2', color: '#fff' }}>
+              {isToday ? (
+                <>
+                  <Typography sx={{ fontSize: '14px', lineHeight: '1.2', mb: 0.2, color: '#fff' }}>
+                    Today
+                  </Typography>
+                  <Typography sx={{ fontSize: '10px', lineHeight: '1.2', color: '#bbb' }}>
                     {formattedDate}
-                </Typography>
-                <Typography sx={{ fontSize: '10px', lineHeight: '1.5', color: '#bbb' }}>
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography sx={{ fontSize: '14px', lineHeight: '1.2', mb: 0.2, color: '#fff' }}>
+                    {formattedDate}
+                  </Typography>
+                  <Typography sx={{ fontSize: '10px', lineHeight: '1.2', color: '#bbb' }}>
                     {dayOfWeek}
-                </Typography>
+                  </Typography>
+                </>
+              )}
             </Button>
           );
         })}
