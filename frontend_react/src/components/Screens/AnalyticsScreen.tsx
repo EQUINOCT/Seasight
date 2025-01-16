@@ -7,6 +7,10 @@ import { Card, CardContent, ThemeProvider, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import theme from "../theme";
 
+//Import Plots
+import { renderRealtimeLineChart } from "../Charts/CurrentLevelChart";
+import renderHistoricalMeanChart  from "../Charts/HistoricalMeanChart";
+
 // Previously impact-visualization screen in Insight Gather
 const ImpactScreen: React.FC = () => {
   
@@ -20,6 +24,7 @@ const ImpactScreen: React.FC = () => {
               <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography>Current Level</Typography>
+                  {renderRealtimeLineChart}
                 </CardContent>
               </Card>
             </Grid>
@@ -27,13 +32,18 @@ const ImpactScreen: React.FC = () => {
               <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography>Map</Typography>
+                  {/* </> */}
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
             <Card sx={{ height: '100%' }}>
-              <CardContent>Historic Data</CardContent>
+              <CardContent>
+                <Typography>Historic Data</Typography>
+                { renderHistoricalMeanChart }
+              </CardContent>
+
             </Card>
           </Grid>
         </Grid>

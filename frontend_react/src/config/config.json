@@ -7,7 +7,7 @@
     },
     "MAPS": {
         "MONITORING": "https://api.maptiler.com/maps/streets-v2/style.json?key=rOzi4RnlGlqlLc5ozKz4",
-        "IMPACT": "https://api.maptiler.com/maps/d3e5fed5-e94f-41c0-bd75-7ba8f2687960/style.json?key=rOzi4RnlGlqlLc5ozKz4"
+        "IMPACT": "https://api.maptiler.com/maps/0e036edf-b1a8-4625-bc5e-359515a1b5a8/style.json?key=rOzi4RnlGlqlLc5ozKz4"
     },
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
@@ -21,7 +21,7 @@
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
-            "COLOR": "blue",
+            "COLOR": "#bc2100",
             "OUTLINE_COLOR": "black",
             "OPACITY_PARAM": "fill-opacity",
             "OPACITY": 1,
@@ -45,7 +45,7 @@
             "LAYER_ID": "landcover-layer",
             "OUTLINE_LAYER_ID": "landcover-outline",
             "SOURCE_ID": "landcover-data",
-            "URL_PREFIX": "/Coastal_Landcover/coastal_landcover",
+            "URL_PREFIX": "/Coastal_Landcover_geojson/coastal_landcover",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
@@ -60,10 +60,13 @@
             "LAYER_ID": "inundation-layer",
             "OUTLINE_LAYER_ID": "inundation-outline",
             "SOURCE_ID": "inundation-boundary",
-            "URL": "/Flood_Inundation/tidal_dem_coastal_elevation.tif",
-            "MAP_OBJECT": "raster",
-            "COLOR": "blue",
+            "URL_PREFIX": "/Flood_Inundation/flood_inundation",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "COLOR_PARAM": "fill-color",
+            "COLOR": "red",
             "OUTLINE_COLOR": "grey",
+            "OPACITY_PARAM": "fill-opacity",
             "OPACITY": 0.3,
             "OBJECT_NAME": "NAME"
         }
