@@ -76,13 +76,13 @@ const MapScreen: React.FC = () => {
           // onValueChange={handleSliderChange}
           />
       </div>
-      <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
+      <div className="absolute bottom-0 left-1/2 mb-[10px] transform -translate-x-1/2">
         <MoonWidget/>
       </div>
-      {/* <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
+      {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
         <div style={{
           backgroundColor: '#18181b',
-          opacity: '88%',
+          opacity: '80%',
           color: '#fff',
           padding: '5px 10px',
           font: '16px',
@@ -93,10 +93,10 @@ const MapScreen: React.FC = () => {
         }}>
           <Typography>{mode}</Typography>
         </div>
-      </div> */}
+      </div>  */}
 
       {/*Map Controls*/}
-      <div className="absolute bottom-20 right-0">
+      <div className="absolute top-0 right-0 mt-[62px] mr-[5px]">
         <MapControlBar/>
       </div>
     </div>

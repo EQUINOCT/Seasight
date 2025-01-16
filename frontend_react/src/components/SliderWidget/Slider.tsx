@@ -78,7 +78,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
               }}
           >
           <div style={{display: 'flex'}}>
-              <Typography sx={{fontSize: 12, color: '#fff', ml: -1, lineHeight: '1.1'}}>Sea Level Meter</Typography>
+              <Typography sx={{fontSize: 14, color: '#fff', ml: -1, mb: 0.75}}>Tidal Gauge</Typography>
               {/* <Typography sx={{fontSize: '10px', color: '#fff',opacity: '70%', ml: 0.5, mt: 1.75}}>{'(Above Mean Sea Level)'}</Typography> */}
           </div>
           <Slider
@@ -95,6 +95,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
               sx={{
                   color: '#61B3FF', // Change the slider color if needed
                   height: '90%',
+                  width: '20%',
                   mt: 1,
                   '& .MuiSlider-thumb': {
                     backgroundColor: '#fff', // Color of the thumb
