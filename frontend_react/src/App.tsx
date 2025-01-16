@@ -1,6 +1,6 @@
 // App.tsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useConfig } from './ConfigContext'; // Import the useConfig hook
 import MapScreen from './components/Screens/MapScreen';
 import AnalyticsScreen from './components/Screens/AnalyticsScreen';
@@ -37,6 +37,7 @@ const App: React.FC = () => {
    return (
       <Routes>
          <Route path="/" element={<MainLayout onWidgetToggle={onWidgetToggle} visibleWidgets={visibleWidgets}/>} >
+            <Route index element={<Navigate to="map" />} /> {/* Default route */}
             <Route path="map" element={<MapScreen/>} />
             {/* <Route path="monitor-analytics" element={<MonitorAnalyticsScreen />} /> */}
             {/* <Route path="forecast-visualization" element={<ForecastScreen/>} /> */}
