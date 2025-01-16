@@ -2,6 +2,9 @@ import * as React from 'react';
 import {useState, useEffect} from 'react';
 import Slider from '@mui/material/Slider';
 import { Box, Typography } from '@mui/material';
+import { useConfig } from '../../ConfigContext';
+
+
 
 const min = 1;
 const max = 2;
@@ -24,8 +27,11 @@ interface SliderWidgetProps {
 const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }) => {
   const [loading, setLoading] = useState(true);
 
+  const { config } = useConfig();
+  const dataServeUrl = config[process.env.REACT_APP_ENVIRONMENT || 'LOCAL'].DATA_SERVE_ENDPOINT;
+
   useEffect(() => {
-    fetch('http://localhost:8000/api/current-level')
+    fetch(`${dataServeUrl}/api/current-level`)
       .then(response => response.json())
       .then(data => {
         setTidalLevel(Number(data.level.toFixed(1)));
@@ -35,7 +41,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel }
         console.error('Error fetching current level:', error);
         setLoading(false);
       });
-  }, []);
+  }, [dataServeUrl]);
 
   // Calculate the height percentage based on current value
   const getTrackHeight = () => {
