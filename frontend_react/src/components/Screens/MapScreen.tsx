@@ -13,7 +13,7 @@ import { useConfig } from '../../ConfigContext';
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
 const MapScreen: React.FC = () => {
-  const [selectedLayer, setSelectedLayer] = useState<string[]>([]);
+  const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [mode, setMode] = useState<string>('Real-time mode');
   const [loading, setLoading] = useState(true);
