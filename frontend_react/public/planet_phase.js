@@ -56,7 +56,7 @@ var drawPlanetPhase = (function(){
             'position': 'absolute',
             'height':    outer.diameter + 'px',
             'width':     outer.diameter + 'px',
-            'border':   '1px solid black',
+            // 'border':   '1px solid black',
             'backgroundColor': outer.colour,
             'borderRadius': (outer.diameter/2) + 'px',
             'overflow': 'hidden'
@@ -138,6 +138,20 @@ var drawPlanetPhase = (function(){
         config = populateMissingConfigValues(Object.create(config || {}));
         var el = makeDiv(containerEl);
         setPhase(el, phase, isWaxing, config);
+
+        //Moon texture file
+        var texture = document.createElement('img');
+        texture.src = './moon-texture-1.png'; // Replace with the actual texture file path
+        texture.alt = 'Moon Texture';
+        texture.style.position = 'absolute';
+        texture.style.width = config.diameter + 5 + 'px';
+        texture.style.height = config.diameter + 5 + 'px';
+        texture.style.borderRadius = '50%'; // Ensure circular shape
+        texture.style.pointerEvents = 'none'; // Prevent interaction
+        texture.style.opacity = 0.3; // Adjust opacity to blend with the phase
+        texture.style.left = '16px';
+        texture.style.bottom = '38.5px';
+        containerEl.appendChild(texture);
     };
 }());
 window.drawPlanetPhase = drawPlanetPhase;

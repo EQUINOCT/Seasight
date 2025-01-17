@@ -151,8 +151,8 @@ const ButtonComponent: React.FC = () => {
                     el.innerHTML = ''; // Clear previous drawings
                     window.drawPlanetPhase(el, shadowSize, isWaxing, {
                     diameter: 40,
-                    shadowColour: 'rgb(51, 51, 51, 1)',
-                    lightColour: '#fffec8',
+                    shadowColour: 'rgb(0, 0, 0, 0.7)',
+                    lightColour: '#FAF8D4',
                     blur: 3,
                     });
                   }
