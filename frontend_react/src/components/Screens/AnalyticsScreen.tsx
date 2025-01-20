@@ -21,26 +21,26 @@ const ImpactScreen: React.FC = () => {
         <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
           <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 9}}>
-              <Card sx={{ height: '100%' }}>
+              <Card sx={{ height: '100%', opacity: '90%'}}>
                 <CardContent>
-                  <Typography>Current Level</Typography>
+                  <Typography  sx={{ fontSize: '18px', mb: 2}} >Current Level</Typography>
                   <RealtimeLineChart/>
                 </CardContent>
               </Card>
             </Grid>
             <Grid size={{xs: 12, md: 3}}>
-              <Card sx={{ height: '100%' }}>
+              <Card sx={{ height: '100%', opacity: '90%' }}>
                 <CardContent>
-                  <Typography>Map</Typography>
+                  {/* <Typography>Map</Typography> */}
                   {/* </> */}
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: '100%', opacity: '90%'}}>
               <CardContent>
-                <Typography>Historic Data</Typography>
+                <Typography sx={{ fontSize: '18px', mb: 2}}>Historic Data</Typography>
                 <HistoricalMeanChart/>
               </CardContent>
 
