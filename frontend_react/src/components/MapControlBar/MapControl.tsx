@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Map } from 'maplibre-gl';
 import { Remove, Add, Info, OpenInFull} from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -6,20 +7,29 @@ import { IconButton } from '@mui/material';
 import Draggable from 'react-draggable';
 
 const buttons = [
-    { icon: <Add/>, value: 'add' as SelectedMapType },
-    { icon: <Remove/>,  value: 'remove' as SelectedMapType },
-    { icon: <Info/>,  value: 'info' as SelectedMapType },
-    { icon: <OpenInFull/>,  value: 'expand' as SelectedMapType},
+    { icon: <Add/>, value: 'add' as SelectedButtonType},
+    { icon: <Remove/>,  value: 'remove' as SelectedButtonType},
+    { icon: <Info/>,  value: 'info' as SelectedButtonType},
+    { icon: <OpenInFull/>,  value: 'expand' as SelectedButtonType},
 ];
 
-type SelectedMapType = "add" | "remove" | "info" | "expand";
+type SelectedButtonType = "add" | "remove" | "info" | "expand";
 
-const ButtonComponent: React.FC = () => {
+interface ButtonComponentProps {
+  map: Map | undefined;
+}
+
+const ButtonComponent: React.FC<ButtonComponentProps> = ({map}) => {
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
 
-  const handleButtonClick = (value: SelectedMapType) => {
-      setSelectedValue(value);
-     }
+  const handleButtonClick = (value: SelectedButtonType) => {
+      if (!map) return;
+      if (value === 'add') {
+        map.zoomIn();
+      } else if (value === 'remove') {
+        map.zoomOut();
+      }
+      }
 
   return (
       <Box

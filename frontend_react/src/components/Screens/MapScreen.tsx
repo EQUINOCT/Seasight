@@ -1,4 +1,5 @@
-import React, {useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Map } from 'maplibre-gl';
 import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
 import Legend from "../LegendWidget/Legend";
@@ -13,14 +14,42 @@ import { useConfig } from '../../ConfigContext';
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
 const MapScreen: React.FC = () => {
+  const [map, setMap] = useState<Map>();
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [mode, setMode] = useState<string>('Real-time mode');
   const [loading, setLoading] = useState(true);
-
+  const mapContainer = useRef<HTMLDivElement | null>(null);
   const { config } = useConfig();
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
-  console.log(dataServeUrl);
+
+  // const lng = config.MAP_CONFIG.LON;
+  // const lat = config.MAP_CONFIG.LAT;
+  // const zoom = config.MAP_CONFIG.ZOOM;
+  // const API_KEY = config.MAPTILER_API_KEY;
+  // const mapStyleUrl = config.MAPS.IMPACT;
+  
+  // useEffect(() => {   
+  //   if (mapContainer.current) {
+  //     const map = new Map({
+  //       container: mapContainer.current,
+  //       style: mapStyleUrl,
+  //       center: [lng, lat],
+  //       zoom: zoom
+  //     });   
+
+  //     // let nav = new NavigationControl();
+  //     // map.addControl(nav, 'bottom-left');
+
+  //     map.on('load', async () => {
+  //       setMap(map);
+  //     });
+
+  //     return () => {
+  //       map.remove();
+  //     };
+  //   }
+  // }, []); 
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)
@@ -54,6 +83,8 @@ const MapScreen: React.FC = () => {
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <div className="absolute w-full h-full rounded-[15px] overflow-hidden">
         <ImpactMapComponent
+          map = {map}
+          setMap = {setMap}
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
         />
@@ -98,7 +129,9 @@ const MapScreen: React.FC = () => {
 
       {/*Map Controls*/}
       <div className="absolute top-0 right-0 mt-[62px] mr-[5px]">
-        <MapControlBar/>
+        <MapControlBar
+          map={ map }
+        />
       </div>
     </div>
   );
