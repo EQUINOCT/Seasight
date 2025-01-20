@@ -8,8 +8,7 @@ import { centerLatLngFromFeature, generateCustomMarker, incrementState } from '.
 
 async function addLayerLocal(map, layer, configData, tidalLevel) {
     const config = configData.IMPACT[layer];
-    const environment = process.env.REACT_APP_ENVIRONMENT || "LOCAL";
-    const layerUrl = configData[environment].LAYER_URL;
+    const layerUrl = process.env.REACT_APP_LAYER_URL;
     // console.log(config);
 
     // const storage = new Storage();

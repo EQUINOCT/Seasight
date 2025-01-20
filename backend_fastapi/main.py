@@ -80,7 +80,7 @@ def get_tidal_data():
             SELECT timestamp, tidal_level
             FROM ioc_observed
             ORDER BY timestamp DESC
-            LIMIT 40
+            LIMIT 300
             ) AS subquery
             ORDER BY timestamp ASC;           
         """)

@@ -19,7 +19,8 @@ const MapScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { config } = useConfig();
-  const dataServeUrl = config[process.env.REACT_APP_ENVIRONMENT || 'LOCAL'].DATA_SERVE_ENDPOINT;
+  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+  console.log(dataServeUrl);
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)

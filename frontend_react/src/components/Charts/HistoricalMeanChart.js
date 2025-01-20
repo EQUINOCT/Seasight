@@ -57,7 +57,7 @@ const CustomTooltip = ({ active, payload }) => {
 
 const HistoricalMeanChart = () => {
     const { config } = useConfig();
-    const dataServeUrl = config[process.env.REACT_APP_ENVIRONMENT].DATA_SERVE_ENDPOINT;
+    const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
