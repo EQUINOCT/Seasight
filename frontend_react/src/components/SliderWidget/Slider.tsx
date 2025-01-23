@@ -6,8 +6,8 @@ import { useConfig } from '../../ConfigContext';
 
 
 
-const min = 1;
-const max = 2;
+const min = 0.5;
+const max = 2.0;
 const step = 0.1;
 
 const marks = Array.from({ length: (max-min)/step+1}, (_, index) => ({
