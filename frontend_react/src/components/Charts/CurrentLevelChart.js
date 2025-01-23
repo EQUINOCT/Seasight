@@ -75,7 +75,11 @@ const RealtimeLineChart = () => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <ResponsiveContainer width="100%" height={380}>
+      <div>
+      {/* Debugging log */}
+      {console.log('Chart container height:', document.getElementById('chart-container')?.offsetHeight)}
+            
+        <ResponsiveContainer width="100%" height={310} >
             <ScatterChart>
                 <Scatter name="Tidal Level" dataKey="level" data={realtimeData} fill="#6c5cdd" shape={<CustomMarker size={3} fill={"#6c5cdd"} />} />
                 <Scatter name="Current Level" dataKey="level" data={[realtimeData[realtimeData.length - 1]]} stroke="#6c5cdd" fill="red" strokeWidth={5} shape={<CustomMarkerLast size={8} />} />
@@ -87,6 +91,7 @@ const RealtimeLineChart = () => {
                 <Legend />
             </ScatterChart>
         </ResponsiveContainer>
+      </div>
     );
 };
 

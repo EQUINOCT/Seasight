@@ -56,7 +56,7 @@ var drawPlanetPhase = (function(){
             'position': 'absolute',
             'height':    outer.diameter + 'px',
             'width':     outer.diameter + 'px',
-            'border':   '1px solid black',
+            // 'border':   '1px solid black',
             'backgroundColor': outer.colour,
             'borderRadius': (outer.diameter/2) + 'px',
             'overflow': 'hidden'
