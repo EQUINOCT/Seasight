@@ -71,6 +71,7 @@ const ImpactAnalytics: React.FC = () => {
   const selectedIndex = panchayats.indexOf(selectedPanchayat);
   const startIndex = Math.max(0, selectedIndex - 2); 
   const endIndex = Math.min(data.length, selectedIndex + 3);
+  
   const displayedData: ChartData[] = data.slice(startIndex, endIndex).map(item => ({
     Panchayat: item.Panchayat,
     Population: item.Population,
@@ -300,20 +301,18 @@ const ImpactAnalytics: React.FC = () => {
                                   <Bar dataKey="Roads" fill="#00738c"/>
                                 </BarChart>
                             </ResponsiveContainer>
-                            </Grid>
-
-                                    <Grid size={{xs:12, md:4}} sx={{mt: -5}} >
-                                      <Grid sx={{mx: 3}} height='50%'>
-                                        <Typography sx={{mb: 1}}>{selectedPanchayat} Roads</Typography>
-                                        <Typography style={{fontSize:12, fontWeight: 300}}>Total Road Length Affected</Typography>
-                                        <Typography style={{fontSize:28, marginTop: 1}}>92.63 km</Typography>
-                                      </Grid>
-                                      <Grid height='50%'>
-                                      {/* Enter LSG details */}
-                                      </Grid>
-                                    </Grid>
+                              </Grid>
+                                <Grid size={{xs:12, md:4}} sx={{mt: -5}} >
+                                  <Grid sx={{mx: 3}} height='50%'>
+                                    <Typography sx={{mb: 1}}>{selectedPanchayat} Roads</Typography>
+                                    <Typography style={{fontSize:12, fontWeight: 300}}>Total Road Length Affected</Typography>
+                                    <Typography style={{fontSize:28, marginTop: 1}}>92.63 km</Typography>
                                   </Grid>
-                                  
+                                  <Grid height='50%'>
+                                  {/* Enter LSG details */}
+                                  </Grid>
+                                </Grid>
+                              </Grid>                           
                               </CardContent>
                             </Card> 
                         </Grid> 
