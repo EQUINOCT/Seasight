@@ -10,15 +10,13 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.0.14",
+    "@google-cloud/storage": "^7.15.0",
     "@lottiefiles/dotlottie-react": "^0.9.0",
     "@maptiler/sdk": "^2.2.1",
     "@mui/icons-material": "^6.3.0",
     "@mui/material": "^6.3.0",
     "@mui/x-charts": "^7.23.0",
-<<<<<<< Updated upstream
-=======
     "@mui/x-date-pickers": "^7.24.1",
->>>>>>> Stashed changes
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

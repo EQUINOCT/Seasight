@@ -4,6 +4,7 @@ import { Notifications } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { IconButton, InputBase, Paper, Typography } from "@mui/material";
 import { Person } from "@mui/icons-material";
+import Tour from "./TutorialTour";
 
 interface NavigationBarProps {
   activeControl: string;
@@ -37,7 +38,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
       </div>
       
       <nav className="flex justify-center">
-        <ul className="flex gap-7 pr-[50px] items-center list-none p-0 mb-2">
+        <ul className="flex gap-7 items-center list-none mb-2 ml-7">
           {menuItems.map((item, index) => (  
             <li key={index} className="relative">
               <Link
@@ -56,13 +57,16 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
       </nav>
 
       <div className="flex pr-[15px] gap-1.5 items-center justify-end">
-        <div className="widget-selector-container" style={{ width: 100 }}>
+      <div className="widget-selector-container" style={{ width: 100 }}>
           {activeControl.toLowerCase() === "map" && (
               <WidgetSelector 
                 onWidgetToggle={onWidgetToggle}
                 visibleWidgets={visibleWidgets}
               />
           )}
+        </div>
+        <div className="widget-selector-container" style={{ width: 110 }}>
+              <Tour />
         </div>
         {/* <LocationSelector /> */}
         <IconButton

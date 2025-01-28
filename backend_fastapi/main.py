@@ -80,7 +80,7 @@ def get_tidal_data():
             SELECT timestamp, tidal_level
             FROM ioc_observed
             ORDER BY timestamp DESC
-            LIMIT 200
+            LIMIT 300
             ) AS subquery
             ORDER BY timestamp ASC;           
         """)
@@ -108,18 +108,18 @@ def get_current_level():
         # Format data for the frontend
         return {"level": current_level}
     
-# @app.get("/api/analytics/predicted-data")
-# def get_predicted_data():
-#     with engine.connect() as conn:
-#         sql_statement = text("""
-#             SELECT timestamp, tidal_level
-#             FROM predicted
-#             ORDER BY timestamp DESC
-#             LIMIT 8
-#         """)
+@app.get("/api/analytics/predicted-data")
+def get_predicted_data():
+    with engine.connect() as conn:
+        sql_statement = text("""
+            SELECT timestamp, tidal_level
+            FROM soi_predicted
+            ORDER BY timestamp DESC
+            LIMIT 8
+        """)
 
-#         result = conn.execute(sql_statement)
-#         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
+        result = conn.execute(sql_statement)
+        return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
     
 
 @app.get("/api/analytics/historical-data")
@@ -135,4 +135,4 @@ def get_predicted_data():
         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
     
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080)

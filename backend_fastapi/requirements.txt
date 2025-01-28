@@ -1,0 +1,10 @@
+fastapi[standard]
+sqlalchemy
+datetime
+pyyaml
+uvicorn
+psycopg2-binary
+pg8000
+cloud-sql-python-connector[pg8000]
+python-dotenv
+a2wsgi

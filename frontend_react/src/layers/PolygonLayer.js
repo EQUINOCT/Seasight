@@ -4,17 +4,33 @@ import { useConfig } from '../ConfigContext';
 import * as turf from '@turf/turf';
 import { Sort, Visibility } from '@mui/icons-material';
 import { centerLatLngFromFeature, generateCustomMarker, incrementState } from './misc';
-
+// import { Storage } from '@google-cloud/storage';
 
 async function addLayerLocal(map, layer, configData, tidalLevel) {
     const config = configData.IMPACT[layer];
+    const layerUrl = process.env.REACT_APP_LAYER_URL;
     // console.log(config);
+
+    // const storage = new Storage();
+
+    // const getSignedUrl = async (bucketName, fileName) => {
+    //     const options = {
+    //     version: 'v4',
+    //     action: 'read',
+    //     expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+    //     };
+
+    //     const [url] = storage
+    //     .bucket(bucketName)
+    //     .file(fileName)
+    //     .getSignedUrl(options);
+
+    //     return url;
+    // };
 
     const loadGeoJSON = async () => {
         const tidalLevelInFilename = tidalLevel.toString().replace(/\./g, '_')
-        const fileUrl = `${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
-
-
+        const fileUrl = `${layerUrl}${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
         try {
             const response = await fetch(fileUrl);
             if (!response.ok) {

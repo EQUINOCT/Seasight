@@ -1,4 +1,4 @@
-{
+{   
     "MAPTILER_API_KEY": "rOzi4RnlGlqlLc5ozKz4",
     "MAP_CONFIG": {
         "LAT": 9.983942281729938,  
@@ -12,6 +12,7 @@
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
+    "LAYER_URL": "/shapefiles",
     "IMPACT": {
         "Buildings": { 
             "LAYER_ID": "buildings-layer",
@@ -45,14 +46,14 @@
             "LAYER_ID": "landcover-layer",
             "OUTLINE_LAYER_ID": "landcover-outline",
             "SOURCE_ID": "landcover-data",
-            "URL_PREFIX": "/Coastal_Landcover_geojson/coastal_landcover",
+            "URL_PREFIX": "/Coastal_Landcover/coastal_landcover",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
             "COLOR": "green",
             "OUTLINE_COLOR": "red",
             "OPACITY_PARAM": "fill-opacity",
-            "OPACITY": 0.5,
+            "OPACITY": 0.35,
             "OBJECT_NAME": "NAME"
 
         },
@@ -64,10 +65,10 @@
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
-            "COLOR": "red",
+            "COLOR": "#2FA9E4",
             "OUTLINE_COLOR": "grey",
             "OPACITY_PARAM": "fill-opacity",
-            "OPACITY": 0.3,
+            "OPACITY": 0.35,
             "OBJECT_NAME": "NAME"
         }
     }  

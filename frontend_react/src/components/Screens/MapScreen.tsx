@@ -1,18 +1,78 @@
-import React, {useState} from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Map } from 'maplibre-gl';
 import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
 import Legend from "../LegendWidget/Legend";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
+import MapControlBar from "../MapControlBar/MapControl";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
-import ButtonComponent from "../MoonWidget/MoonWidget";
+import MoonWidget from "../MoonWidget/MoonWidget";
+import { Typography } from "@mui/material";
+import { useConfig } from '../../ConfigContext';
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
-const MonitorScreen: React.FC = () => {
-  const [selectedLayer, setSelectedLayer] = useState<string[]>([]);
-  const [tidalLevel, setTidalLevel] = useState<number>(1.6);
+const MapScreen: React.FC = () => {
+  const [map, setMap] = useState<Map>();
+  const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
+  const [tidalLevel, setTidalLevel] = useState<number>(1);
+  const [mode, setMode] = useState<string>('Real-time mode');
+  const [loading, setLoading] = useState(true);
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const { config } = useConfig();
+  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
+  // const lng = config.MAP_CONFIG.LON;
+  // const lat = config.MAP_CONFIG.LAT;
+  // const zoom = config.MAP_CONFIG.ZOOM;
+  // const API_KEY = config.MAPTILER_API_KEY;
+  // const mapStyleUrl = config.MAPS.IMPACT;
+  
+  // useEffect(() => {   
+  //   if (mapContainer.current) {
+  //     const map = new Map({
+  //       container: mapContainer.current,
+  //       style: mapStyleUrl,
+  //       center: [lng, lat],
+  //       zoom: zoom
+  //     });   
+
+  //     // let nav = new NavigationControl();
+  //     // map.addControl(nav, 'bottom-left');
+
+  //     map.on('load', async () => {
+  //       setMap(map);
+  //     });
+
+  //     return () => {
+  //       map.remove();
+  //     };
+  //   }
+  // }, []); 
+
+  useEffect(() => {
+    fetch(`${dataServeUrl}/api/current-level`)
+      .then(response => response.json())
+      .then(data => {
+        setTidalLevel(Number(data.level.toFixed(1)));
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching current level:', error);
+        setLoading(false);
+      });
+  }, [dataServeUrl]);
+
+
+  // const handleSliderChange = (value: number) => {
+  //   if(value!==1.2) {
+  //     setMode('Scenario Mode');
+  //   }  else {
+  //     setMode('Real-time Mode');
+  //   }
+  // }
+ 
   const logoStyle = {
     width: '100px', // Set the width to 100px
     height: '100px', // Set the height to 100px
@@ -23,6 +83,8 @@ const MonitorScreen: React.FC = () => {
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <div className="absolute w-full h-full rounded-[15px] overflow-hidden">
         <ImpactMapComponent
+          map = {map}
+          setMap = {setMap}
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
         />
@@ -42,22 +104,37 @@ const MonitorScreen: React.FC = () => {
         <SliderWidget
           tidalLevel = {tidalLevel}
           setTidalLevel={setTidalLevel}
+          loading={loading}
+          // onValueChange={handleSliderChange}
+          />
+      </div>
+      <div className="absolute bottom-0 left-1/2 mb-[10px] transform -translate-x-1/2">
+        <MoonWidget/>
+      </div>
+      {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
+        <div style={{
+          backgroundColor: '#18181b',
+          opacity: '80%',
+          color: '#fff',
+          padding: '5px 10px',
+          font: '16px',
+          borderRadius: '5px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <Typography>{mode}</Typography>
+        </div>
+      </div>  */}
+
+      {/*Map Controls*/}
+      <div className="absolute top-0 right-0 mt-[62px] mr-[5px]">
+        <MapControlBar
+          map={ map }
         />
       </div>
-      {/* <div className="absolute bottom-0 left-1/2 mb-[20px] transform -translate-x-1/2">
-        <ButtonComponent/>
-      </div> */}
-      {/* Alerts */}
-      {/* <div style={{ position: "absolute", top: "30px", left: "20px" }}>
-        {visibleWidgets.alerts && (
-          <AlertWidgetComponent
-            visibleAlerts={visibleWidgets.alerts}
-            OnClose={() => onWidgetToggle('alerts', false)}
-          />
-        )}
-      </div> */}
     </div>
   );
 };
 
-export default MonitorScreen;
+export default MapScreen;

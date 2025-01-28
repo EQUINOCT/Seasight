@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import maplibregl from 'maplibre-gl';
+import {Map, NavigationControl} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '../styles.css';
 import { useConfig } from "../../ConfigContext";
@@ -8,14 +8,15 @@ import "@maptiler/sdk/dist/maptiler-sdk.css";
 import { addLayerLocal, removeLayer } from '../../layers/PolygonLayer';
 
 interface ImpactMapComponentProps {
+  map: Map | undefined;
+  setMap: (value: Map | undefined) => void;
   selectedLayer: string[];
   tidalLevel: number;
 }
 
 
-const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({selectedLayer, tidalLevel}) => {
+const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, selectedLayer, tidalLevel}) => {
   const { config } = useConfig();
-  const [map, setMap] = useState<maplibregl.Map | null>(null);
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const lng = config.MAP_CONFIG.LON;
   const lat = config.MAP_CONFIG.LAT;
@@ -32,16 +33,18 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({selectedLayer, t
 
   useEffect(() => {   
     if (mapContainer.current) {
-      const map = new maplibregl.Map({
+      const map = new Map({
         container: mapContainer.current,
         style: mapStyleUrl,
         center: [lng, lat],
         zoom: zoom
       });   
 
+      // let nav = new NavigationControl();
+      // map.addControl(nav, 'bottom-left');
+
       map.on('load', async () => {
         setMap(map);
-        
       });
 
       return () => {
@@ -62,7 +65,8 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({selectedLayer, t
         newLayers[layer] = false;
       } else {
         removeLayer(map, config, layer);
-        addLayerLocal(map, layer, config, tidalLevel);
+            // Round off tidalLevel to 1 decimal place in order to pick the correct file from public/shapefiles
+        addLayerLocal(map, layer, config, tidalLevel.toFixed(1));
       }
     });
 
