@@ -124,7 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env*
 .venv
 env/
 venv/
@@ -189,6 +189,9 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react,python
+
+# vscode files
+*code-workspace
 
 # Custom - Backend
 
