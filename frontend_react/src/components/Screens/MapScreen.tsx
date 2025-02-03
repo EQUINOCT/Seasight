@@ -1,13 +1,10 @@
 import React, {useState, useEffect } from "react";
-import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
-import Legend from "../LegendWidget/Legend";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import MapControlBar from "../MapControlBar/MapControl";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
 import MoonWidget from "../MoonWidget/MoonWidget";
-import { Typography } from "@mui/material";
 import { useConfig } from '../../ConfigContext';
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
@@ -52,7 +49,7 @@ const MapScreen: React.FC = () => {
 
   return (
     <div className="w-full h-full relative flex flex-col overflow-hidden">
-      <div className="absolute w-full h-full rounded-[15px] overflow-hidden">
+      <div className="absolute w-full h-full overflow-hidden">
         <ImpactMapComponent
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}

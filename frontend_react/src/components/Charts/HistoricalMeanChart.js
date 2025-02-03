@@ -40,8 +40,9 @@
 // export default renderHistoricalMeanChart;
 
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, CartesianGrid, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
+import dayjs, { Dayjs } from 'dayjs';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -85,13 +86,44 @@ const HistoricalMeanChart = () => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
+    let lastDisplayedYear = null;
+    const ticks=[0.5, 1.0, 1.5];
+
     return (
         <ResponsiveContainer width="100%" height={310}>
             <LineChart width="100%" height="100%" data={data}>
                 <Line type="monotone" dataKey="level" stroke="#8884d8" />
-                <CartesianGrid stroke="#ccc" />
-                <XAxis dataKey="timestamp" />
-                <YAxis domain={[0.5, 1.5]} />
+                <Line type="monotone" dataKey="level" stroke="#8884d8" />
+                {/* <CartesianGrid vertical={false} /> */}
+                <XAxis 
+                dataKey="timestamp"
+                tickFormatter={(tick) => {
+                        const year = dayjs(tick).format('YYYY');
+                        if (year === lastDisplayedYear) return ''; // ✅ Skip duplicate years but keep spacing
+                        lastDisplayedYear = year;
+                        return year;
+                    }}
+                tickLine={false}
+                tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                // axisLine={false}
+                 /> 
+                <YAxis 
+                domain={[0, 1.5]} 
+                tickCount={3}
+                ticks={ticks} 
+                tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                label={{ 
+                        value: 'Meters (m)', 
+                        angle: -90, 
+                        position: 'insideLeft', 
+                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
+                    }}
+                />
+                {ticks.map(tick => (
+                    <ReferenceLine key={tick} y={tick} stroke="#E4F7F2"  strokeOpacity="50%" strokeDasharray="5 5" />
+                ))}
                 <Tooltip content={<CustomTooltip />} />
             </LineChart>
         </ResponsiveContainer>
