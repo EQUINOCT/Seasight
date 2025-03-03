@@ -64,14 +64,14 @@ const ImpactScreen: React.FC = () => {
                               svg: { color: '#fff' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#fff',
+                                  borderColor: '#0081A7',
                                 },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#AED697' },
+                              ".MuiPaper-root": { bgcolor: '#0081A7' },
                               mb: 2,
                             },
                           },
@@ -91,14 +91,14 @@ const ImpactScreen: React.FC = () => {
                               svg: { color: '#fff' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#fff',
+                                  borderColor: '#0081A7',
                                 },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#AED697' },
+                              ".MuiPaper-root": { bgcolor: '#0081A7' },
                             },
                           },
                         }}
@@ -115,12 +115,12 @@ const ImpactScreen: React.FC = () => {
             </Grid>
             <Grid size={{xs: 12, md: 3}}>
               <Card sx={{ height: '100%'}}>
-                <CardContent>
+                 {/* <CardContent> */}
                 <ImpactMapComponent
                   selectedLayer = {selectedLayer}
                   tidalLevel = {tidalLevel}
                 />
-                </CardContent>
+                {/* </CardContent> */}
               </Card>
             </Grid>
           </Grid>

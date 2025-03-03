@@ -40,13 +40,25 @@
 // export default renderHistoricalMeanChart;
 
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, CartesianGrid, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
+import { LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
 import dayjs, { Dayjs } from 'dayjs';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
+        console.log("Tooltip active:", active);
+        console.log("Tooltip payload:", payload);
+
         const { level } = payload[0].payload; // Access the level value
+        console.log("Level value:", level);
+        
+        if (typeof level === 'number' && !isNaN(level)) {
+            return (
+                <div className="custom-tooltip" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', color: 'white', padding: '8px', borderRadius: '4px' }}>
+                    <p>{`Mean Level: ${level.toFixed(2)} m`}</p>
+                </div>
+            );
+        }
         return (
             <div className="custom-tooltip">
                 <p>{`Mean Level: ${level.toFixed(2)} m`}</p>
@@ -92,8 +104,9 @@ const HistoricalMeanChart = () => {
     return (
         <ResponsiveContainer width="100%" height={310}>
             <LineChart width="100%" height="100%" data={data}>
-                <Line type="monotone" dataKey="level" stroke="#8884d8" />
-                <Line type="monotone" dataKey="level" stroke="#8884d8" />
+                
+                <Line type="monotone" dataKey="level" stroke="#0081A7" dot={{strokeWidth: 0.5, r: 2, fill: '#54F2F2'}}/>
+                
                 {/* <CartesianGrid vertical={false} /> */}
                 <XAxis 
                 dataKey="timestamp"
