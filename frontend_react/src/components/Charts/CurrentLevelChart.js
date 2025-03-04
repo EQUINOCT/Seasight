@@ -57,7 +57,7 @@ const RealtimeLineChart = () => {
         };
 
         fetchData('/api/analytics/realtime-data');
-        fetchData('/api/analytics/predicted-data');
+        // fetchData('/api/analytics/predicted-data');
     }, [dataServeUrl]);
 
     const parseDate = (dateString) => {
