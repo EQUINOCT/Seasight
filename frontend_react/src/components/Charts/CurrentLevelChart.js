@@ -6,13 +6,31 @@ import ErrorBoundary from '../errorBoundary';
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const { level, timestamp } = payload[0].payload; // Access the level value
-        const dateTime = new Date(timestamp);
-        const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        const dateTime = timestamp ? new Date(timestamp) : null;
+        const formattedDate = dateTime
+            ? dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'N/A';
+        const formattedTime = dateTime
+            ? dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})
+            : 'N/A';
 
         return (
-            <div className="custom-tooltip">
-                <p>{`Tidal Level: ${level} `}</p>
+            <div 
+            className="custom-tooltip"
+            style={{ 
+                    padding: '8px',
+                    paddingTop: '1px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                    color: 'white', 
+                    borderRadius: '4px',
+                    fontSize: "14px",
+                    }}
+            >
+                <p>{`Tidal Level: ${level} m`}</p>
+                <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
+                          {formattedDate} <br/> {formattedTime}
+                </p>
             </div>
         );
     }
