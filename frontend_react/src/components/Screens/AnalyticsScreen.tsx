@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Card, CardContent, ThemeProvider, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import theme from "../theme";
+import { Map } from 'maplibre-gl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -14,6 +15,7 @@ import ImpactMapComponent from "../Maps/ImpactMapComponent";
 
 // Previously impact-visualization screen in Insight Gather
 const ImpactScreen: React.FC = () => {
+  const [map, setMap] = useState<Map>();
   const [startDate, setStartDate] = React.useState<Date | null>(null);
   const [endDate, setEndDate] = React.useState<Date | null>(null);
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
@@ -117,6 +119,8 @@ const ImpactScreen: React.FC = () => {
               <Card sx={{ height: '100%'}}>
                  {/* <CardContent> */}
                 <ImpactMapComponent
+                  map={map}
+                  setMap={setMap}
                   selectedLayer = {selectedLayer}
                   tidalLevel = {tidalLevel}
                 />
