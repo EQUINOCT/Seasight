@@ -9,21 +9,22 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 //Import Plots
-import RealtimeLineChart  from "../Charts/CurrentLevelChart";
+import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 
 // Previously impact-visualization screen in Insight Gather
 const ImpactScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
-  const [startDate, setStartDate] = React.useState<Date | null>(null);
-  const [endDate, setEndDate] = React.useState<Date | null>(null);
+  const [startDate, setStartDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 6*1000*60*60*24));
+  const [endDate, setEndDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 5*1000*60*60*24));
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [loading, setLoading] = useState(true);
 
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
   console.log(dataServeUrl);
+  
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)
@@ -48,11 +49,11 @@ const ImpactScreen: React.FC = () => {
             <Grid size={{xs: 12, md: 9}}>
               <Card sx={{ height: '100%'}}>
                 <CardContent>
-                  <Typography  sx={{ fontSize: '18px', mb: 2}}>Current Level</Typography>
+                  
                   <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
-                      {/* <Typography  sx={{ fontSize: '16px', mb: 2}}>Time Period</Typography> */}
+                      <Typography  sx={{ fontSize: '16px', mb: 2}}>Real-Time Levels</Typography>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <DatePicker 
@@ -78,8 +79,6 @@ const ImpactScreen: React.FC = () => {
                             },
                           },
                         }}
-                        //value={date}
-                        //onChange={(newValue) => setDate(newValue)}
                         />
                         <DatePicker 
                         label="End Date"
@@ -109,7 +108,10 @@ const ImpactScreen: React.FC = () => {
                       </LocalizationProvider>
                     </Grid>
                     <Grid size={{xs: 12, md: 9}}>
-                      <RealtimeLineChart/>
+                      <RealtimeAnalytics
+                        startDate={startDate}
+                        endDate={endDate}
+                      />
                     </Grid>
                   </Grid>
                 </CardContent>

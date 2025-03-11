@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useConfig } from '../../ConfigContext'; 
+import axios from 'axios';
 import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine} from 'recharts';
 import ErrorBoundary from '../errorBoundary';
 
+import { useConfig } from '../../ConfigContext'; 
+
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const { level, timestamp } = payload[0].payload; // Access the level value
+        const { tidal_level, timestamp } = payload[0].payload; // Access the level value
         
         const dateTime = timestamp ? new Date(timestamp) : null;
         const formattedDate = dateTime
@@ -27,7 +29,7 @@ const CustomTooltip = ({ active, payload }) => {
                     fontSize: "14px",
                     }}
             >
-                <p>{`Tidal Level: ${level} m`}</p>
+                <p>{`Tidal Level: ${tidal_level} m`}</p>
                 <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
                           {formattedDate} <br/> {formattedTime}
                 </p>
@@ -45,7 +47,7 @@ const CustomMarkerLast = ({ cx, cy, size }) => {
     return <circle cx={cx} cy={cy} r={size} fill="red" stroke="red" strokeWidth={3} />;
 };
 
-const RealtimeLineChart = () => {
+const RealtimeAnalytics = ({ startDate, endDate }) => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -55,65 +57,87 @@ const RealtimeLineChart = () => {
     const [error, setError] = useState(null);
     const [timeframe, setTimeframe] = useState();
 
-    useEffect(() => {
-        const fetchData = async (endpoint) => {
-            try {
-                const response = await fetch(`${dataServeUrl}${endpoint}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                console.log(`Fetched data from ${endpoint}:`, data);
+    const [pagination, setPagination] = useState({
+    offset: 0,
+    limit: 5000
+    });
 
-                const formattedData = data
+    useEffect(() => {
+        if (startDate && endDate) {
+            fetchData();
+            // Reset pagination when date range changes
+            setPagination({ ...pagination, offset: 0 });
+        }
+    }, [startDate, endDate]);
+
+    useEffect(() => {
+        if (startDate && endDate) {
+            fetchData();
+        }
+    }, [pagination]);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+        const startDateStr = startDate.toISOString();
+        const endDateStr = endDate.toISOString();
+        
+        const response = await axios.get(`${dataServeUrl}/api/analytics/realtime-data/by-date-range`, {
+            params: {
+            offset: pagination.offset,
+            limit: pagination.limit,
+            start_date: startDateStr,
+            end_date: endDateStr
+            }
+        });
+
+        const formattedData = await response.data
                 .map(item => ({
                     ...item,
                     timestamp: parseDate(item.timestamp),
                 }))
-                .filter(item => item.timestamp !== null && !isNaN(item.timestamp)  && item.level <= 1.75);
-                
-                console.log('Formatted data:', formattedData);
+                .filter(item => item.timestamp !== null && !isNaN(item.timestamp) && item.tidal_level <= 1.75);
 
-                if (endpoint.includes('realtime')) {
-                    setRealtimeData(formattedData);
-                } else if (endpoint.includes('predicted')) {
-                    setPredictedData(formattedData);
-                }
-                
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+        setRealtimeData(formattedData);
+        } catch (error) {
+        console.error('Error fetching analytics data:', error);
+        } finally {
+        setLoading(false);
+        }
+    };
 
-        fetchData('/api/analytics/realtime-data');
-        // fetchData('/api/analytics/predicted-data');
-    }, [dataServeUrl]);
+    const handleLoadMore = () => {
+        setPagination({
+        ...pagination,
+        offset: pagination.offset + pagination.limit
+        });
+    };
+
 
     const parseDate = (dateString) => {
-        if (!dateString || typeof dateString !== 'string') return null;
+    if (!dateString) return null;
     
+    try {
+        // For ISO format strings (like "2025-03-11T14:30:00Z")
+        const date = new Date(dateString);
+        if (!isNaN(date.getTime())) {
+        return date.getTime();
+        }
+        
+        // Fall back to your custom parsing for other formats
         const parts = dateString.split(' ');
         if (parts.length !== 2) return null;
-    
         const [datePart, timePart] = parts;
         const dateSegments = datePart.split('-').map(Number);
         const timeSegments = timePart.split(':').map(Number);
-    
         if (dateSegments.length !== 3 || timeSegments.length < 2) return null;
-    
         const [year, month, day] = dateSegments;
         const [hours, minutes, seconds = 0] = timeSegments;
-    
-        const timestamp = new Date(year, month - 1, day, hours, minutes, seconds).getTime();
-    
-        if (isNaN(timestamp)) {
-            console.error(`Invalid timestamp: ${dateString}`);
-            return null;
-        }
-    
-        return timestamp;
+        return new Date(year, month - 1, day, hours, minutes, seconds).getTime();
+    } catch (error) {
+        console.error(`Error parsing date: ${dateString}`, error);
+        return null;
+    }
     };
 
     const timeFormatter = (unixTime) => {
@@ -163,8 +187,6 @@ const RealtimeLineChart = () => {
     if (error) return <p>Error: {error}</p>;
 
     const ticks=[0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8];
-    console.log('xAxisTimeTicks:', xAxisTimeTicks);
-    console.log('xAxisDateTicks:', xAxisDateTicks);
 
     const lastRealtimePoint = realtimeData.length > 0 ? [realtimeData[realtimeData.length - 1]] : [];
     const xDomain = xAxisTimeTicks.length > 1
@@ -174,24 +196,16 @@ const RealtimeLineChart = () => {
       ]
     : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty
 
-    console.log('Predicted Data:', predictedData);
-    console.log('Timestamps:', realtimeData.map(d => d.timestamp));
-    console.log('X-Axis Time Ticks:', xAxisTimeTicks);
-    console.log('X-Axis Date Ticks:', xAxisDateTicks);
-    console.log('Realtime Data:', realtimeData);
-    console.log('Last Realtime Point:', realtimeData.length > 0 ? realtimeData[realtimeData.length - 1] : 'No data');
-
     return (
       <div>
       {/* Debugging log */}
-      {console.log('Chart container height:', document.getElementById('chart-container')?.offsetHeight)}
             
-        <ResponsiveContainer width="100%" height={310} >
-          <ErrorBoundary>
+        <ResponsiveContainer width="100%" height={400} >
+          {/* <ErrorBoundary> */}
             <ScatterChart>
                 <Scatter 
                     name="Tidal Level" 
-                    dataKey="level" 
+                    dataKey="tidal_level" 
                     data={realtimeData} 
                     fill="#0081A7" 
                     shape={<CustomMarker size={1} fill={"#0081A7"}  />} 
@@ -199,15 +213,13 @@ const RealtimeLineChart = () => {
                 />
                 <Scatter 
                     name="Current Level" 
-                    dataKey="level" 
+                    dataKey="tidal_level" 
                     data={lastRealtimePoint} 
                     stroke="#54F2F2" fill="#54F2F2" 
                     strokeWidth={8} 
                     shape={<CustomMarker size={8} fill={"#54F2F2"}/>}  
                     xAxisId="timeAxis" 
                 />
-                {/* <Scatter name="Predicted Data" dataKey="level" data={predictedData} fill="#ffb201" shape={<CustomMarker size={6} fill={"#ffb201"} />} /> */}
-                
                 <XAxis 
                     dataKey="timestamp" 
                     domain={[
@@ -267,10 +279,10 @@ const RealtimeLineChart = () => {
                     wrapperStyle={{ left: 75, top: -15, fontSize: '12px'}} 
                 />
             </ScatterChart>
-          </ErrorBoundary>
+          {/* </ErrorBoundary> */}
         </ResponsiveContainer>
       </div>
     );
 };
 
-export default RealtimeLineChart;
+export default RealtimeAnalytics;
