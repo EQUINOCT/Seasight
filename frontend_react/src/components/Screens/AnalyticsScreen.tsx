@@ -1,26 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, ThemeProvider, Typography } from "@mui/material";
+import { Button, Box, Card, CardContent, ThemeProvider, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import theme from "../theme";
 import { Map } from 'maplibre-gl';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
+
 
 //Import Plots
 import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
+import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import AnalyticsMapWidgetComponent from "../Maps/AnalyticsMapWidgetComponent";
+import { getPickersCalendarHeaderUtilityClass } from "@mui/x-date-pickers/PickersCalendarHeader/pickersCalendarHeaderClasses";
+
+type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
 // Previously impact-visualization screen in Insight Gather
-const ImpactScreen: React.FC = () => {
+const AnalyticsScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 6*1000*60*60*24));
-  const [endDate, setEndDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 5*1000*60*60*24));
+  const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 6*1000*60*60*24));
+  const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() - 5*1000*60*60*24));
   const [loading, setLoading] = useState(true);
+  const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
 
-  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+  // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+
+  const chartOptions:  {
+    [key in historicalChartTypes]: {
+        name: string;
+        component: React.JSX.Element;
+    };
+  } = {
+      monthlymean: {
+        name: 'Monthly Mean',
+        component: <HistoricalMeanChart />
+      },
+      decadalmean: {
+        name: 'Decadal Means',
+        component: <DecadalMeanChart />
+      },
+      monthwisedecadalmean: {
+        name: 'Monthwise Decadal Means',
+        component: <DecadalMeanChart />
+      }
+  };
+
+  const handleToggle = (event: React.MouseEvent<HTMLElement>, historicalChartSelection: historicalChartTypes) => {
+    if (historicalChartSelection!== null) {
+      setHistoricalChartTypeSelect(historicalChartSelection);
+    }
+  }; 
+
+  // Render the currently selected chart
+  const renderChart = () => {
+    return chartOptions[historicalChartTypeSelect].component;
+  };
 
   return (
     <div className="w-full h-full relative bg-zinc-800 bg-opacity-98 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
@@ -111,8 +149,43 @@ const ImpactScreen: React.FC = () => {
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
             <Card sx={{ height: '100%'}}>
               <CardContent>
-                <Typography sx={{ fontSize: '18px', mb: 2}}>Historic Data</Typography>
-                <HistoricalMeanChart/>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 2
+                  }}
+                >
+                  <Typography sx={{ fontSize: '18px' }}>
+                    Historic Data
+                  </Typography>
+                  <ToggleButtonGroup
+                    value={historicalChartTypeSelect}
+                    exclusive
+                    onChange={handleToggle}
+                    // color="error"
+                    sx={{
+                      backgroundColor: '#f0f0f0', // Background color of the group
+                      '& .MuiToggleButton-root': {
+                        color: '#000', // Default text color
+                        borderColor: '#ccc', // Default border color
+                        '&.Mui-selected': {
+                            backgroundColor: '#1976d2', // Color when selected
+                            color: '#fff', // Text color when selected
+                            '&:hover': {
+                                backgroundColor: '#115293', // Darker color on hover when selected
+                            },
+                        },
+                    },
+                    }}
+                    >
+                      <ToggleButton value="monthlymean">Monthly Means</ToggleButton>
+                      <ToggleButton value="decadalmean">Decadal Means</ToggleButton>
+                      {/* <ToggleButton value="monthwisedecadalmean">Monthwise Decadal Means</ToggleButton> */}
+                  </ToggleButtonGroup>
+                </Box>
+                {renderChart()}
               </CardContent>
             </Card>
           </Grid>
@@ -122,4 +195,4 @@ const ImpactScreen: React.FC = () => {
   );
 };
 
-export default ImpactScreen;
+export default AnalyticsScreen;

@@ -89,7 +89,7 @@ const HistoricalMeanChart = () => {
                         }}
                     tickLine={false}
                     tick={{ fill: '#E4F7F2', fontSize: 12 }}
-                    // axisLine={false}
+                    interval={50}
                     /> 
                     <YAxis 
                     domain={[0, 1.5]} 

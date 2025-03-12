@@ -107,6 +107,7 @@ async def get_historical_data():
         sql_statement = text("""
             SELECT date_month, mean_level
             FROM monthly_averages
+            WHERE date_month >= '1950-01'
             ORDER BY date_month ASC
         """)
 
