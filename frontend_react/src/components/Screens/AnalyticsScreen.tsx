@@ -11,35 +11,17 @@ import dayjs, { Dayjs } from 'dayjs';
 //Import Plots
 import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
-import ImpactMapComponent from "../Maps/ImpactMapComponent";
+import AnalyticsMapWidgetComponent from "../Maps/AnalyticsMapWidgetComponent";
 
 // Previously impact-visualization screen in Insight Gather
 const ImpactScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
   const [startDate, setStartDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 6*1000*60*60*24));
   const [endDate, setEndDate] = React.useState<Date | null>(new Date((new Date()).valueOf() - 5*1000*60*60*24));
-  const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
-  const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [loading, setLoading] = useState(true);
 
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
-  console.log(dataServeUrl);
-  
 
-  useEffect(() => {
-    fetch(`${dataServeUrl}/api/current-level`)
-      .then(response => response.json())
-      .then(data => {
-        setTidalLevel(Number(data.level.toFixed(1)));
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching current level:', error);
-        setLoading(false);
-      });
-  }, [dataServeUrl]);
-
-  
   return (
     <div className="w-full h-full relative bg-zinc-800 bg-opacity-98 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
       <ThemeProvider theme={theme}>
@@ -120,11 +102,7 @@ const ImpactScreen: React.FC = () => {
             <Grid size={{xs: 12, md: 3}}>
               <Card sx={{ height: '100%'}}>
                  {/* <CardContent> */}
-                <ImpactMapComponent
-                  map={map}
-                  setMap={setMap}
-                  selectedLayer = {selectedLayer}
-                  tidalLevel = {tidalLevel}
+                <AnalyticsMapWidgetComponent
                 />
                 {/* </CardContent> */}
               </Card>
