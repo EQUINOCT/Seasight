@@ -122,7 +122,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         const date = new Date(dateString);
         if (!isNaN(date.getTime())) {
         return date.getTime();
-        }
+        }       
         
         // Fall back to your custom parsing for other formats
         const parts = dateString.split(' ');
@@ -148,21 +148,33 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         return new Date(unixTime).toLocaleDateString([], { month: 'short', day: 'numeric' });
     };
 
-    // Generate ticks at **3-hour intervals**
-    const generateHourlyTicks = (data) => {
-        if (!data || data.length === 0) return [];
+    const getTimePeriodFromData = (data) => {
+        if (!data || data.length === 0) return [null, null];
 
         const validData = data.filter(item => !isNaN(item.timestamp)); // Ensure valid timestamps
-        if (validData.length === 0) return [];
+        if (validData.length === 0) return [null, null];
 
-        const now = Date.now();
-        const start = now - 24 * 60 * 60 * 1000;
+        const startTime = validData[0].timestamp;
+        const endTime = validData[validData.length - 1].timestamp;
+        return [startTime, endTime];
+    }
+
+
+    // Generate ticks at **3-hour intervals**
+    const generateHourlyTicks = (timePeriod) => {
+        // if (!data || data.length === 0) return [];
+
+        // const validData = data.filter(item => !isNaN(item.timestamp)); // Ensure valid timestamps
+        // if (validData.length === 0) return [];
+
+        // const startTime = validData[0].timestamp;
+        // const endTime = validData[validData.length - 1].timestamp;
         const ticks = [];
 
-        let tickTime = new Date(start);
+        let tickTime = new Date(timePeriod[0]);
         tickTime.setMinutes(0, 0, 0);
 
-        while (tickTime.getTime() <= now) {
+        while (tickTime.getTime() <= timePeriod[1]) {
             ticks.push(tickTime.getTime());
             tickTime.setHours(tickTime.getHours() + 2); // Move forward by 2 hours
         }
@@ -171,17 +183,23 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     };
 
     // Generate **unique daily ticks** for the date axis
-    const generateDateTicks = (data) => {
-        const now = Date.now();
-        const yesterday = now - 24 * 60 * 60 * 1000;
-        return [
-            new Date(yesterday).setHours(0, 0, 0, 0),
-            new Date(now).setHours(0, 0, 0, 0),
-        ];
+    const generateDateTicks = (timePeriod) => {
+        const ticks = [];
+
+        let tickTime = new Date(timePeriod[0]);
+        tickTime.setHours(0, 0, 0);
+
+        while (tickTime.getTime() <= timePeriod[1]) {
+            ticks.push(tickTime.getTime());
+            tickTime.setDate(tickTime.getDate() + 1); // Move forward by 2 hours
+        }
+
+        return ticks;
     };
 
-    const xAxisTimeTicks = generateHourlyTicks(realtimeData) || [];
-    const xAxisDateTicks = generateDateTicks(realtimeData) || [];
+    const timePeriod = getTimePeriodFromData(realtimeData);
+    const xAxisTimeTicks = generateHourlyTicks(timePeriod) || [];
+    const xAxisDateTicks = generateDateTicks(timePeriod) || [];
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
