@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from sqlmodel import create_engine, select, and_
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, Optional
-from models import TimePeriodModel, RealTimeDataModel
+from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel
 
 
 
@@ -84,6 +84,29 @@ async def read_realtime_data(
     ).offset(offset).limit(limit)
     data = session.execute(query).scalars().all()
     return data
+
+@app.get("/api/analytics/predicted-data/by-date-range")
+async def read_predicted_data(
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=10000)] = 5000,
+    start_date: Optional[datetime] = Query(default=None, description="Start date in ISO format"),
+    end_date: Optional[datetime] = Query(default=None, description="End date in ISO format")
+) -> list[PredictedDataModel]:
+    
+    if not start_date or not end_date:
+        default_start, default_end = get_default_time_period()
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    query = select(PredictedDataModel).where(
+        and_(
+            PredictedDataModel.timestamp >= start_date,
+            PredictedDataModel.timestamp <= end_date
+        )
+    ).offset(offset).limit(limit)
+    data = session.execute(query).scalars().all()
+    return data
     
 @app.get("/api/current-level")
 def get_current_level():
@@ -94,7 +117,7 @@ def get_current_level():
             ORDER BY timestamp DESC 
             LIMIT 1
         """)
-        # Fetch last 24 hours of data
+        # Fetch latest data point
         result = conn.execute(sql_statement)
         current_level = result.fetchone()[1]
 

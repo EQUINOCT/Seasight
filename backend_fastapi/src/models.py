@@ -15,4 +15,11 @@ class RealTimeDataModel(SQLModel, table=True):
     timestamp: datetime = Field(default=None)
     tidal_level: float = Field(default=None)
 
+class PredictedDataModel(SQLModel, table=True):
+    __tablename__ = "xx_predicted"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    timestamp: datetime = Field(default=None)
+    tidal_level: float = Field(default=None)
+
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine} from 'recharts';
+import { ComposedChart, Scatter, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine} from 'recharts';
 import ErrorBoundary from '../errorBoundary';
 
 import { useConfig } from '../../ConfigContext'; 
@@ -61,10 +61,13 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     offset: 0,
     limit: 5000
     });
-
+    console.log(predictedData);
     useEffect(() => {
         if (startDate && endDate) {
-            fetchData();
+            fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
+            
+            const currentDateTime = new Date();
+            fetchData('/api/analytics/predicted-data/by-date-range', currentDateTime, endDate);
             // Reset pagination when date range changes
             setPagination({ ...pagination, offset: 0 });
         }
@@ -72,23 +75,27 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
 
     useEffect(() => {
         if (startDate && endDate) {
-            fetchData();
+            fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
+            
+            const currentDateTime = new Date();
+            fetchData('/api/analytics/predicted-data/by-date-range', currentDateTime, endDate);
         }
     }, [pagination]);
 
-    const fetchData = async () => {
+    const fetchData = async (endPoint, startDate, endDate) => {
+        console.log(startDate, endDate)
         setLoading(true);
         try {
-        const startDateStr = startDate.toISOString();
-        const endDateStr = endDate.toISOString();
-        
-        const response = await axios.get(`${dataServeUrl}/api/analytics/realtime-data/by-date-range`, {
-            params: {
-            offset: pagination.offset,
-            limit: pagination.limit,
-            start_date: startDateStr,
-            end_date: endDateStr
-            }
+            const startDateStr = startDate.toISOString();
+            const endDateStr = endDate.toISOString();
+            
+            const response = await axios.get(`${dataServeUrl}${endPoint}`, {
+                params: {
+                offset: pagination.offset,
+                limit: pagination.limit,
+                start_date: startDateStr,
+                end_date: endDateStr
+                }
         });
 
         const formattedData = await response.data
@@ -98,7 +105,11 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                 }))
                 .filter(item => item.timestamp !== null && !isNaN(item.timestamp) && item.tidal_level <= 1.75);
 
-        setRealtimeData(formattedData);
+        if (endPoint.includes('realtime')) {
+            setRealtimeData(formattedData);
+        } else if (endPoint.includes('predicted')) {
+            setPredictedData(formattedData);
+        }
         } catch (error) {
         console.error('Error fetching analytics data:', error);
         } finally {
@@ -148,27 +159,9 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         return new Date(unixTime).toLocaleDateString([], { month: 'short', day: 'numeric' });
     };
 
-    const getTimePeriodFromData = (data) => {
-        if (!data || data.length === 0) return [null, null];
-
-        const validData = data.filter(item => !isNaN(item.timestamp)); // Ensure valid timestamps
-        if (validData.length === 0) return [null, null];
-
-        const startTime = validData[0].timestamp;
-        const endTime = validData[validData.length - 1].timestamp;
-        return [startTime, endTime];
-    }
-
 
     // Generate ticks at **3-hour intervals**
     const generateHourlyTicks = (timePeriod) => {
-        // if (!data || data.length === 0) return [];
-
-        // const validData = data.filter(item => !isNaN(item.timestamp)); // Ensure valid timestamps
-        // if (validData.length === 0) return [];
-
-        // const startTime = validData[0].timestamp;
-        // const endTime = validData[validData.length - 1].timestamp;
         const ticks = [];
 
         let tickTime = new Date(timePeriod[0]);
@@ -197,7 +190,8 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         return ticks;
     };
 
-    const timePeriod = getTimePeriodFromData(realtimeData);
+    // const timePeriod = getTimePeriodFromData(realtimeData);
+    const timePeriod = [startDate, endDate];
     const xAxisTimeTicks = generateHourlyTicks(timePeriod) || [];
     const xAxisDateTicks = generateDateTicks(timePeriod) || [];
 
@@ -220,7 +214,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
             
         <ResponsiveContainer width="100%" height={350} >
           {/* <ErrorBoundary> */}
-            <ScatterChart>
+            <ComposedChart>
                 <Scatter 
                     name="Tidal Level" 
                     dataKey="tidal_level" 
@@ -237,6 +231,18 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     strokeWidth={8} 
                     shape={<CustomMarker size={8} fill={"#54F2F2"}/>}  
                     xAxisId="timeAxis" 
+                />
+                <Line 
+                    type="monotone" 
+                    data={predictedData}
+                    dataKey="tidal_level" 
+                    stroke=" #fece1c" 
+                    dot={{
+                        strokeWidth: 0.7, 
+                        r: 3, 
+                        fill: " #fece1c"
+                    }}
+                    xAxisId="timeAxis"
                 />
                 <XAxis 
                     dataKey="timestamp" 
@@ -296,7 +302,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     iconSize={12}
                     wrapperStyle={{ left: 75, top: -15, fontSize: '12px'}} 
                 />
-            </ScatterChart>
+            </ComposedChart>
           {/* </ErrorBoundary> */}
         </ResponsiveContainer>
       </div>

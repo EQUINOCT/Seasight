@@ -21,9 +21,8 @@ type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmea
 
 // Previously impact-visualization screen in Insight Gather
 const AnalyticsScreen: React.FC = () => {
-  const [map, setMap] = useState<Map>();
-  const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 6*1000*60*60*24));
-  const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() - 5*1000*60*60*24));
+  const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
+  const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
   const [loading, setLoading] = useState(true);
   const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
 
