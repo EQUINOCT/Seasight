@@ -4,8 +4,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useConfig } from './ConfigContext'; // Import the useConfig hook
 import MapScreen from './components/Screens/MapScreen';
 import AnalyticsScreen from './components/Screens/AnalyticsScreen';
-import AboutScreen from './components/Screens/AboutScreen';
-import SettingScreen from './components/Screens/SettingScreen';
+// import AboutScreen from './components/Screens/AboutScreen';
+// import SettingScreen from './components/Screens/SettingScreen';
 import MainLayout from './MainLayout';
 
 
@@ -44,8 +44,8 @@ const App: React.FC = () => {
             {/* <Route path="forecast-analytics" element={<ForecastAnalyticsScreen/>} /> */}
             <Route path="analytics" element={<AnalyticsScreen/>} />
             {/* <Route path="impact-analytics" element={<ImpactAnalyticsScreen/>} /> */}
-            <Route path="about" element={<AboutScreen />} />
-            <Route path="settings" element={<SettingScreen />} />
+            {/* <Route path="about" element={<AboutScreen />} />
+            <Route path="settings" element={<SettingScreen />} /> */}
          </Route>
       </Routes>
    );
