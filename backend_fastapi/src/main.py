@@ -7,6 +7,7 @@ import yaml
 from google.cloud.sql.connector import Connector
 import uvicorn
 import os
+import pandas as pd
 from dotenv import load_dotenv
 from sqlmodel import create_engine, select, and_
 from sqlalchemy.exc import SQLAlchemyError
@@ -99,23 +100,9 @@ def get_current_level():
 
         # Format data for the frontend
         return {"level": current_level}
-    
-# @app.get("/api/analytics/predicted-data")
-# def get_predicted_data():
-#     with engine.connect() as conn:
-#         sql_statement = text("""
-#             SELECT timestamp, tidal_level
-#             FROM predicted
-#             ORDER BY timestamp DESC
-#             LIMIT 8
-#         """)
+       
 
-#         result = conn.execute(sql_statement)
-#         return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
-    
-
-@app.get("/api/analytics/historical-data")
-def get_predicted_data():
+async def get_historical_data():
     with engine.connect() as conn:
         sql_statement = text("""
             SELECT date_month, mean_level
@@ -124,7 +111,32 @@ def get_predicted_data():
         """)
 
         result = conn.execute(sql_statement)
-        return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
+        df = pd.DataFrame(result.fetchall(), columns=result.keys())
+        # return [{"timestamp": str(row[0]), "level": row[1]} for row in result]
+        return df
+    
+@app.get("/api/analytics/historical-data/monthly-means")
+async def get_monthly_means_historical():
+    df = await get_historical_data()
+    df.fillna(value='null', inplace=True)
+    df.rename(columns=dict(date_month='timestamp',
+                           mean_level='level'), 
+                           inplace=True
+                           )
+    return df.to_dict(orient='records')
+    # return data
+
+@app.get("/api/analytics/historical-data/decadal-means")
+async def get_monthly_means_historical():
+    df = await get_historical_data()
+    # Convert 'date_month' to datetime
+    df['date_month'] = pd.to_datetime(df['date_month'])
+    df['decade'] = (df['date_month'].dt.year // 10) * 10
+    current_year = datetime.now().year
+    df['decade'] = df['decade'].apply(lambda year: f"{year}-{year+9}" if year+9 < current_year else f"{year}-{current_year}")
+    # Group by the decade and calculate the average for each group
+    grouped_df = df.groupby('decade', as_index=False).agg({'mean_level': 'mean'})
+    return grouped_df.to_dict(orient='records')
     
 
 

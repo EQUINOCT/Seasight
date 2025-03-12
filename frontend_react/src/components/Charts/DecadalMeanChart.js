@@ -4,37 +4,41 @@ import { useConfig } from '../../ConfigContext';
 import dayjs, { Dayjs } from 'dayjs';
 import ErrorBoundary from '../errorBoundary';
 
-const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-        const { level } = payload[0].payload; // Access the level value
+// const CustomTooltip = ({ active, payload }) => {
+//     if (active && payload && payload.length) {
+//         const { level } = payload[0].payload; // Access the level value
 
-        // const dateTime = new Date(timestamp);
-        // const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        // const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+//         // const dateTime = new Date(timestamp);
+//         // const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+//         // const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
 
-        if (typeof level === 'number' && !isNaN(level)) {
-            return (
-                <div 
-                className="custom-tooltip"
-                style={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    color: 'white', 
-                    padding: '8px', 
-                    borderRadius: '4px',
-                    fontSize: "14px",
-                    }}
-                >
-                    <p style={{ margin: 0 }}>{`Mean Level: ${level.toFixed(2)} m`}</p>
-                </div>
-            );
-        }
-        return null;
-    }
-    return null;
-};
+//         if (typeof level === 'number' && !isNaN(level)) {
+//             return (
+//                 <div 
+//                 className="custom-tooltip"
+//                 style={{ 
+//                     backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+//                     color: 'white', 
+//                     padding: '8px', 
+//                     borderRadius: '4px',
+//                     fontSize: "14px",
+//                     }}
+//                 >
+//                     <p style={{ margin: 0 }}>{`Mean Level: ${level.toFixed(2)} m`}</p>
+//                 </div>
+//             );
+//         }
+//         return (
+//             <div className="custom-tooltip">
+//                 <p>{`Mean Level: ${level.toFixed(2)} m`}</p>
+//             </div>
+//         );
+//     }
+//     return null;
+// };
 
-const HistoricalMeanChart = () => {
+const DecadalMeanChart = () => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -45,7 +49,7 @@ const HistoricalMeanChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${dataServeUrl}/api/analytics/historical-data/monthly-means`);
+                const response = await fetch(`${dataServeUrl}/api/analytics/historical-data/decadal-means`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -61,10 +65,6 @@ const HistoricalMeanChart = () => {
         fetchData();
     }, [dataServeUrl]);
 
-    console.log(data);
-
-
-
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
@@ -74,9 +74,9 @@ const HistoricalMeanChart = () => {
     return (
         <ResponsiveContainer width="100%" height={310}>
              {/* <ErrorBoundary> */}
-                <LineChart width="100%" height="100%" data={data}>
+                <BarChart width="100%" height="100%" data={data}>
                     
-                    <Line type="monotone" dataKey="level" stroke="#0081A7" dot={{strokeWidth: 0.5, r: 2, fill: '#54F2F2'}}/>
+                    <Bar type="monotone" dataKey="level" stroke="#0081A7" dot={{strokeWidth: 0.5, r: 2, fill: '#54F2F2'}}/>
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
@@ -109,10 +109,10 @@ const HistoricalMeanChart = () => {
                         <ReferenceLine key={tick} y={tick} stroke="#E4F7F2"  strokeOpacity="50%" strokeDasharray="5 5" />
                     ))}
                     <Tooltip content={<CustomTooltip />} />
-                </LineChart>
+                </BarChart>
             {/* </ErrorBoundary> */}
         </ResponsiveContainer>
     );
 };
 
-export default HistoricalMeanChart;
+export default DecadalMeanChart;

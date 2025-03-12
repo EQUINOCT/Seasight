@@ -218,7 +218,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
       <div>
       {/* Debugging log */}
             
-        <ResponsiveContainer width="100%" height={400} >
+        <ResponsiveContainer width="100%" height={350} >
           {/* <ErrorBoundary> */}
             <ScatterChart>
                 <Scatter 
