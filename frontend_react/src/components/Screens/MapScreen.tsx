@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Map } from 'maplibre-gl';
+import axios from 'axios';
+
 import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
@@ -8,6 +10,7 @@ import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
 import MoonWidget from "../MoonWidget/MoonWidget";
 import { useConfig } from '../../ConfigContext';
+import { data } from "@maptiler/sdk";
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 
@@ -17,43 +20,23 @@ const MapScreen: React.FC = () => {
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [mode, setMode] = useState<string>('Real-time mode');
   const [loading, setLoading] = useState(true);
+  
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const { config } = useConfig();
+
+  const dateToday = new Date();
+  dateToday.setHours(0, 0, 0, 0);
+  const [selectedDate, setSelectedDate] = React.useState(dateToday);
+
+
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
-  // const lng = config.MAP_CONFIG.LON;
-  // const lat = config.MAP_CONFIG.LAT;
-  // const zoom = config.MAP_CONFIG.ZOOM;
-  // const API_KEY = config.MAPTILER_API_KEY;
-  // const mapStyleUrl = config.MAPS.IMPACT;
-  
-  // useEffect(() => {   
-  //   if (mapContainer.current) {
-  //     const map = new Map({
-  //       container: mapContainer.current,
-  //       style: mapStyleUrl,
-  //       center: [lng, lat],
-  //       zoom: zoom
-  //     });   
-
-  //     // let nav = new NavigationControl();
-  //     // map.addControl(nav, 'bottom-left');
-
-  //     map.on('load', async () => {
-  //       setMap(map);
-  //     });
-
-  //     return () => {
-  //       map.remove();
-  //     };
-  //   }
-  // }, []); 
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)
       .then(response => response.json())
       .then(data => {
-        setTidalLevel(Number(data.level.toFixed(1)));
+        setTidalLevel(Number(data.toFixed(1)));
         setLoading(false);
       })
       .catch(error => {
@@ -61,6 +44,49 @@ const MapScreen: React.FC = () => {
         setLoading(false);
       });
   }, [dataServeUrl]);
+
+  useEffect(() => {
+    if (selectedDate) {
+
+      let endPoint: string;
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+      const currentDateStr = currentDate.toDateString();
+      const selectedDateStr = selectedDate.toDateString();
+      if (selectedDate > currentDate) {
+        endPoint = '/api/map/predicted-data/by-date/max';
+      } else if (selectedDateStr === currentDateStr) {
+        endPoint = '/api/current-level';
+      }  else {
+        endPoint = '/api/map/realtime-data/by-date/max';
+      }
+      fetchMaxLevelOnDate(selectedDate, endPoint);
+    }
+  }, [selectedDate]);
+
+  const fetchMaxLevelOnDate = async (selectedDate: Date, endPoint: string) => {
+    setLoading(true);
+   
+    try {
+      const response = await axios.get(`${dataServeUrl}${endPoint}`, {
+        params: {
+        selected_date: selectedDate.toISOString()
+      }
+    });
+    const tidalLevel: string = await response.data;
+    const maxTidalLevelOnDate: number = parseFloat(tidalLevel);
+
+    // Fix: Use typeof operator with 'number' as a string, not the Number constructor
+    if(typeof maxTidalLevelOnDate === 'number' && !isNaN(maxTidalLevelOnDate)) {
+      setTidalLevel(Number(maxTidalLevelOnDate.toFixed(1)));
+    }
+    } catch (error) {
+    console.error('Error fetching analytics data:', error);
+    } finally {
+    setLoading(false);
+    }
+  };
 
 
   // const handleSliderChange = (value: number) => {
@@ -101,13 +127,16 @@ const MapScreen: React.FC = () => {
       <div className="absolute top-1/2 left-0 ml-[20px] transform -translate-y-1/2">
         <SliderWidget
           tidalLevel = {tidalLevel}
-          setTidalLevel={setTidalLevel}
-          loading={loading}
+          setTidalLevel = {setTidalLevel}
+          loading = {loading}
           // onValueChange={handleSliderChange}
           />
       </div>
       <div className="absolute bottom-0 left-1/2 mb-[10px] transform -translate-x-1/2">
-        <MoonWidget/>
+        <MoonWidget
+          selectedDate = {selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
       </div>
       {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
         <div style={{

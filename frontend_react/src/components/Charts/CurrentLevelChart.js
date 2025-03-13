@@ -83,7 +83,6 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     }, [pagination]);
 
     const fetchData = async (endPoint, startDate, endDate) => {
-        console.log(startDate, endDate)
         setLoading(true);
         try {
             const startDateStr = startDate.toISOString();

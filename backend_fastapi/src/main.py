@@ -9,7 +9,7 @@ import uvicorn
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from sqlmodel import create_engine, select, and_
+from sqlmodel import create_engine, select, and_, func
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, Optional
 from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel
@@ -114,6 +114,7 @@ def get_current_level():
         sql_statement = text("""
             SELECT timestamp, tidal_level 
             FROM ioc_observed
+            WHERE tidal_level < 2.0
             ORDER BY timestamp DESC 
             LIMIT 1
         """)
@@ -122,7 +123,40 @@ def get_current_level():
         current_level = result.fetchone()[1]
 
         # Format data for the frontend
-        return {"level": current_level}
+        return current_level
+    
+@app.get("/api/map/realtime-data/by-date/max")
+async def get_max_realtime_tidal_level_for_date(
+    session: SessionDep,
+    selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
+) -> float:
+    
+    if not selected_date:
+        selected_date = datetime.now()
+
+    query = select(func.max(RealTimeDataModel.tidal_level)).where(
+            func.date(RealTimeDataModel.timestamp) == func.date(selected_date),
+            RealTimeDataModel.tidal_level < 2.0
+            )
+    date_max_level = session.execute(query).scalar()
+    return date_max_level
+
+@app.get("/api/map/predicted-data/by-date/max")
+async def get_max_predicted_tidal_level_for_date(
+    session: SessionDep,
+    selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
+) -> float:
+    
+    if not selected_date:
+        selected_date = datetime.now()
+
+    query = select(func.max(PredictedDataModel.tidal_level)).where(
+            func.date(PredictedDataModel.timestamp) == func.date(selected_date),
+            PredictedDataModel.tidal_level < 2.0
+            )
+    date_max_level = session.execute(query).scalar()
+    print(date_max_level)
+    return date_max_level
        
 
 async def get_historical_data():
