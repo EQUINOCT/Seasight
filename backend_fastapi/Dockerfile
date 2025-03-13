@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r backend_fastapi/requirements.txt
 
 # Copy the rest of the application
 COPY . .
@@ -16,7 +16,9 @@ COPY . .
 # Set environment variables
 ENV PORT=8080
 
+WORKDIR /app/backend_fastapi/src
+
 # Command to run the application
-CMD exec uvicorn main:app --host 0.0.0.0 --port ${PORT}
+CMD exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
 # CMD exec python -m uvicorn app:app --host 0.0.0.0 --port ${PORT}
 
