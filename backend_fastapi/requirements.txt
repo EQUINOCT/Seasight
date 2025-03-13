@@ -8,3 +8,5 @@ pg8000
 cloud-sql-python-connector[pg8000]
 python-dotenv
 a2wsgi
+sqlmodel==0.0.23
+pandas==2.2.3

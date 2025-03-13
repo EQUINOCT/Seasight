@@ -54,7 +54,7 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
   return (
     <Draggable>
     <section className={`flex flex-col text-white font-inter rounded-3xl w-[90px] max-w-[90px] h-auto max-h-[400px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]`}>
-      <div className={`flex flex-col pb-4 rounded-[18px] bg-[#488DA3]`}>
+      <div className={`flex flex-col pb-4 rounded-[18px] bg-zinc-900 bg-opacity-90`}>
         {/* <header className={`flex flex-col pt-3.5 w-full ${isCollapsed ? "bg-transparent" : "rounded-[22px_22px_1px_1px] bg-zinc-800 bg-opacity-80 shadow-[0px_2px_5px_rgba(0,0,0,0.1)]"}`}> */}
             <div className="pl-5 pt-5 pb-3 text-base leading-none">
               Layers

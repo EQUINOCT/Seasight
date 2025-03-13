@@ -1,5 +1,5 @@
 import React from "react";
-import ImpactScreen from './AnalyticsScreen';
+import AnalyticsScreen from './AnalyticsScreen';
 import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {
@@ -19,7 +19,7 @@ const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl, activeView, on
 //     if (activeView === 'Visualization') return <ForecastScreen />;
 // }
 if (activeControl === 'analytics') {
-    return <ImpactScreen />;
+    return <AnalyticsScreen />;
 }
 
 // Default to the Monitoring map if no matching case

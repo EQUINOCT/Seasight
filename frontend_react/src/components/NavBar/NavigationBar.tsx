@@ -57,16 +57,16 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
       </nav>
 
       <div className="flex pr-[15px] gap-1.5 items-center justify-end">
-      <div className="widget-selector-container" style={{ width: 110 }}>
-              <Tour />
-        </div>
-        <div className="widget-selector-container" style={{ width: 100 }}>
+      <div className="widget-selector-container" style={{ width: 100 }}>
           {activeControl.toLowerCase() === "map" && (
               <WidgetSelector 
                 onWidgetToggle={onWidgetToggle}
                 visibleWidgets={visibleWidgets}
               />
           )}
+        </div>
+        <div className="widget-selector-container" style={{ width: 110 }}>
+              <Tour />
         </div>
         {/* <LocationSelector /> */}
         <IconButton

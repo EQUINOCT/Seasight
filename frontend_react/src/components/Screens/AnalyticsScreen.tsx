@@ -1,55 +1,197 @@
-import React, { useState } from "react";
-import HighlightComponent from "../BasinHighlights/HighlightComponent";
-import ButtonComponent from "../LevelNav/ImpactButtons";
-import ImpactMapComponent from "../Maps/ImpactMapComponent";
-import Slider from "../SliderWidget/Slider";
-import { Card, CardContent, ThemeProvider, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, Box, Card, CardContent, ThemeProvider, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import theme from "../theme";
+import { Map } from 'maplibre-gl';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import dayjs, { Dayjs } from 'dayjs';
+
 
 //Import Plots
-import RealtimeLineChart  from "../Charts/CurrentLevelChart";
+import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
+import DecadalMeanChart from "../Charts/DecadalMeanChart";
+import AnalyticsMapWidgetComponent from "../Maps/AnalyticsMapWidgetComponent";
+import { getPickersCalendarHeaderUtilityClass } from "@mui/x-date-pickers/PickersCalendarHeader/pickersCalendarHeaderClasses";
+
+type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
 // Previously impact-visualization screen in Insight Gather
-const ImpactScreen: React.FC = () => {
-  
+const AnalyticsScreen: React.FC = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
+  const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
+  const [loading, setLoading] = useState(true);
+  const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
+
+  // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+
+  const chartOptions:  {
+    [key in historicalChartTypes]: {
+        name: string;
+        component: React.JSX.Element;
+    };
+  } = {
+      monthlymean: {
+        name: 'Monthly Mean',
+        component: <HistoricalMeanChart />
+      },
+      decadalmean: {
+        name: 'Decadal Means',
+        component: <DecadalMeanChart />
+      },
+      monthwisedecadalmean: {
+        name: 'Monthwise Decadal Means',
+        component: <DecadalMeanChart />
+      }
+  };
+
+  const handleToggle = (event: React.MouseEvent<HTMLElement>, historicalChartSelection: historicalChartTypes) => {
+    if (historicalChartSelection!== null) {
+      setHistoricalChartTypeSelect(historicalChartSelection);
+    }
+  }; 
+
+  // Render the currently selected chart
+  const renderChart = () => {
+    return chartOptions[historicalChartTypeSelect].component;
+  };
+
   return (
-    <div className="monitor-screen w-full h-full relative bg-white flex flex-col rounded-[15px] overflow-hidden">
+    <div className="w-full h-full relative bg-zinc-800 bg-opacity-98 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
       <ThemeProvider theme={theme}>
         {/* Top widgets */}
         <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
           <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 9}}>
-              <Card sx={{ height: '100%' }}>
+              <Card sx={{ height: '100%'}}>
                 <CardContent>
-                  <Typography>Current Level</Typography>
-                  <RealtimeLineChart/>
+                  
+                  <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
+                    
+                    <Grid size={{xs: 12, md: 3}}>
+                      <Typography  sx={{ fontSize: '16px', mb: 2}}>Real-Time Levels</Typography>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <DatePicker 
+                        label="Start Date"
+                        value={startDate ? dayjs(startDate) : null} 
+                        onChange={(newValue) => setStartDate(newValue ? newValue.toDate() : null)}
+                        slotProps={{
+                          textField: {
+                            sx: {
+                              width: '200px',
+                              svg: { color: '#fff' },
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#0081A7',
+                                },
+                              },
+                            }
+                          },
+                          popper: {
+                            sx: {
+                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                              mb: 2,
+                            },
+                          },
+                        }}
+                        />
+                        <DatePicker 
+                        label="End Date"
+                        value={endDate ? dayjs(endDate) : null}
+                        onChange={(newValue) => setEndDate(newValue? newValue.toDate() : null)}
+                        minDate={startDate ? dayjs(startDate) : undefined} 
+                        slotProps={{
+                          textField: {
+                            sx: {
+                              width: '200px',
+                              svg: { color: '#fff' },
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#0081A7',
+                                },
+                              },
+                            }
+                          },
+                          popper: {
+                            sx: {
+                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                            },
+                          },
+                        }}
+                        />
+                        </Box>
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid size={{xs: 12, md: 9}}>
+                      <RealtimeAnalytics
+                        startDate={startDate}
+                        endDate={endDate}
+                      />
+                    </Grid>
+                  </Grid>
                 </CardContent>
               </Card>
             </Grid>
             <Grid size={{xs: 12, md: 3}}>
-              <Card sx={{ height: '100%' }}>
-                <CardContent>
-                  <Typography>Map</Typography>
-                  {/* </> */}
-                </CardContent>
+              <Card sx={{ height: '100%'}}>
+                 {/* <CardContent> */}
+                <AnalyticsMapWidgetComponent
+                />
+                {/* </CardContent> */}
               </Card>
             </Grid>
           </Grid>
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
-            <Card sx={{ height: '100%' }}>
+            <Card sx={{ height: '100%'}}>
               <CardContent>
-                <Typography>Historic Data</Typography>
-                <HistoricalMeanChart/>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 2
+                  }}
+                >
+                  <Typography sx={{ fontSize: '18px' }}>
+                    Historic Data
+                  </Typography>
+                  <ToggleButtonGroup
+                    value={historicalChartTypeSelect}
+                    exclusive
+                    onChange={handleToggle}
+                    // color="error"
+                    sx={{
+                      backgroundColor: '#f0f0f0', // Background color of the group
+                      '& .MuiToggleButton-root': {
+                        color: '#000', // Default text color
+                        borderColor: '#ccc', // Default border color
+                        '&.Mui-selected': {
+                            backgroundColor: '#1976d2', // Color when selected
+                            color: '#fff', // Text color when selected
+                            '&:hover': {
+                                backgroundColor: '#115293', // Darker color on hover when selected
+                            },
+                        },
+                    },
+                    }}
+                    >
+                      <ToggleButton value="monthlymean">Monthly Means</ToggleButton>
+                      <ToggleButton value="decadalmean">Decadal Means</ToggleButton>
+                      {/* <ToggleButton value="monthwisedecadalmean">Monthwise Decadal Means</ToggleButton> */}
+                  </ToggleButtonGroup>
+                </Box>
+                {renderChart()}
               </CardContent>
-
             </Card>
           </Grid>
         </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
     </div>
   );
 };
 
-export default ImpactScreen;
+export default AnalyticsScreen;

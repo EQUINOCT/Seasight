@@ -65,7 +65,8 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
         newLayers[layer] = false;
       } else {
         removeLayer(map, config, layer);
-        addLayerLocal(map, layer, config, tidalLevel);
+            // Round off tidalLevel to 1 decimal place in order to pick the correct file from public/shapefiles
+        addLayerLocal(map, layer, config, tidalLevel.toFixed(1));
       }
     });
 

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
+import { BarChart, Bar, Rectangle, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
 import dayjs, { Dayjs } from 'dayjs';
 import ErrorBoundary from '../errorBoundary';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const { level } = payload[0].payload; // Access the level value
-
+        const level = payload[0].payload['mean_level']; // Access the level value
         // const dateTime = new Date(timestamp);
         // const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         // const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -34,7 +33,7 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-const HistoricalMeanChart = () => {
+const DecadalMeanChart = () => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -45,7 +44,7 @@ const HistoricalMeanChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${dataServeUrl}/api/analytics/historical-data/monthly-means`);
+                const response = await fetch(`${dataServeUrl}/api/analytics/historical-data/decadal-means`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -68,24 +67,30 @@ const HistoricalMeanChart = () => {
     const ticks=[0.5, 1.0, 1.5];
 
     return (
-        <ResponsiveContainer width="100%" height={310}>
+        <ResponsiveContainer width="100%" height={330}>
              {/* <ErrorBoundary> */}
-                <LineChart width="100%" height="100%" data={data}>
-                    
-                    <Line type="monotone" dataKey="level" stroke="#0081A7" dot={{strokeWidth: 0.5, r: 2, fill: '#54F2F2'}}/>
+                <BarChart 
+                    width="100%"
+                    height="100%"
+                    data={data}
+                    margin={{
+                        top: 10,
+                        right: 30,
+                        left: 20,
+                        bottom: 30,
+                    }}
+                > 
+                    <Bar type="monotone" dataKey="mean_level" fill='#2db8b8' activeBar={<Rectangle fill="pink"/>}/>
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
-                    dataKey="timestamp"
-                    tickFormatter={(tick) => {
-                            const year = dayjs(tick).format('YYYY');
-                            if (year === lastDisplayedYear) return ''; // ✅ Skip duplicate years but keep spacing
-                            lastDisplayedYear = year;
-                            return year;
-                        }}
-                    tickLine={false}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
-                    interval={50}
+                    dataKey="decade"
+                    label={{ 
+                        value: 'Years', 
+                        position: 'center',
+                        dy: 35,
+                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 15 }
+                    }}
                     /> 
                     <YAxis 
                     domain={[0, 1.5]} 
@@ -98,17 +103,20 @@ const HistoricalMeanChart = () => {
                             value: 'Meters (m)', 
                             angle: -90, 
                             position: 'insideLeft', 
-                            style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
+                            style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 15 }
                         }}
                     />
                     {ticks.map(tick => (
                         <ReferenceLine key={tick} y={tick} stroke="#E4F7F2"  strokeOpacity="50%" strokeDasharray="5 5" />
                     ))}
-                    <Tooltip content={<CustomTooltip />} />
-                </LineChart>
+                    <Tooltip 
+                        cursor={{fill: 'transparent'}}
+                        content={<CustomTooltip />} 
+                    />
+                </BarChart>
             {/* </ErrorBoundary> */}
         </ResponsiveContainer>
     );
 };
 
-export default HistoricalMeanChart;
+export default DecadalMeanChart;
