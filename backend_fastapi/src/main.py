@@ -18,17 +18,61 @@ from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel
 
 
 load_dotenv()
-
-with open('config.yaml', 'r') as file:
+config_path = os.getenv('CONFIG_PATH')
+with open(config_path, 'r') as file:
     config = yaml.safe_load(file)
 
 environment = os.getenv('ENVIRONMENT')
 
-db_params = config['db'][environment]
-db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
+# db_params = config['db'][environment]
+# db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
 
+
+def init_connection_pool(environment):
+    """Initialize a connection pool to Cloud SQL."""
+    
+    db_params = config['db'][environment]
+
+    def getconn():
+        conn = connector.connect(
+            db_params['host'],
+            "pg8000",  # Python DB-API driver for PostgreSQL
+            user=db_params['user'],
+            password=db_params['password'],
+            db=db_params['dbname']
+        )
+        return conn
+    
+    if environment == 'remote':
+        # Initialize the connector
+        connector = Connector()
+        # Create connection pool
+        pool = create_engine(
+            "postgresql+pg8000://",
+            creator=getconn,
+            pool_size=5,
+            max_overflow=2,
+            pool_timeout=30,
+            pool_recycle=1800
+        )
+        return pool
+    
+    else:
+
+        db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
+        pool = create_engine(
+            db_url,
+            pool_size=5,
+            max_overflow=2,
+            pool_timeout=30,
+            pool_recycle=1800
+        )
+        return pool
+
+    
+engine = init_connection_pool(environment=environment)
 # connect_args = {"check_same_thread": False}
-engine = create_engine(db_url)
+# engine = create_engine(db_url)
 
 def get_session():
     # try:
