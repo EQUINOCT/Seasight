@@ -218,7 +218,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
       <div>
       {/* Debugging log */}
             
-        <ResponsiveContainer width="100%" height={350} >
+        <ResponsiveContainer width="100%" height={350}>
           {/* <ErrorBoundary> */}
             <ScatterChart>
                 <Scatter 
@@ -247,7 +247,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     type="number" 
                     tickFormatter={timeFormatter} 
                     ticks={xAxisTimeTicks.length > 0 ? xAxisTimeTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     height={25}
@@ -260,14 +260,14 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     tickFormatter={dateFormatter}
                     axisLine={false}
                     ticks={xAxisDateTicks.length > 0 ? xAxisDateTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12}}
                     tickLine={false}
                     height={18}
                     xAxisId="dateAxis"
                 />
                 <YAxis 
                     domain={[0, 1.8]}  // Ensures Y values range between 0.5 and 1.5
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     interval={0}  // Ensures all ticks are displayed
@@ -276,13 +276,13 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                         value: 'Meters (m)', 
                         angle: -90, 
                         position: 'insideLeft', 
-                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
+                        style: { textAnchor: 'middle', fill: '#000', fontSize: 12 }
                     }}
                 />
                 {ticks.map(tick => (
                     <ReferenceLine 
                     key={tick} y={tick} 
-                    stroke="#E4F7F2"  
+                    stroke="#000"  
                     strokeOpacity="50%" 
                     strokeDasharray="5 5" 
                     xAxisId="timeAxis"

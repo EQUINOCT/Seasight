@@ -67,15 +67,15 @@ const AnalyticsScreen: React.FC = () => {
         <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
           <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 9}}>
-              <Card sx={{ height: '100%'}}>
+              <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
                 <CardContent>
-                  
+                  {/* <Typography  sx={{ fontSize: '18px', mb: 2, color: "#000"}}>Current Level</Typography> */}
                   <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
-                      <Typography  sx={{ fontSize: '16px', mb: 2}}>Real-Time Levels</Typography>
+                      <Typography  sx={{ fontSize: '16px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <DatePicker 
                         label="Start Date"
                         value={startDate ? dayjs(startDate) : null} 
@@ -83,18 +83,23 @@ const AnalyticsScreen: React.FC = () => {
                         slotProps={{
                           textField: {
                             sx: {
+                              // backgroundColor: '#488DA3', 
                               width: '200px',
-                              svg: { color: '#fff' },
+                              color: '#488DA3',
+                              svg: { color: '#488DA3' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#0081A7',
+                                  borderColor: '#488DA3',
+                                  borderRadius: '10px',
                                 },
+                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
+                                '&:hover fieldset': { borderColor: '#000' },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                              ".MuiPaper-root": { bgcolor: '#488DA3' },
                               mb: 2,
                             },
                           },
@@ -107,19 +112,23 @@ const AnalyticsScreen: React.FC = () => {
                         minDate={startDate ? dayjs(startDate) : undefined} 
                         slotProps={{
                           textField: {
+                          
                             sx: {
                               width: '200px',
-                              svg: { color: '#fff' },
+                              svg: { color: '#488DA3' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#0081A7',
+                                  borderColor: '#488DA3',
+                                  borderRadius: '10px',
                                 },
+                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
+                                '&:hover fieldset': { borderColor: '#000' },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                              ".MuiPaper-root": { bgcolor: '#488DA3' },
                             },
                           },
                         }}
@@ -147,8 +156,11 @@ const AnalyticsScreen: React.FC = () => {
             </Grid>
           </Grid>
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
-            <Card sx={{ height: '100%'}}>
+            <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
               <CardContent>
+                {/* <Typography sx={{ color: '#000', fontSize: '18px', mb: -0.1}}>Historic Mean Level</Typography>
+                <Typography sx={{ color: '#488DA3', fontSize: '15px', mb: 2}}>Average tidal level</Typography>
+                <HistoricalMeanChart/> */}
                 <Box
                   sx={{
                     display: 'flex',
@@ -157,7 +169,7 @@ const AnalyticsScreen: React.FC = () => {
                     mb: 2
                   }}
                 >
-                  <Typography sx={{ fontSize: '18px' }}>
+                  <Typography sx={{ fontSize: '18px', color: '#000' }}>
                     Historic Data
                   </Typography>
                   <ToggleButtonGroup
@@ -166,7 +178,7 @@ const AnalyticsScreen: React.FC = () => {
                     onChange={handleToggle}
                     // color="error"
                     sx={{
-                      backgroundColor: '#f0f0f0', // Background color of the group
+                      backgroundColor: '#fff', // Background color of the group
                       '& .MuiToggleButton-root': {
                         color: '#000', // Default text color
                         borderColor: '#ccc', // Default border color

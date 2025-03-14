@@ -72,7 +72,7 @@ const HistoricalMeanChart = () => {
     const ticks=[0.5, 1.0, 1.5];
 
     return (
-        <ResponsiveContainer width="100%" height={310}>
+        <ResponsiveContainer width="100%" height={300}>
              {/* <ErrorBoundary> */}
                 <LineChart width="100%" height="100%" data={data}>
                     
@@ -88,25 +88,26 @@ const HistoricalMeanChart = () => {
                             return year;
                         }}
                     tickLine={false}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12 }}
+                    // axisLine={false}
                     interval={50}
                     /> 
                     <YAxis 
                     domain={[0, 1.5]} 
                     tickCount={3}
                     ticks={ticks} 
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     label={{ 
                             value: 'Meters (m)', 
                             angle: -90, 
                             position: 'insideLeft', 
-                            style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
+                            style: { textAnchor: 'middle', fill: '#000', fontSize: 12 }
                         }}
                     />
                     {ticks.map(tick => (
-                        <ReferenceLine key={tick} y={tick} stroke="#E4F7F2"  strokeOpacity="50%" strokeDasharray="5 5" />
+                        <ReferenceLine key={tick} y={tick} stroke="#000"  strokeOpacity="50%" strokeDasharray="5 5" />
                     ))}
                     <Tooltip content={<CustomTooltip />} />
                 </LineChart>
