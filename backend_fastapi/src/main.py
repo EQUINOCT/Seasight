@@ -109,54 +109,62 @@ async def read_predicted_data(
     return data
     
 @app.get("/api/current-level")
-def get_current_level():
-    with engine.connect() as conn:
-        sql_statement = text("""
-            SELECT timestamp, tidal_level 
-            FROM ioc_observed
-            WHERE tidal_level < 2.0
-            ORDER BY timestamp DESC 
-            LIMIT 1
-        """)
-        # Fetch latest data point
-        result = conn.execute(sql_statement)
-        current_level = result.fetchone()[1]
+async def get_current_level(
+    session: SessionDep
+) -> dict:
 
-        # Format data for the frontend
-        return current_level
+    query = select(RealTimeDataModel.timestamp, RealTimeDataModel.tidal_level).order_by(
+        RealTimeDataModel.timestamp.desc()
+    ).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
     
 @app.get("/api/map/realtime-data/by-date/max")
 async def get_max_realtime_tidal_level_for_date(
     session: SessionDep,
     selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
-) -> float:
-    
+) -> dict:
     if not selected_date:
         selected_date = datetime.now()
-
-    query = select(func.max(RealTimeDataModel.tidal_level)).where(
-            func.date(RealTimeDataModel.timestamp) == func.date(selected_date),
-            RealTimeDataModel.tidal_level < 2.0
-            )
-    date_max_level = session.execute(query).scalar()
-    return date_max_level
+    
+    # order by tidal_level and take the first result
+    query = select(RealTimeDataModel.timestamp, RealTimeDataModel.tidal_level).where(
+        func.date(RealTimeDataModel.timestamp) == func.date(selected_date),
+        RealTimeDataModel.tidal_level < 2.0
+    ).order_by(RealTimeDataModel.tidal_level.desc()).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
 
 @app.get("/api/map/predicted-data/by-date/max")
 async def get_max_predicted_tidal_level_for_date(
     session: SessionDep,
     selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
-) -> float:
-    
+) -> dict:
     if not selected_date:
         selected_date = datetime.now()
-
-    query = select(func.max(PredictedDataModel.tidal_level)).where(
-            func.date(PredictedDataModel.timestamp) == func.date(selected_date),
-            PredictedDataModel.tidal_level < 2.0
-            )
-    date_max_level = session.execute(query).scalar()
-    print(date_max_level)
-    return date_max_level
+    
+    # order by tidal_level and take the first result
+    query = select(PredictedDataModel.timestamp, PredictedDataModel.tidal_level).where(
+        func.date(PredictedDataModel.timestamp) == func.date(selected_date),
+        PredictedDataModel.tidal_level < 2.0
+    ).order_by(PredictedDataModel.tidal_level.desc()).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
        
 
 async def get_historical_data():
