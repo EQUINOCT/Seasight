@@ -73,7 +73,7 @@ const AnalyticsScreen: React.FC = () => {
                   <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
-                      <Typography  sx={{ fontSize: '16px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
+                      <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <DatePicker 
@@ -176,24 +176,35 @@ const AnalyticsScreen: React.FC = () => {
                     value={historicalChartTypeSelect}
                     exclusive
                     onChange={handleToggle}
-                    // color="error"
                     sx={{
                       backgroundColor: '#fff', // Background color of the group
                       '& .MuiToggleButton-root': {
-                        color: '#000', // Default text color
+                        paddingY: 0.5,
+                        paddingX: 1,
+                        color: '#488DA3', // Default text color
                         borderColor: '#ccc', // Default border color
                         '&.Mui-selected': {
-                            backgroundColor: '#1976d2', // Color when selected
+                            backgroundColor: '#488DA3', // Color when selected
                             color: '#fff', // Text color when selected
                             '&:hover': {
-                                backgroundColor: '#115293', // Darker color on hover when selected
+                                backgroundColor: '#32778C', // Darker color on hover when selected
                             },
                         },
                     },
                     }}
                     >
-                      <ToggleButton value="monthlymean">Monthly Means</ToggleButton>
-                      <ToggleButton value="decadalmean">Decadal Means</ToggleButton>
+                      <ToggleButton value="monthlymean" sx={{textTransform: 'none'}}>Monthly Means</ToggleButton>
+                      <ToggleButton value="decadalmean" 
+                        sx={{ 
+                          textTransform: 'none', 
+                          color: '#488DA3', // Default color
+                          '&.Mui-selected': {
+                            color: '#fff', // Text color when selected
+                          }
+                        }}
+                      >
+                        Decadal Means
+                      </ToggleButton>
                       {/* <ToggleButton value="monthwisedecadalmean">Monthwise Decadal Means</ToggleButton> */}
                   </ToggleButtonGroup>
                 </Box>

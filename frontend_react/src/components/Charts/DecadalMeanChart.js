@@ -80,35 +80,36 @@ const DecadalMeanChart = () => {
                         bottom: 30,
                     }}
                 > 
-                    <Bar type="monotone" dataKey="mean_level" fill='#2db8b8' activeBar={<Rectangle fill="pink"/>}/>
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
                     dataKey="decade"
+                    tick={{ fill: '#000', fontSize: 12}}
                     label={{ 
                         value: 'Years', 
                         position: 'center',
                         dy: 35,
-                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 15 }
+                        style: { textAnchor: 'middle', fill: '#000', fontSize: 12 }
                     }}
                     /> 
                     <YAxis 
                     domain={[0, 1.5]} 
                     tickCount={3}
                     ticks={ticks} 
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#000', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     label={{ 
                             value: 'Meters (m)', 
                             angle: -90, 
                             position: 'insideLeft', 
-                            style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 15 }
+                            style: { textAnchor: 'middle', fill: '#000', fontSize: 15 }
                         }}
                     />
                     {ticks.map(tick => (
-                        <ReferenceLine key={tick} y={tick} stroke="#E4F7F2"  strokeOpacity="50%" strokeDasharray="5 5" />
+                        <ReferenceLine key={tick} y={tick} stroke="#000"  strokeOpacity="30%" strokeDasharray="5 5" />
                     ))}
+                    <Bar type="monotone" dataKey="mean_level" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
                     <Tooltip 
                         cursor={{fill: 'transparent'}}
                         content={<CustomTooltip />} 
