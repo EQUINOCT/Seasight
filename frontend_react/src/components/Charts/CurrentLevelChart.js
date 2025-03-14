@@ -77,8 +77,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         if (startDate && endDate) {
             fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
             
-            const currentDateTime = new Date();
-            fetchData('/api/analytics/predicted-data/by-date-range', currentDateTime, endDate);
+            fetchData('/api/analytics/predicted-data/by-date-range', startDate, endDate);
         }
     }, [pagination]);
 
@@ -208,12 +207,22 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty    
     console.log('last', lastRealtimePoint);
     return (
-      <div>
+      <div style={{ 
+      border: '1px solid #ccc', 
+      borderRadius: '8px',
+      padding: '8px',
+        }}>
       {/* Debugging log */}
             
         <ResponsiveContainer width="100%" height={350} >
           {/* <ErrorBoundary> */}
-            <ComposedChart>
+            <ComposedChart
+                margin={{
+                            top: 30,
+                            right: 30,
+                            left: 20,
+                            bottom: 30,
+                        }}>
                 <Scatter 
                     name="Tidal Level" 
                     dataKey="tidal_level" 
@@ -232,6 +241,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     xAxisId="timeAxis" 
                 />
                 <Line 
+                    name="Predicted Tidal Level"
                     type="monotone" 
                     data={predictedData}
                     dataKey="tidal_level" 
@@ -299,7 +309,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     align="left" 
                     verticalAlign="top" // Positioned at top-left
                     iconSize={12}
-                    wrapperStyle={{ left: 75, top: -15, fontSize: '12px'}} 
+                    wrapperStyle={{ left: 75, top: 0, fontSize: '12px'}} 
                 />
             </ComposedChart>
           {/* </ErrorBoundary> */}
