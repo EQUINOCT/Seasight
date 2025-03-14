@@ -128,6 +128,7 @@ const MapScreen: React.FC = () => {
         <SliderWidget
           tidalLevel = {tidalLevel}
           setTidalLevel = {setTidalLevel}
+          selectedDate={selectedDate}
           loading = {loading}
           // onValueChange={handleSliderChange}
           />
