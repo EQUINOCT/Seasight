@@ -23,11 +23,12 @@ function valuetext(value: number) {
 interface SliderWidgetProps {
   tidalLevel: number;
   setTidalLevel: (value: number) => void;
+  timeStampAtLevel: Date;
   selectedDate: Date,
   loading: boolean;
 }
 
-const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, selectedDate, loading }) => {
+const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, timeStampAtLevel, selectedDate, loading }) => {
 
 
   // Calculate the height percentage based on current value
@@ -45,7 +46,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
   if (loading) {
     return <div className="flex justify-center p-4">Loading...</div>;
   }
-  console.log('slider', selectedDate)
+
   return (
     <Box
       sx={{
@@ -137,8 +138,12 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
       }}>
         <MinimalRealtimeLevelChart
           tidalLevel={tidalLevel}
+          timeStampAtLevel={timeStampAtLevel}
           selectedDate={selectedDate}
         />
+        <Typography>
+          Tidal level: {tidalLevel} m on {timeStampAtLevel.toDateString()} {timeStampAtLevel.toTimeString()}
+        </Typography>
       </div>
     </Box>
   );

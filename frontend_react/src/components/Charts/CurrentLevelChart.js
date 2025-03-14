@@ -205,8 +205,8 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         (dataMin) => dataMin - 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0]), 
         (dataMax) => dataMax + 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0])
       ]
-    : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty
-
+    : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty    
+    console.log('last', lastRealtimePoint);
     return (
       <div>
       {/* Debugging log */}

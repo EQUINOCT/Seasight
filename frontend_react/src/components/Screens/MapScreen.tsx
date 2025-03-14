@@ -18,6 +18,7 @@ const MapScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
+  const [timeStampAtLevel, setTimeStampAtLevel] = useState<Date>(new Date());
   const [mode, setMode] = useState<string>('Real-time mode');
   const [loading, setLoading] = useState(true);
   
@@ -74,12 +75,20 @@ const MapScreen: React.FC = () => {
         selected_date: selectedDate.toISOString()
       }
     });
-    const tidalLevel: string = await response.data;
-    const maxTidalLevelOnDate: number = parseFloat(tidalLevel);
+    // Properly type the result
+    interface TidalLevelResponse {
+      timestamp: string;
+      tidal_level: number;
+    }
 
-    // Fix: Use typeof operator with 'number' as a string, not the Number constructor
+    const result: TidalLevelResponse = await response.data;
+    const maxTidalLevelOnDate = result.tidal_level;
+    const timeStampAtMaxLevel: Date = new Date(result.timestamp);
+    console.log(result);
+
     if(typeof maxTidalLevelOnDate === 'number' && !isNaN(maxTidalLevelOnDate)) {
       setTidalLevel(Number(maxTidalLevelOnDate.toFixed(1)));
+      setTimeStampAtLevel(timeStampAtMaxLevel);
     }
     } catch (error) {
     console.error('Error fetching analytics data:', error);
@@ -102,7 +111,7 @@ const MapScreen: React.FC = () => {
     height: '100px', // Set the height to 100px
     objectFit: 'contain', // Maintain aspect ratio
    };
-
+  console.log(tidalLevel, timeStampAtLevel);
   return (
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <div className="absolute w-full h-full overflow-hidden">
@@ -128,6 +137,7 @@ const MapScreen: React.FC = () => {
         <SliderWidget
           tidalLevel = {tidalLevel}
           setTidalLevel = {setTidalLevel}
+          timeStampAtLevel={timeStampAtLevel}
           selectedDate={selectedDate}
           loading = {loading}
           // onValueChange={handleSliderChange}
