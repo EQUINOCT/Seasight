@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ComposedChart, Scatter, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine} from 'recharts';
+import { Box, CircularProgress } from '@mui/material';
+import { ComposedChart, LineChart, Scatter, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine} from 'recharts';
 import ErrorBoundary from '../errorBoundary';
-
-import { useConfig } from '../../ConfigContext'; 
+import { useConfig } from '../../ConfigContext';
+import {parseDate} from './CurrentLevelChart';
+import CircularProgressIndicator from '../Misc/CircularProgressIndicator';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -39,47 +41,48 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-const CustomMarker = ({ cx, cy, size, fill }) => {
-    return <circle cx={cx} cy={cy} r={size} fill={fill} />;
-};
-
-const CustomMarkerLast = ({ cx, cy, size }) => {
-    return <circle cx={cx} cy={cy} r={size} fill="red" stroke="red" strokeWidth={3} />;
-};
-
-const RealtimeAnalytics = ({ startDate, endDate }) => {
+const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate}) => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
     const [realtimeData, setRealtimeData] = useState([]);
-    const [predictedData, setPredictedData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [timeframe, setTimeframe] = useState();
+    const [noData, setNoData] = useState(false);
+    // const [max]
+    const todayDate = new Date();
+    const startDate = new Date(selectedDate);
+    const endDate = new Date(selectedDate);
+    if (selectedDate < todayDate) {
+        startDate.setDate(selectedDate.getDate() - 0.5);
+        endDate.setDate(selectedDate.getDate() + 1);
+        
 
-    const [pagination, setPagination] = useState({
-    offset: 0,
-    limit: 5000
-    });
-    console.log(predictedData);
-    useEffect(() => {
-        if (startDate && endDate) {
-            fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
-            
-            const currentDateTime = new Date();
-            fetchData('/api/analytics/predicted-data/by-date-range', currentDateTime, endDate);
-            // Reset pagination when date range changes
-            setPagination({ ...pagination, offset: 0 });
-        }
-    }, [startDate, endDate]);
+    } else {
+        startDate.setDate(selectedDate.getDate() - 1);
+    }
 
     useEffect(() => {
-        if (startDate && endDate) {
+        const todayDate = new Date();
+        if (selectedDate && selectedDate <= todayDate) {
+            const startDate = new Date(selectedDate);
+            const endDate = new Date(selectedDate);
+            if (selectedDate < todayDate) {
+                startDate.setDate(selectedDate.getDate() - 0.5);
+                endDate.setDate(selectedDate.getDate() + 1);
+               
+
+            } else {
+                startDate.setDate(selectedDate.getDate() - 1);
+            }
+            console.log(selectedDate, startDate, endDate);
             fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
-            
-            fetchData('/api/analytics/predicted-data/by-date-range', startDate, endDate);
         }
-    }, [pagination]);
+        else {
+            setLoading(false);
+            setNoData(true);
+        }
+    }, [selectedDate]);
 
     const fetchData = async (endPoint, startDate, endDate) => {
         setLoading(true);
@@ -89,8 +92,6 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
             
             const response = await axios.get(`${dataServeUrl}${endPoint}`, {
                 params: {
-                offset: pagination.offset,
-                limit: pagination.limit,
                 start_date: startDateStr,
                 end_date: endDateStr
                 }
@@ -103,23 +104,14 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                 }))
                 .filter(item => item.timestamp !== null && !isNaN(item.timestamp) && item.tidal_level <= 1.75);
 
-        if (endPoint.includes('realtime')) {
-            setRealtimeData(formattedData);
-        } else if (endPoint.includes('predicted')) {
-            setPredictedData(formattedData);
-        }
+        setRealtimeData(formattedData);
+
         } catch (error) {
         console.error('Error fetching analytics data:', error);
+        setNoData(true);
         } finally {
         setLoading(false);
         }
-    };
-
-    const handleLoadMore = () => {
-        setPagination({
-        ...pagination,
-        offset: pagination.offset + pagination.limit
-        });
     };
 
 
@@ -153,12 +145,11 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         return new Date(unixTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Customize this format
     };
 
-    const dateFormatter = (unixTime) => {
-        return new Date(unixTime).toLocaleDateString([], { month: 'short', day: 'numeric' });
-    };
+    // const dateFormatter = (unixTime) => {
+    //     return new Date(unixTime).toLocaleDateString([], { month: 'short', day: 'numeric' });
+    // };
 
 
-    // Generate ticks at **3-hour intervals**
     const generateHourlyTicks = (timePeriod) => {
         const ticks = [];
 
@@ -173,28 +164,15 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         return ticks;
     };
 
-    // Generate **unique daily ticks** for the date axis
-    const generateDateTicks = (timePeriod) => {
-        const ticks = [];
-
-        let tickTime = new Date(timePeriod[0]);
-        tickTime.setHours(0, 0, 0);
-
-        while (tickTime.getTime() <= timePeriod[1]) {
-            ticks.push(tickTime.getTime());
-            tickTime.setDate(tickTime.getDate() + 1); // Move forward by 2 hours
-        }
-
-        return ticks;
-    };
 
     // const timePeriod = getTimePeriodFromData(realtimeData);
     const timePeriod = [startDate, endDate];
     const xAxisTimeTicks = generateHourlyTicks(timePeriod) || [];
-    const xAxisDateTicks = generateDateTicks(timePeriod) || [];
+    // const xAxisDateTicks = generateDateTicks(timePeriod) || [];
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <div>{CircularProgressIndicator}</div>;
     if (error) return <p>Error: {error}</p>;
+    if (noData) return <p>No Data for Selected Date</p>;
 
     const ticks=[0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8];
 
@@ -204,8 +182,14 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         (dataMin) => dataMin - 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0]), 
         (dataMax) => dataMax + 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0])
       ]
-    : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty    
-    console.log('last', lastRealtimePoint);
+    : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty
+    const CustomMarker = ({ cx, cy, size, fill }) => {
+        return <circle cx={cx} cy={cy} r={size} fill={fill} />;
+    };
+
+    const scatterData = [{id: 8000, timestamp: timeStampAtLevel.getTime(), tidal_level: tidalLevel}]
+
+
     return (
       <div style={{ 
       border: '1px solid #ccc', 
@@ -214,45 +198,34 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         }}>
       {/* Debugging log */}
             
-        <ResponsiveContainer width="100%" height={350} >
+            <ResponsiveContainer minWidth={150} width="100%" height={150} >
           {/* <ErrorBoundary> */}
-            <ComposedChart
-                margin={{
-                            top: 30,
-                            right: 30,
-                            left: 20,
-                            bottom: 30,
-                        }}>
-                <Scatter 
+            <ComposedChart>
+                <Line 
+                    type="cardinal"
                     name="Tidal Level" 
                     dataKey="tidal_level" 
                     data={realtimeData} 
                     fill="#0081A7" 
-                    shape={<CustomMarker size={1} fill={"#0081A7"}  />} 
+                    dot={false}
+                    // shape={<CustomMarker size={1} fill={"#0081A7"}  />} 
                     xAxisId="timeAxis"  
                 />
                 <Scatter 
                     name="Current Level" 
                     dataKey="tidal_level" 
-                    data={lastRealtimePoint} 
+                    data={scatterData} 
                     stroke="#54F2F2" fill="#54F2F2" 
                     strokeWidth={8} 
-                    shape={<CustomMarker size={8} fill={"#54F2F2"}/>}  
+                    shape={<CustomMarker size={4} fill={"#54F2F2"}/>}  
                     xAxisId="timeAxis" 
                 />
-                <Line 
-                    name="Predicted Tidal Level"
-                    type="monotone" 
-                    data={predictedData}
-                    dataKey="tidal_level" 
-                    stroke=" #fece1c" 
-                    dot={{
-                        strokeWidth: 0.7, 
-                        r: 3, 
-                        fill: " #fece1c"
-                    }}
+                <ReferenceLine 
+                    x={scatterData[0]['timestamp']} 
+                    stroke="#E4F7F2"
+                    strokeOpacity="100%" 
                     xAxisId="timeAxis"
-                />
+                    />
                 <XAxis 
                     dataKey="timestamp" 
                     domain={[
@@ -260,62 +233,15 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                         (dataMax) => dataMax + 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0])
                     ]}
                     type="number" 
-                    tickFormatter={timeFormatter} 
-                    ticks={xAxisTimeTicks.length > 0 ? xAxisTimeTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={false}
                     tickLine={false}
                     axisLine={false}
-                    height={25}
                     xAxisId="timeAxis"
                 />
-                <XAxis 
-                    dataKey="timestamp"
-                    domain={xDomain}
-                    type="number"
-                    tickFormatter={dateFormatter}
-                    axisLine={false}
-                    ticks={xAxisDateTicks.length > 0 ? xAxisDateTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
-                    tickLine={false}
-                    height={18}
-                    xAxisId="dateAxis"
-                />
-                <YAxis 
-                    domain={[0, 1.8]}  // Ensures Y values range between 0.5 and 1.5
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    interval={0}  // Ensures all ticks are displayed
-                    ticks={ticks}  // Custom tick values at 0.5 intervals
-                    label={{ 
-                        value: 'Meters (m)', 
-                        angle: -90, 
-                        position: 'insideLeft', 
-                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
-                    }}
-                />
-                {ticks.map(tick => (
-                    <ReferenceLine 
-                    key={tick} y={tick} 
-                    stroke="#E4F7F2"  
-                    strokeOpacity="50%" 
-                    strokeDasharray="5 5" 
-                    xAxisId="timeAxis"
-                    />
-                ))}
-                <Tooltip content={<CustomTooltip />} />
-                <Legend 
-                    layout="horizontal" 
-                    align="left" 
-                    verticalAlign="top" // Positioned at top-left
-                    iconSize={12}
-                    wrapperStyle={{ left: 75, top: 0, fontSize: '12px'}} 
-                />
-            </ComposedChart>
-          {/* </ErrorBoundary> */}
+            </ComposedChart>    
         </ResponsiveContainer>
       </div>
     );
 };
 
-export default RealtimeAnalytics;
+export default MinimalRealtimeLevelChart;

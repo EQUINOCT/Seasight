@@ -16,7 +16,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
   dateToday.setHours(0, 0, 0, 0);
 
     const highTideDays = [
-        new Date('2025-01-15'),
+        new Date('2025-01-17'),
         new Date('2025-02-03'),
         new Date('2025-03-04'),
         dateToday,

@@ -65,7 +65,7 @@
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
-            "COLOR": "#2FA9E4",
+            "COLOR": "#f56276",
             "OUTLINE_COLOR": "grey",
             "OPACITY_PARAM": "fill-opacity",
             "OPACITY": 0.35,
