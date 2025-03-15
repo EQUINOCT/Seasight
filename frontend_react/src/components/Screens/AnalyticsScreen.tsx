@@ -182,7 +182,7 @@ const AnalyticsScreen: React.FC = () => {
                         paddingY: 0.5,
                         paddingX: 1,
                         color: '#488DA3', // Default text color
-                        borderColor: '#ccc', // Default border color
+                        borderColor: '#488DA3', // Default border color
                         '&.Mui-selected': {
                             backgroundColor: '#488DA3', // Color when selected
                             color: '#fff', // Text color when selected
