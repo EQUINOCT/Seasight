@@ -74,6 +74,7 @@ const AnalyticsScreen: React.FC = () => {
                     
                     <Grid size={{xs: 12, md: 3}}>
                       <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
+                      {/* <Button>Projection</Button> */}
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <DatePicker 
