@@ -74,7 +74,7 @@ const AnalyticsScreen: React.FC = () => {
                     
                     <Grid size={{xs: 12, md: 3}}>
                       <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
-                      {/* <Button>Projection</Button> */}
+                     
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <DatePicker 
@@ -137,6 +137,32 @@ const AnalyticsScreen: React.FC = () => {
                         </Box>
                       </LocalizationProvider>
                     </Grid>
+                     <Grid className='flex flex-row font-inter gap-1'>
+                      <Button 
+                        sx={{ 
+                          textTransform: 'none', 
+                          borderColor: '#488DA3', 
+                          bgcolor: '#fff',
+                          color: '#488DA3', 
+                          borderWidth: '1px', 
+                          width: '100px',
+                          height: '25px',
+                        }}>
+                          Projection
+                        </Button>
+                        <Button 
+                        sx={{ 
+                          textTransform: 'none', 
+                          borderColor: '#488DA3', 
+                          bgcolor: '#fff',
+                          color: '#488DA3', 
+                          borderWidth: '1px', 
+                          width: '100px',
+                          height: '25px',
+                        }}>
+                          Threshold
+                        </Button>
+                      </Grid>
                     <Grid size={{xs: 12, md: 9}}>
                       <RealtimeAnalytics
                         startDate={startDate}
