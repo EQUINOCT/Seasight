@@ -150,7 +150,8 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     };
 
     const timeFormatter = (unixTime) => {
-        return new Date(unixTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Customize this format
+        var options = {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}
+        return new Date(unixTime).toLocaleTimeString([], options); // Customize this format
     };
 
     const dateFormatter = (unixTime) => {
@@ -158,7 +159,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     };
 
 
-    // Generate ticks at **3-hour intervals**
+    // Generate ticks at **2-hour intervals**
     const generateHourlyTicks = (timePeriod) => {
         const ticks = [];
 
@@ -167,7 +168,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
 
         while (tickTime.getTime() <= timePeriod[1]) {
             ticks.push(tickTime.getTime());
-            tickTime.setHours(tickTime.getHours() + 2); // Move forward by 2 hours
+            tickTime.setHours(tickTime.getHours() + 3); // Move forward by 3 hours
         }
 
         return ticks;
