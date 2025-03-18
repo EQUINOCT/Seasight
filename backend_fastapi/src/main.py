@@ -242,8 +242,8 @@ async def get_monthly_means_historical():
     # Convert 'date_month' to datetime
     df['date_month'] = pd.to_datetime(df['date_month'])
     df['decade'] = (df['date_month'].dt.year // 10) * 10
-    current_year = datetime.now().year
-    df['decade'] = df['decade'].apply(lambda year: f"{year}-{year+9}" if year+9 < current_year else f"{year}-{current_year}")
+    final_year = df.loc[len(df) - 1, 'date_month'].year
+    df['decade'] = df['decade'].apply(lambda year: f"{year}-{year+9}" if year+9 < final_year else f"{year}-{final_year}")
     # Group by the decade and calculate the average for each group
     grouped_df = df.groupby('decade', as_index=False).agg({'mean_level': 'mean'})
     return grouped_df.to_dict(orient='records')
