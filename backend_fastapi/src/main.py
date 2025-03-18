@@ -9,26 +9,70 @@ import uvicorn
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from sqlmodel import create_engine, select, and_
+from sqlmodel import create_engine, select, and_, func
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, Optional
-from models import TimePeriodModel, RealTimeDataModel
+from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel
 
 
 
 
 load_dotenv()
-
-with open('config.yaml', 'r') as file:
+config_path = os.getenv('CONFIG_PATH')
+with open(config_path, 'r') as file:
     config = yaml.safe_load(file)
 
 environment = os.getenv('ENVIRONMENT')
 
-db_params = config['db'][environment]
-db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
+# db_params = config['db'][environment]
+# db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
 
+
+def init_connection_pool(environment):
+    """Initialize a connection pool to Cloud SQL."""
+    
+    db_params = config['db'][environment]
+
+    def getconn():
+        conn = connector.connect(
+            db_params['host'],
+            "pg8000",  # Python DB-API driver for PostgreSQL
+            user=db_params['user'],
+            password=db_params['password'],
+            db=db_params['dbname']
+        )
+        return conn
+    
+    if environment == 'remote':
+        # Initialize the connector
+        connector = Connector()
+        # Create connection pool
+        pool = create_engine(
+            "postgresql+pg8000://",
+            creator=getconn,
+            pool_size=5,
+            max_overflow=2,
+            pool_timeout=30,
+            pool_recycle=1800
+        )
+        return pool
+    
+    else:
+
+        db_url = f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['dbname']}"
+        pool = create_engine(
+            db_url,
+            pool_size=5,
+            max_overflow=2,
+            pool_timeout=30,
+            pool_recycle=1800
+        )
+        return pool
+
+    
+engine = init_connection_pool(environment=environment)
 # connect_args = {"check_same_thread": False}
-engine = create_engine(db_url)
+# engine = create_engine(db_url)
 
 def get_session():
     # try:
@@ -84,22 +128,87 @@ async def read_realtime_data(
     ).offset(offset).limit(limit)
     data = session.execute(query).scalars().all()
     return data
+
+@app.get("/api/analytics/predicted-data/by-date-range")
+async def read_predicted_data(
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=10000)] = 5000,
+    start_date: Optional[datetime] = Query(default=None, description="Start date in ISO format"),
+    end_date: Optional[datetime] = Query(default=None, description="End date in ISO format")
+) -> list[PredictedDataModel]:
+    
+    if not start_date or not end_date:
+        default_start, default_end = get_default_time_period()
+        start_date = start_date or default_start
+        end_date = end_date or default_end
+
+    query = select(PredictedDataModel).where(
+        and_(
+            PredictedDataModel.timestamp >= start_date,
+            PredictedDataModel.timestamp <= end_date
+        )
+    ).offset(offset).limit(limit)
+    data = session.execute(query).scalars().all()
+    return data
     
 @app.get("/api/current-level")
-def get_current_level():
-    with engine.connect() as conn:
-        sql_statement = text("""
-            SELECT timestamp, tidal_level 
-            FROM ioc_observed
-            ORDER BY timestamp DESC 
-            LIMIT 1
-        """)
-        # Fetch last 24 hours of data
-        result = conn.execute(sql_statement)
-        current_level = result.fetchone()[1]
+async def get_current_level(
+    session: SessionDep
+) -> dict:
 
-        # Format data for the frontend
-        return {"level": current_level}
+    query = select(RealTimeDataModel.timestamp, RealTimeDataModel.tidal_level).order_by(
+        RealTimeDataModel.timestamp.desc()
+    ).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
+    
+@app.get("/api/map/realtime-data/by-date/max")
+async def get_max_realtime_tidal_level_for_date(
+    session: SessionDep,
+    selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
+) -> dict:
+    if not selected_date:
+        selected_date = datetime.now()
+    
+    # order by tidal_level and take the first result
+    query = select(RealTimeDataModel.timestamp, RealTimeDataModel.tidal_level).where(
+        func.date(RealTimeDataModel.timestamp) == func.date(selected_date),
+        RealTimeDataModel.tidal_level < 2.0
+    ).order_by(RealTimeDataModel.tidal_level.desc()).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
+
+@app.get("/api/map/predicted-data/by-date/max")
+async def get_max_predicted_tidal_level_for_date(
+    session: SessionDep,
+    selected_date: Optional[datetime] = Query(default=None, description="Selected date in ISO format"),
+) -> dict:
+    if not selected_date:
+        selected_date = datetime.now()
+    
+    # order by tidal_level and take the first result
+    query = select(PredictedDataModel.timestamp, PredictedDataModel.tidal_level).where(
+        func.date(PredictedDataModel.timestamp) == func.date(selected_date),
+        PredictedDataModel.tidal_level < 2.0
+    ).order_by(PredictedDataModel.tidal_level.desc()).limit(1)
+    
+    result = session.execute(query).first()
+    
+    if result:
+        return {"timestamp": result[0], "tidal_level": result[1]}
+    else:
+        return {"timestamp": None, "tidal_level": None}
        
 
 async def get_historical_data():

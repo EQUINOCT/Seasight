@@ -4,20 +4,26 @@ import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 
-const ButtonComponent: React.FC = () => {
-  const [selectedValue, setSelectedValue] = React.useState(new Date().toDateString());
+interface DateSelectorComponentProps {
+  selectedDate: Date;
+  setSelectedDate: (value: Date) => void;
+}
+
+const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDate, setSelectedDate}) => {
   const [moonPhaseData, setMoonPhaseData] = React.useState<{ [key: string]: string }>({});
   const canvasRef = React.useRef<HTMLDivElement | null>(null);
+  const dateToday = new Date();
+  dateToday.setHours(0, 0, 0, 0);
 
     const highTideDays = [
-        new Date('2024-12-15'),
-        new Date('2024-12-16'),
-        new Date('2024-12-17'),
-        new Date('2024-12-18'),
+        new Date('2025-01-17'),
+        new Date('2025-02-03'),
+        new Date('2025-03-04'),
+        dateToday,
+        new Date('2025-03-16')
     ];
 
-    const today = new Date();
-    const daysToDisplay = [...highTideDays, today];
+    const daysToDisplay = [...highTideDays];
 
     const shadowSizeMapping: { [key: string]: number } = {
         'New Moon': 0,
@@ -61,10 +67,10 @@ const ButtonComponent: React.FC = () => {
      setMoonPhaseData(phaseData);
     };
 
-    const handleMoonPhaseSelection = (date: string) => {
-        setSelectedValue(date);
+    const handleMoonPhaseSelection = (date: Date) => {
+        setSelectedDate(date);
         if (canvasRef.current) {
-            const phase = moonPhaseData[date];
+            const phase = moonPhaseData[date.toDateString()];
             const shadowSize = shadowSizeMapping[phase] || 0;
             const isWaxing = phase.includes('Waxing');
             if (window.drawPlanetPhase) {
@@ -126,12 +132,12 @@ const ButtonComponent: React.FC = () => {
        return (
          <Button 
             key={index} 
-            onClick={() => handleMoonPhaseSelection(date.toDateString())} 
+            onClick={() => handleMoonPhaseSelection(date)} 
             sx={{ 
               fontSize: 'text-base', 
               fontFamily: 'Inter', 
               textTransform: 'none',
-              backgroundColor: selectedValue === date.toDateString() ? 'rgb(24, 24, 24, 0.9) !important' : undefined,
+              backgroundColor: selectedDate.toDateString() === date.toDateString() ? 'rgb(24, 24, 24, 0.9) !important' : undefined,
               // color: selectedValue === date.toDateString() ? '#000' : '#fff', 
               flexDirection: 'column', // Aligns content vertically
               alignItems: 'center',
@@ -185,4 +191,4 @@ const ButtonComponent: React.FC = () => {
   );
 };
 
-export default ButtonComponent;
+export default DateSelectorComponent;
