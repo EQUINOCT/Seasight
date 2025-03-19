@@ -24,6 +24,8 @@ const AnalyticsScreen: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
   const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
   const [loading, setLoading] = useState(true);
+  const [projected, setProjected]  = useState(false);
+  const [threshold, setThreshold]  = useState(false);
   const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
 
   // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
@@ -136,37 +138,51 @@ const AnalyticsScreen: React.FC = () => {
                         </Box>
                       </LocalizationProvider>
                     </Grid>
-                     <Grid className='flex flex-row font-inter gap-1'>
-                      <Button 
-                        sx={{ 
-                          textTransform: 'none', 
-                          borderColor: '#488DA3', 
-                          bgcolor: '#fff',
-                          color: '#488DA3', 
-                          borderWidth: '1px', 
-                          width: '100px',
-                          height: '25px',
-                        }}>
-                          Projection
-                        </Button>
-                        <Button 
-                        sx={{ 
-                          textTransform: 'none', 
-                          borderColor: '#488DA3', 
-                          bgcolor: '#fff',
-                          color: '#488DA3', 
-                          borderWidth: '1px', 
-                          width: '100px',
-                          height: '25px',
-                        }}>
-                          Threshold
-                        </Button>
-                      </Grid>
+                    
                     <Grid size={{xs: 12, md: 9}}>
-                      <RealtimeAnalytics
-                        startDate={startDate}
-                        endDate={endDate}
-                      />
+                    <Grid 
+                      container 
+                      spacing={1} 
+                      justifyContent="flex-end" 
+                      alignItems="center" // Ensures buttons align properly
+                      sx={{ mb: -2 }} // Keeps your existing negative margin
+                    >
+                        <Button 
+                          sx={{ 
+                            fontSize: '12px',
+                            textTransform: 'none', 
+                            borderColor: '#488DA3', 
+                            bgcolor: projected? '#488DA3':'#fff',
+                            color: projected? '#fff':'#488DA3', 
+                            borderWidth: '1px', 
+                            width: '80px',
+                            height: '25px',
+                          }}
+                          onClick={() => setProjected (!projected)} 
+                          >
+                            Projection
+                          </Button>
+                          <Button 
+                          sx={{ 
+                            fontSize: '12px',
+                            textTransform: 'none', 
+                            borderColor: '#488DA3', 
+                            bgcolor: threshold? '#488DA3':'#fff',
+                            color: threshold? '#fff':'#488DA3', 
+                            borderWidth: '1px', 
+                            width: '80px',
+                            height: '25px',
+                          }}
+                          onClick={() => setThreshold (!threshold)} 
+                          >
+                            Threshold
+                          </Button>
+                        </Grid>
+                        <RealtimeAnalytics
+                          startDate={startDate}
+                          endDate={endDate}
+                          projected={projected}
+                        />
                     </Grid>
                   </Grid>
                 </CardContent>

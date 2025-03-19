@@ -60,11 +60,11 @@ const DecadalMeanChart = () => {
         fetchData();
     }, [dataServeUrl]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return <p className='text-black'>Loading...</p>;
+    if (error) return <p className='text-black'>Error: {error}</p>;
 
     let lastDisplayedYear = null;
-    const ticks=[0.5, 1.0, 1.5];
+    const ticks=[0.5, 1.0, 1.5, 2];
 
     return (
         <ResponsiveContainer width="100%" height={330}>
@@ -84,30 +84,30 @@ const DecadalMeanChart = () => {
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
                     dataKey="decade"
-                    tick={{ fill: '#000', fontSize: 12}}
+                    tick={{ fill: '#5E6664', fontSize: 12}}
                     label={{ 
                         value: 'Years', 
                         position: 'center',
                         dy: 35,
-                        style: { textAnchor: 'middle', fill: '#000', fontSize: 12 }
+                        style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
                     }}
                     /> 
                     <YAxis 
                     domain={[0, 1.5]} 
                     tickCount={3}
                     ticks={ticks} 
-                    tick={{ fill: '#000', fontSize: 12 }}
+                    tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     label={{ 
                             value: 'Meters (m)', 
                             angle: -90, 
                             position: 'insideLeft', 
-                            style: { textAnchor: 'middle', fill: '#000', fontSize: 15 }
+                            style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 15 }
                         }}
                     />
                     {ticks.map(tick => (
-                        <ReferenceLine key={tick} y={tick} stroke="#000"  strokeOpacity="30%" strokeDasharray="5 5" />
+                        <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="30%" strokeDasharray="5 5" />
                     ))}
                     <Bar type="monotone" dataKey="mean_level" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
                     <Tooltip 
