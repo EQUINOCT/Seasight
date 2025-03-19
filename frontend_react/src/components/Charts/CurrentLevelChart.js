@@ -216,7 +216,7 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
         >
       {/* Debugging log */}
             
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={325}>
           {/* <ErrorBoundary> */}
             <ComposedChart
                 margin={{

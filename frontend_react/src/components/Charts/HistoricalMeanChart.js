@@ -76,7 +76,7 @@ const HistoricalMeanChart = () => {
     //  const ticks = Array.from({ length: Math.round(roundedMax / 0.5) + 1 }, (_, i) => i * 0.5);
     const ticks = [-1, 0, 1, 2, 3, 4]
     return (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={290}>
              {/* <ErrorBoundary> */}
                 <LineChart width="100%" height="100%" data={data}>
                     

@@ -62,10 +62,12 @@ const AnalyticsScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full relative bg-zinc-800 bg-opacity-98 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
+    <div className="w-full h-full relative flex flex-col">
       <ThemeProvider theme={theme}>
         {/* Top widgets */}
-        <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
+        
+        <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt:0 }}>
+          
           <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 9}}>
               <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
@@ -197,6 +199,7 @@ const AnalyticsScreen: React.FC = () => {
               </Card>
             </Grid>
           </Grid>
+
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
             <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
               <CardContent>

@@ -65,13 +65,12 @@ const theme = createTheme({
           // padding: '4px',
           maxWidth: 100,
           width: '100%',
-          backgroundColor: '#18181b', // default background
-          opacity: '95%',
+          // backgroundColor: '#488DA3', 
           color: '#ffffff', // default text color
           fontFamily: 'Inter',
-          fontWeight: 300,
+          fontWeight: 250,
           fontSize: '14px',
-          borderRadius: '5px',
+          borderRadius: '25px',
         },
       },
     },
