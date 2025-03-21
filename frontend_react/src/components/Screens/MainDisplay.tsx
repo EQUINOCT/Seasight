@@ -1,5 +1,5 @@
 import React from "react";
-import AnalyticsScreen from './AnalyticsScreen';
+import AnalyticsScreen from './GaugeAnalyticsScreen';
 import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {

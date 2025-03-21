@@ -24,6 +24,8 @@ const AnalyticsScreen: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
   const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
   const [loading, setLoading] = useState(true);
+  const [projected, setProjected]  = useState(false);
+  const [threshold, setThreshold]  = useState(false);
   const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
 
   // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
@@ -60,21 +62,24 @@ const AnalyticsScreen: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full relative bg-zinc-800 bg-opacity-98 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
+    <div className="w-full h-full relative flex flex-col">
       <ThemeProvider theme={theme}>
         {/* Top widgets */}
-        <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt: '70px' }}>
+        
+        <Grid size={{xs: 12}} container direction="column" spacing={1.5} sx={{ height: '100%', p: 1.5, pt:0 }}>
+          
           <Grid size={{xs: 12}} sx={{ height: '49%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 9}}>
-              <Card sx={{ height: '100%'}}>
+              <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
                 <CardContent>
-                  
+                  {/* <Typography  sx={{ fontSize: '18px', mb: 2, color: "#000"}}>Current Level</Typography> */}
                   <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
-                      <Typography  sx={{ fontSize: '16px', mb: 2}}>Real-Time Levels</Typography>
+                      <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Real-Time Levels</Typography>
+                     
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
                         <DatePicker 
                         label="Start Date"
                         value={startDate ? dayjs(startDate) : null} 
@@ -82,18 +87,23 @@ const AnalyticsScreen: React.FC = () => {
                         slotProps={{
                           textField: {
                             sx: {
+                              // backgroundColor: '#488DA3', 
                               width: '200px',
-                              svg: { color: '#fff' },
+                              color: '#488DA3',
+                              svg: { color: '#488DA3' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#0081A7',
+                                  borderColor: '#488DA3',
+                                  borderRadius: '10px',
                                 },
+                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
+                                '&:hover fieldset': { borderColor: '#000' },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                              ".MuiPaper-root": { bgcolor: '#488DA3' },
                               mb: 2,
                             },
                           },
@@ -106,19 +116,23 @@ const AnalyticsScreen: React.FC = () => {
                         minDate={startDate ? dayjs(startDate) : undefined} 
                         slotProps={{
                           textField: {
+                          
                             sx: {
                               width: '200px',
-                              svg: { color: '#fff' },
+                              svg: { color: '#488DA3' },
                               '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                  borderColor: '#0081A7',
+                                  borderColor: '#488DA3',
+                                  borderRadius: '10px',
                                 },
+                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
+                                '&:hover fieldset': { borderColor: '#000' },
                               },
                             }
                           },
                           popper: {
                             sx: {
-                              ".MuiPaper-root": { bgcolor: '#0081A7' },
+                              ".MuiPaper-root": { bgcolor: '#488DA3' },
                             },
                           },
                         }}
@@ -126,11 +140,51 @@ const AnalyticsScreen: React.FC = () => {
                         </Box>
                       </LocalizationProvider>
                     </Grid>
+                    
                     <Grid size={{xs: 12, md: 9}}>
-                      <RealtimeAnalytics
-                        startDate={startDate}
-                        endDate={endDate}
-                      />
+                    <Grid 
+                      container 
+                      spacing={1} 
+                      justifyContent="flex-end" 
+                      alignItems="center" // Ensures buttons align properly
+                      sx={{ mb: -2 }} // Keeps your existing negative margin
+                    >
+                        <Button 
+                          sx={{ 
+                            fontSize: '12px',
+                            textTransform: 'none', 
+                            borderColor: '#488DA3', 
+                            bgcolor: projected? '#488DA3':'#fff',
+                            color: projected? '#fff':'#488DA3', 
+                            borderWidth: '1px', 
+                            width: '80px',
+                            height: '25px',
+                          }}
+                          onClick={() => setProjected (!projected)} 
+                          >
+                            Projection
+                          </Button>
+                          <Button 
+                          sx={{ 
+                            fontSize: '12px',
+                            textTransform: 'none', 
+                            borderColor: '#488DA3', 
+                            bgcolor: threshold? '#488DA3':'#fff',
+                            color: threshold? '#fff':'#488DA3', 
+                            borderWidth: '1px', 
+                            width: '80px',
+                            height: '25px',
+                          }}
+                          onClick={() => setThreshold (!threshold)} 
+                          >
+                            Threshold
+                          </Button>
+                        </Grid>
+                        <RealtimeAnalytics
+                          startDate={startDate}
+                          endDate={endDate}
+                          projected={projected}
+                        />
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -145,9 +199,13 @@ const AnalyticsScreen: React.FC = () => {
               </Card>
             </Grid>
           </Grid>
+
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
-            <Card sx={{ height: '100%'}}>
+            <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
               <CardContent>
+                {/* <Typography sx={{ color: '#000', fontSize: '18px', mb: -0.1}}>Historic Mean Level</Typography>
+                <Typography sx={{ color: '#488DA3', fontSize: '15px', mb: 2}}>Average tidal level</Typography>
+                <HistoricalMeanChart/> */}
                 <Box
                   sx={{
                     display: 'flex',
@@ -156,31 +214,42 @@ const AnalyticsScreen: React.FC = () => {
                     mb: 2
                   }}
                 >
-                  <Typography sx={{ fontSize: '18px' }}>
+                  <Typography sx={{ fontSize: '18px', color: '#000' }}>
                     Historic Data
                   </Typography>
                   <ToggleButtonGroup
                     value={historicalChartTypeSelect}
                     exclusive
                     onChange={handleToggle}
-                    // color="error"
                     sx={{
-                      backgroundColor: '#f0f0f0', // Background color of the group
+                      backgroundColor: '#fff', // Background color of the group
                       '& .MuiToggleButton-root': {
-                        color: '#000', // Default text color
-                        borderColor: '#ccc', // Default border color
+                        paddingY: 0.5,
+                        paddingX: 1,
+                        color: '#488DA3', // Default text color
+                        borderColor: '#488DA3', // Default border color
                         '&.Mui-selected': {
-                            backgroundColor: '#1976d2', // Color when selected
+                            backgroundColor: '#488DA3', // Color when selected
                             color: '#fff', // Text color when selected
                             '&:hover': {
-                                backgroundColor: '#115293', // Darker color on hover when selected
+                                backgroundColor: '#32778C', // Darker color on hover when selected
                             },
                         },
                     },
                     }}
                     >
-                      <ToggleButton value="monthlymean">Monthly Means</ToggleButton>
-                      <ToggleButton value="decadalmean">Decadal Means</ToggleButton>
+                      <ToggleButton value="monthlymean" sx={{textTransform: 'none'}}>Monthly Means</ToggleButton>
+                      <ToggleButton value="decadalmean" 
+                        sx={{ 
+                          textTransform: 'none', 
+                          color: '#488DA3', // Default color
+                          '&.Mui-selected': {
+                            color: '#fff', // Text color when selected
+                          }
+                        }}
+                      >
+                        Decadal Means
+                      </ToggleButton>
                       {/* <ToggleButton value="monthwisedecadalmean">Monthwise Decadal Means</ToggleButton> */}
                   </ToggleButtonGroup>
                 </Box>

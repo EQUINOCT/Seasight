@@ -65,13 +65,12 @@ const theme = createTheme({
           // padding: '4px',
           maxWidth: 100,
           width: '100%',
-          backgroundColor: '#18181b', // default background
-          opacity: '95%',
+          // backgroundColor: '#488DA3', 
           color: '#ffffff', // default text color
           fontFamily: 'Inter',
-          fontWeight: 300,
+          fontWeight: 250,
           fontSize: '14px',
-          borderRadius: '5px',
+          borderRadius: '25px',
         },
       },
     },
@@ -104,7 +103,7 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: 'white', // Set the label color
+          color: '#488DA3', // Set the label color
           fontWeight: '300',
           opacity: 0.85,
           marginTop: 3,
@@ -122,7 +121,7 @@ const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         input: {
-          color: '#ffffff', // Input text color
+          color: '#488DA3', // Input text color
           fontFamily: 'Inter',
         },
       },
@@ -130,7 +129,7 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         icon: {
-          color: '#fff',
+          color: '#488DA3',
           opacity: '75%',
         },
         root: {
