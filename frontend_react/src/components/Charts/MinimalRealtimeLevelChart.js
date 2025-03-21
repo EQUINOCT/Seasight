@@ -191,16 +191,19 @@ const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate})
 
 
     return (
-      <div style={{ 
-      border: '1px solid #ccc', 
-      borderRadius: '8px',
-      padding: '8px',
-        }}>
+      <div 
+    //   style={{ 
+    //   border: '1px solid #ccc', 
+    //   borderRadius: '8px',
+    //   padding: '8px',
+    //   }}
+    >
       {/* Debugging log */}
             
             <ResponsiveContainer minWidth={150} width="100%" height={150} >
           {/* <ErrorBoundary> */}
-            <ComposedChart>
+            <ComposedChart
+          >
                 <Line 
                     type="cardinal"
                     name="Tidal Level" 

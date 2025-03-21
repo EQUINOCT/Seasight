@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { ThemeProvider, Breadcrumbs, Link } from '@mui/material';
+import { ThemeProvider, Breadcrumbs, Link, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import theme from '../theme';
@@ -42,23 +42,24 @@ const AnalyticsScreen: React.FC = () => {
                     <Link 
                     underline="hover" 
                     sx={{ maxWidth: 80, height: '25px'}} 
-                    href="#reservoir"
+                    href="#gauge"
                     onClick={() => handleStationClick('gauge')}
                     color={selectedStation === 'gauge' ? '#fff' : '#488DA3'}
                     bgcolor={selectedStation === 'gauge' ? '#488DA3' : '#fff'}
                     >
                         Gauge
                     </Link>
-                    <Link 
-                    underline="hover" 
-                    sx={{ maxWidth: 100, height: '25px'}} 
-                    href="#groundwater"
-                    onClick={() => handleStationClick('panchayat')}
-                    color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
-                    bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}
-                    >
-                        Panchayat
-                    </Link>
+                    <Tooltip title="Coming Soon!" arrow>
+                        <Link 
+                            underline="hover" 
+                            sx={{ maxWidth: 100, height: '25px' }} 
+                            href="#panchayat"
+                            color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
+                            bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}
+                        >
+                            Panchayat
+                        </Link>
+                    </Tooltip>
                   </Grid>
                 </Grid>
 
