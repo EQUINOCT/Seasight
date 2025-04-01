@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload }) => {
             >
                 <p>{`Tidal Level: ${tidal_level} m`}</p>
                 <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
-                          {formattedDate} <br/> {formattedTime}
+                          {formattedDate} <br/> {formattedTime} IST
                 </p>
             </div>
         );
@@ -114,14 +114,6 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
         setLoading(false);
         }
     };
-
-    const handleLoadMore = () => {
-        setPagination({
-        ...pagination,
-        offset: pagination.offset + pagination.limit
-        });
-    };
-
 
     const parseDate = (dateString) => {
     if (!dateString) return null;
@@ -252,11 +244,11 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
                     type="monotone" 
                     data={predictedData}
                     dataKey="tidal_level" 
-                    stroke=" #7F5A83" 
+                    stroke=" #FFA630" 
                     dot={{
                         strokeWidth: 0.7, 
                         r: 2, 
-                        fill: " #7F5A83"
+                        fill: " #FFA630"
                     }}
                     xAxisId="timeAxis"
                 />
