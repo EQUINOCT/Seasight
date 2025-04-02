@@ -42,7 +42,7 @@ const AnalyticsScreen: React.FC = () => {
                     <Link 
                     underline="hover" 
                     sx={{ maxWidth: 80, height: '25px'}} 
-                    href="#reservoir"
+                    href="#gauge"
                     onClick={() => handleStationClick('gauge')}
                     color={selectedStation === 'gauge' ? '#fff' : '#488DA3'}
                     bgcolor={selectedStation === 'gauge' ? '#488DA3' : '#fff'}
@@ -52,7 +52,7 @@ const AnalyticsScreen: React.FC = () => {
                     <Link 
                     underline="hover" 
                     sx={{ maxWidth: 100, height: '25px'}} 
-                    href="#groundwater"
+                    href="#panchayat"
                     onClick={() => handleStationClick('panchayat')}
                     color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
                     bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}

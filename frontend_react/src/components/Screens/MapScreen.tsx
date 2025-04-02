@@ -9,6 +9,7 @@ import MapControlBar from "../MapControlBar/MapControl";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
 import MoonWidget from "../MoonWidget/MoonWidget";
+import CalendarWidget from "../Calendar/CalendarWidget";
 import { useConfig } from '../../ConfigContext';
 import { data } from "@maptiler/sdk";
 
@@ -148,6 +149,9 @@ const MapScreen: React.FC = () => {
           selectedDate = {selectedDate}
           setSelectedDate={setSelectedDate}
         />
+      </div>
+      <div>
+        <CalendarWidget/>
       </div>
       {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
         <div style={{
