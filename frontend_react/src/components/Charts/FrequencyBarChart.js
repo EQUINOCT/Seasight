@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-const DecadalMeanChart = () => {
+const FrequencyBarChart = () => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -120,4 +120,4 @@ const DecadalMeanChart = () => {
     );
 };
 
-export default DecadalMeanChart;
+export default FrequencyBarChart;
