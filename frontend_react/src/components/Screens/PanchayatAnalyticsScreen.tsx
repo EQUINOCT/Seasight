@@ -6,6 +6,7 @@ import theme from "../theme";
 //Import Plots
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
+import FrequencyBarChart from "../Charts/FrequencyBarChart";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
@@ -206,40 +207,7 @@ const AnalyticsScreen: React.FC = () => {
                   <Typography sx={{ fontSize: '18px', color: '#000' }}>
                     Frequency Chart
                   </Typography>
-                  {/* <ToggleButtonGroup
-                    value={historicalChartTypeSelect}
-                    exclusive
-                    onChange={handleToggle}
-                    sx={{
-                      backgroundColor: '#fff', // Background color of the group
-                      '& .MuiToggleButton-root': {
-                        paddingY: 0.5,
-                        paddingX: 1,
-                        color: '#488DA3', // Default text color
-                        borderColor: '#488DA3', // Default border color
-                        '&.Mui-selected': {
-                            backgroundColor: '#488DA3', // Color when selected
-                            color: '#fff', // Text color when selected
-                            '&:hover': {
-                                backgroundColor: '#32778C', // Darker color on hover when selected
-                            },
-                        },
-                    },
-                    }}
-                    >
-                      <ToggleButton value="monthlymean" sx={{textTransform: 'none'}}>Monthly Means</ToggleButton>
-                      <ToggleButton value="decadalmean" 
-                        sx={{ 
-                          textTransform: 'none', 
-                          color: '#488DA3', // Default color
-                          '&.Mui-selected': {
-                            color: '#fff', // Text color when selected
-                          }
-                        }}
-                      >
-                        Decadal Means
-                      </ToggleButton>
-                  </ToggleButtonGroup> */}
+                  {FrequencyBarChart()}
                 </Box>
                 {/* {renderChart()} */}
               </CardContent>
