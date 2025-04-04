@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload }) => {
             >
                 <p>{`Tidal Level: ${tidal_level} m`}</p>
                 <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
-                          {formattedDate} <br/> {formattedTime}
+                          {formattedDate} <br/> {formattedTime} IST
                 </p>
             </div>
         );
@@ -47,7 +47,7 @@ const CustomMarkerLast = ({ cx, cy, size }) => {
     return <circle cx={cx} cy={cy} r={size} fill="red" stroke="red" strokeWidth={3} />;
 };
 
-const RealtimeAnalytics = ({ startDate, endDate }) => {
+const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -114,14 +114,6 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
         setLoading(false);
         }
     };
-
-    const handleLoadMore = () => {
-        setPagination({
-        ...pagination,
-        offset: pagination.offset + pagination.limit
-        });
-    };
-
 
     const parseDate = (dateString) => {
     if (!dateString) return null;
@@ -194,8 +186,8 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     const xAxisTimeTicks = generateHourlyTicks(timePeriod) || [];
     const xAxisDateTicks = generateDateTicks(timePeriod) || [];
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return <p className='text-black'>Loading...</p>;
+    if (error) return <p className='text-black'>Error: {error}</p>;
 
     const ticks=[0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8];
 
@@ -208,22 +200,25 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
     : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty    
     console.log('last', lastRealtimePoint);
     return (
-      <div style={{ 
-      border: '1px solid #ccc', 
-      borderRadius: '8px',
-      padding: '8px',
-        }}>
+      <div 
+    //   style={{ 
+    //   border: '1px solid #ccc', 
+    //   borderRadius: '8px',
+    //   padding: '8px',
+    //   }}
+        >
       {/* Debugging log */}
             
-        <ResponsiveContainer width="100%" height={350} >
+        <ResponsiveContainer width="100%" height={325}>
           {/* <ErrorBoundary> */}
             <ComposedChart
                 margin={{
-                            top: 30,
-                            right: 30,
-                            left: 20,
-                            bottom: 30,
-                        }}>
+                            top: 15,
+                            // right: 30,
+                            // left: 20,
+                            bottom: 10,
+                        }}
+            >
                 <Scatter 
                     name="Tidal Level" 
                     dataKey="tidal_level" 
@@ -231,29 +226,35 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     fill="#0081A7" 
                     shape={<CustomMarker size={1} fill={"#0081A7"}  />} 
                     xAxisId="timeAxis"  
+                    zAxis={12}
                 />
                 <Scatter 
                     name="Current Level" 
                     dataKey="tidal_level" 
                     data={lastRealtimePoint} 
-                    stroke="#54F2F2" fill="#54F2F2" 
+                    stroke="#0A2463 " fill="#0A2463" 
                     strokeWidth={8} 
-                    shape={<CustomMarker size={8} fill={"#54F2F2"}/>}  
+                    shape={<CustomMarker size={8} fill={"#0A2463"}/>}  
                     xAxisId="timeAxis" 
+                    zAxis={12}
                 />
+                {projected && (
+                <>
                 <Line 
                     name="Predicted Tidal Level"
                     type="monotone" 
                     data={predictedData}
                     dataKey="tidal_level" 
-                    stroke=" #fece1c" 
+                    stroke=" #FFA630" 
                     dot={{
                         strokeWidth: 0.7, 
-                        r: 3, 
-                        fill: " #fece1c"
+                        r: 2, 
+                        fill: " #FFA630"
                     }}
                     xAxisId="timeAxis"
                 />
+                </>
+                )}
                 <XAxis 
                     dataKey="timestamp" 
                     domain={[
@@ -263,7 +264,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     type="number" 
                     tickFormatter={timeFormatter} 
                     ticks={xAxisTimeTicks.length > 0 ? xAxisTimeTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     height={25}
@@ -276,14 +277,14 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     tickFormatter={dateFormatter}
                     axisLine={false}
                     ticks={xAxisDateTicks.length > 0 ? xAxisDateTicks: undefined}
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#5E6664', fontSize: 12}}
                     tickLine={false}
                     height={18}
                     xAxisId="dateAxis"
                 />
                 <YAxis 
                     domain={[0, 1.8]}  // Ensures Y values range between 0.5 and 1.5
-                    tick={{ fill: '#E4F7F2', fontSize: 12 }}
+                    tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
                     interval={0}  // Ensures all ticks are displayed
@@ -292,16 +293,17 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                         value: 'Meters (m)', 
                         angle: -90, 
                         position: 'insideLeft', 
-                        style: { textAnchor: 'middle', fill: '#E4F7F2', fontSize: 12 }
+                        style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
                     }}
                 />
                 {ticks.map(tick => (
                     <ReferenceLine 
                     key={tick} y={tick} 
-                    stroke="#E4F7F2"  
-                    strokeOpacity="50%" 
+                    stroke="#6E7674"  
+                    strokeOpacity="60%" 
                     strokeDasharray="5 5" 
                     xAxisId="timeAxis"
+                    z="-10"
                     />
                 ))}
                 <Tooltip content={<CustomTooltip />} />
@@ -310,7 +312,7 @@ const RealtimeAnalytics = ({ startDate, endDate }) => {
                     align="left" 
                     verticalAlign="top" // Positioned at top-left
                     iconSize={12}
-                    wrapperStyle={{ left: 75, top: 0, fontSize: '12px'}} 
+                    wrapperStyle={{ left: 50, top: 0, fontSize: '12px'}} 
                 />
             </ComposedChart>
           {/* </ErrorBoundary> */}

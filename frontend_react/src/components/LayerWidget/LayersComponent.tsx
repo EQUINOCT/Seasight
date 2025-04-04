@@ -5,12 +5,8 @@ import Stack from '@mui/material/Stack';
 import LocationCity from '@mui/icons-material/LocationCity';
 import { MdAgriculture } from "react-icons/md";
 import { FaRoad } from "react-icons/fa";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Water } from "@mui/icons-material";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const boundaries = [
   'Admin',
@@ -24,23 +20,14 @@ interface LayersComponentProps {
 }
 
 const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer}) => {
-  const [boundary, setBoundary] = React.useState<string[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [lsg, setLSG] = useState(false);
+  const [satellite, setSatellite] = useState(false);
+  
   const handleSelect = (label: string) => {
     setSelectedLayer((prev: string[]) =>
       prev.includes(label)
         ? prev.filter((item: string) => item !== label) // Remove if already selected
         : [...prev, label] // Add if not selected
-    );
-  };
-
-  const handleChange = (event: SelectChangeEvent<typeof boundary>) => {
-    const {
-      target: { value },
-    } = event;
-    setBoundary(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
@@ -61,76 +48,30 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
             </div>
         {/* </header> */}
         <Stack direction="column" spacing={1.5} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
-              {/* <Button
+              <Button
               sx={{
                 textTransform: 'none',
-                color: '#fff',
+                color: lsg? '#2B4A54': '#97C7D6',
+                backgroundColor: lsg ? "#fff" : "transparent",
                 p:0,
-                border: '0.5px solid rgba(250, 250, 250, 0.8)'
+                border: '0.5px solid rgba(208, 236, 245, 0.8)'
               }}
+              onClick={() => setLSG (!lsg)} 
               >
-                Admin
+                LSG
               </Button>
               <Button 
               sx={{
                 textTransform: 'none',
-                color: '#fff',
+                color: satellite? '#2B4A54': '#97C7D6',
+                backgroundColor: satellite ? "#fff" : "transparent",
                 p: 0,
-                border: '0.5px solid rgba(250, 250, 250, 0.8)'
-              }}>
-                Block
-              </Button>
-              <Button 
-              sx={{
-                textTransform: 'none',
-                color: '#fff',
-                p: 0,
-                border: '0.5px solid rgba(250, 250, 250, 0.8)'
-              }}>
+                border: '0.5px solid rgba(208, 236, 245, 0.8)'
+              }}
+              onClick={() => setSatellite (!satellite)} 
+              >
                 Satellite
-              </Button> */}
-            <FormControl sx={{ width: '75px', height: '30px', text: '16px' }}>
-              <Select
-                multiple
-                displayEmpty
-                value={boundary}
-                onChange={handleChange}
-                input={<OutlinedInput />}
-                renderValue={(selected) => {
-                  if (selected.length === 0) {
-                    return <em style={{ color: '#fff', fontStyle: 'normal'}}>View</em>;
-                  }
-
-                  return selected.join(', ');
-                }}
-                inputProps={{ 'aria-label': 'Without label' }}
-                sx={{
-                  fontSize: '14px', // Reduce font size
-                  height: '30px',
-                  alignItems: 'center',
-                  '& .MuiSelect-select': {
-                    padding: '0px', // Remove padding from the label area
-                    paddingLeft: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff'
-                  },
-                  '& .MuiSelect-icon': {
-                    display: 'none', // Disable the down arrow icon
-                  },
-                }}
-              >
-                {boundaries.map((boundary) => (
-                  <MenuItem
-                    key={boundary}
-                    value={boundary}
-                  >
-                    {boundary}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              </Button>
               {icons.map(({ label, icon }) => (
                 <React.Fragment key={label}>
                   <IconButton

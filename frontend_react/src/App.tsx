@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useConfig } from './ConfigContext'; // Import the useConfig hook
 import MapScreen from './components/Screens/MapScreen';
-import AnalyticsScreen from './components/Screens/AnalyticsScreen';
+import AnalyticsScreen from './components/Screens/MainAnalytics';
 // import AboutScreen from './components/Screens/AboutScreen';
 // import SettingScreen from './components/Screens/SettingScreen';
 import MainLayout from './MainLayout';
