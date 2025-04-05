@@ -21,10 +21,11 @@ interface LayersComponentProps {
   setSelectedLayer: React.Dispatch<React.SetStateAction<string[]>>;
   selectedMapStyle: SelectedMapStyle;
   setSelectedMapStyle: React.Dispatch<React.SetStateAction<SelectedMapStyle>>;
+  ifRegion: boolean;
+  setIfRegion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer, selectedMapStyle, setSelectedMapStyle}) => {
-  const [lsg, setLSG] = useState(false);
+const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer, selectedMapStyle, setSelectedMapStyle, ifRegion, setIfRegion}) => {
   
   const handleSelect = (label: string) => {
     setSelectedLayer((prev: string[]) =>
@@ -54,12 +55,12 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
               <Button
               sx={{
                 textTransform: 'none',
-                color: lsg? '#2B4A54': '#97C7D6',
-                backgroundColor: lsg ? "#fff" : "transparent",
+                color: ifRegion? '#2B4A54': '#97C7D6',
+                backgroundColor: ifRegion ? "#fff" : "transparent",
                 p:0,
                 border: '0.5px solid rgba(208, 236, 245, 0.8)'
               }}
-              onClick={() => setLSG (!lsg)} 
+              onClick={() => setIfRegion(!ifRegion)} 
               >
                 LSG
               </Button>

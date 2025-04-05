@@ -16,7 +16,24 @@
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
-    "LAYER_URL": "/shapefiles",
+    "REGION": {
+        "admin": { 
+            "LAYER_ID": "regions-layer",
+            "OUTLINE_LAYER_ID": "regions-outline",
+            "SOURCE_ID": "regions-data",
+            "URL": "/Regions/admin_regions.geojson",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "OUTLINE_LAYER_TYPE": "line",
+            "COLOR_PARAM": "fill-color",
+            "OUTLINE_COLOR_PARAM": "line-color",
+            "COLOR": "#E0B0FF",
+            "OUTLINE_COLOR": "#5D3FD3",
+            "OPACITY_PARAM": "fill-opacity",
+            "OPACITY": 0.3,
+            "OBJECT_NAME": "Type"
+        }
+    },
     "IMPACT": {
         "Buildings": { 
             "LAYER_ID": "buildings-layer",
