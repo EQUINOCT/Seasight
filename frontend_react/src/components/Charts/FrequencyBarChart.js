@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { BarChart, Bar, Rectangle, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
 import dayjs, { Dayjs } from 'dayjs';
 import ErrorBoundary from '../errorBoundary';
+
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -42,29 +44,35 @@ const FrequencyBarChart = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${dataServeUrl}/api/analytics/historical-data/decadal-means`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const result = await response.json();
-                setData(result);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
+        fetchData('/api/analytics/realtime-data/monthwise/frequency-means', 3);
     }, [dataServeUrl]);
+
+    const fetchData = async (endPoint, thresholdLevel) => {
+        setLoading(true);
+        try {
+            
+            const response = await axios.get(`${dataServeUrl}${endPoint}`, {
+                params: {
+                    threshold_level: thresholdLevel
+                }
+        });
+
+        const formattedData = await response.data;
+
+        setData(formattedData);
+        } catch (error) {
+        console.error('Error fetching analytics data:', error);
+        } finally {
+        setLoading(false);
+        }
+    };
 
     if (loading) return <p className='text-black'>Loading...</p>;
     if (error) return <p className='text-black'>Error: {error}</p>;
 
     let lastDisplayedYear = null;
-    const ticks=[0.5, 1.0, 1.5, 2];
+    // const ticks=[0.5, 1.0, 1.5, 2];
+    console.log(data);
 
     return (
         <ResponsiveContainer width="100%" height={330}>
@@ -83,7 +91,7 @@ const FrequencyBarChart = () => {
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
-                    dataKey="decade"
+                    dataKey="month"
                     tick={{ fill: '#5E6664', fontSize: 12}}
                     label={{ 
                         value: 'Years', 
@@ -93,23 +101,23 @@ const FrequencyBarChart = () => {
                     }}
                     /> 
                     <YAxis 
-                    domain={[0, 1.5]} 
-                    tickCount={3}
-                    ticks={ticks} 
+                    domain={[0, 30]} 
+                    // tickCount={3}
+                    // ticks={ticks} 
                     tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
-                    label={{ 
-                            value: 'Meters (m)', 
-                            angle: -90, 
-                            position: 'insideLeft', 
-                            style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 15 }
-                        }}
+                    // label={{ 
+                    //         value: 'Frequency', 
+                    //         angle: -90, 
+                    //         position: 'insideLeft', 
+                    //         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 15 }
+                    //     }}
                     />
-                    {ticks.map(tick => (
+                    {/* {ticks.map(tick => (
                         <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="30%" strokeDasharray="5 5" />
-                    ))}
-                    <Bar type="monotone" dataKey="mean_level" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
+                    ))} */}
+                    <Bar type="monotone" dataKey="avg" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
                     <Tooltip 
                         cursor={{fill: 'transparent'}}
                         content={<CustomTooltip />} 
