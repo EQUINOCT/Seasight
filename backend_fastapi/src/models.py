@@ -22,4 +22,11 @@ class PredictedDataModel(SQLModel, table=True):
     timestamp: datetime = Field(default=None)
     tidal_level: float = Field(default=None)
 
+class DailyPeakDataModel(SQLModel, table=True):
+    __tablename__ = 'ioc_historical'
+
+    timestamp: datetime = Field(default=None, primary_key=True)
+    tidal_level: float = Field(default=None)
+
+
 
