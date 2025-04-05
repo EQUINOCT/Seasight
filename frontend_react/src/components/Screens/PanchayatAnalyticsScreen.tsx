@@ -86,6 +86,7 @@ const AnalyticsScreen: React.FC = () => {
                  <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Calendar</Typography>
                 </CardContent>
               </Card>
+            </Grid>
           </Grid>
 
           <Grid size={{xs:12}} sx={{ height: '49%' }}>
