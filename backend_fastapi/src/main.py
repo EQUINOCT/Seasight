@@ -301,7 +301,7 @@ async def get_realtime_monthwise_frequency_means(
     return results
 
 @app.get("/api/analytics/impact-data/threshold-area", response_model=List[BuiltUpAreaToThreshold])
-async def get_impact_threshold_area( 
+async def get_impact_builtup_area_to_threshold_levels( 
     session: SessionDep,
     region_id: Optional[str] = Query(default=None, description="Valid region id"),
 ):
