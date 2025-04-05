@@ -100,8 +100,7 @@ const FrequencyBarChart = () => {
                         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
                     }}
                     /> 
-                    <YAxis 
-                    domain={[0, 30]} 
+                    <YAxis  
                     // tickCount={3}
                     // ticks={ticks} 
                     tick={{ fill: '#5E6664', fontSize: 12 }}

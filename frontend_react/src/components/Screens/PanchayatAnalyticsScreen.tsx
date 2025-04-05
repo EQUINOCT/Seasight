@@ -7,6 +7,7 @@ import theme from "../theme";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import FrequencyBarChart from "../Charts/FrequencyBarChart";
+import BuiltUpAreaToThresholdChart from "../Charts/BuiltupAreaToThresholdChart";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
@@ -64,119 +65,12 @@ const AnalyticsScreen: React.FC = () => {
               <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
                 <CardContent>
                   {/* <Typography  sx={{ fontSize: '18px', mb: 2, color: "#000"}}>Current Level</Typography> */}
-                  <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
+                  <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
                       <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Frequency Area Chart</Typography>
-                     
-                      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px'}}>
-                        <DatePicker 
-                        label="Start Date"
-                        value={startDate ? dayjs(startDate) : null} 
-                        onChange={(newValue) => setStartDate(newValue ? newValue.toDate() : null)}
-                        slotProps={{
-                          textField: {
-                            sx: {
-                              // backgroundColor: '#488DA3', 
-                              width: '200px',
-                              color: '#488DA3',
-                              svg: { color: '#488DA3' },
-                              '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                  borderColor: '#488DA3',
-                                  borderRadius: '10px',
-                                },
-                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
-                                '&:hover fieldset': { borderColor: '#000' },
-                              },
-                            }
-                          },
-                          popper: {
-                            sx: {
-                              ".MuiPaper-root": { bgcolor: '#488DA3' },
-                              mb: 2,
-                            },
-                          },
-                        }}
-                        />
-                        <DatePicker 
-                        label="End Date"
-                        value={endDate ? dayjs(endDate) : null}
-                        onChange={(newValue) => setEndDate(newValue? newValue.toDate() : null)}
-                        minDate={startDate ? dayjs(startDate) : undefined} 
-                        slotProps={{
-                          textField: {
-                          
-                            sx: {
-                              width: '200px',
-                              svg: { color: '#488DA3' },
-                              '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                  borderColor: '#488DA3',
-                                  borderRadius: '10px',
-                                },
-                                '&.Mui-focused fieldset': { borderColor: '#488DA3' },
-                                '&:hover fieldset': { borderColor: '#000' },
-                              },
-                            }
-                          },
-                          popper: {
-                            sx: {
-                              ".MuiPaper-root": { bgcolor: '#488DA3' },
-                            },
-                          },
-                        }}
-                        />
-                        </Box>
-                      </LocalizationProvider> */}
                     </Grid>
-                    
-                    {/* <Grid size={{xs: 12, md: 9}}>
-                    <Grid 
-                      container 
-                      spacing={1} 
-                      justifyContent="flex-end" 
-                      alignItems="center" // Ensures buttons align properly
-                      sx={{ mb: -2 }} // Keeps your existing negative margin
-                    >
-                        <Button 
-                          sx={{ 
-                            fontSize: '12px',
-                            textTransform: 'none', 
-                            borderColor: '#488DA3', 
-                            bgcolor: projected? '#488DA3':'#fff',
-                            color: projected? '#fff':'#488DA3', 
-                            borderWidth: '1px', 
-                            width: '80px',
-                            height: '25px',
-                          }}
-                          onClick={() => setProjected (!projected)} 
-                          >
-                            Projection
-                          </Button>
-                          <Button 
-                          sx={{ 
-                            fontSize: '12px',
-                            textTransform: 'none', 
-                            borderColor: '#488DA3', 
-                            bgcolor: threshold? '#488DA3':'#fff',
-                            color: threshold? '#fff':'#488DA3', 
-                            borderWidth: '1px', 
-                            width: '80px',
-                            height: '25px',
-                          }}
-                          onClick={() => setThreshold (!threshold)} 
-                          >
-                            Threshold
-                          </Button>
-                        </Grid>
-                        <RealtimeAnalytics
-                          startDate={startDate}
-                          endDate={endDate}
-                          projected={projected}
-                        />
-                    </Grid> */}
+                    {BuiltUpAreaToThresholdChart({regionId: 'AR0005'})}
                   </Grid>
                 </CardContent>
               </Card>
