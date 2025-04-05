@@ -7,22 +7,26 @@ import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import { addLayerLocal, removeLayer } from '../../layers/PolygonLayer';
 
+type SelectedMapStyle = "basic" | "satellite";
+
 interface ImpactMapComponentProps {
   map: Map | undefined;
   setMap: (value: Map | undefined) => void;
+  selectedMapStyle: SelectedMapStyle;
   selectedLayer: string[];
   tidalLevel: number;
 }
 
 
-const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, selectedLayer, tidalLevel}) => {
+const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, selectedLayer, tidalLevel, selectedMapStyle}) => {
   const { config } = useConfig();
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const lng = config.MAP_CONFIG.LON;
   const lat = config.MAP_CONFIG.LAT;
   const zoom = config.MAP_CONFIG.ZOOM;
   const API_KEY = config.MAPTILER_API_KEY;
-  const mapStyleUrl = config.MAPS.IMPACT;
+  const mapStyleUrl = config.MAP_STYLE[selectedMapStyle.toUpperCase()];
+  console.log(mapStyleUrl, selectedMapStyle);
   const [activeLayers, setActiveLayers] = useState<{[key: string]: boolean}>(
     {'Roads': false,
      'Buildings': false,
@@ -35,7 +39,7 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
     if (mapContainer.current) {
       const map = new Map({
         container: mapContainer.current,
-        style: mapStyleUrl,
+        style: config.MAP_STYLE[selectedMapStyle.toUpperCase()],
         center: [lng, lat],
         zoom: zoom
       });   
@@ -51,7 +55,7 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
         map.remove();
       };
     }
-  }, []); 
+  }, [selectedMapStyle]); 
 
   useEffect(() => {
     if (!map) return; // Exit if the map is not initialize

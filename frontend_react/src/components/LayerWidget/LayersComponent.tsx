@@ -8,6 +8,8 @@ import { FaRoad } from "react-icons/fa";
 import { Button, Typography } from "@mui/material";
 import { Water } from "@mui/icons-material";
 
+type SelectedMapStyle = "basic" | "satellite";
+
 const boundaries = [
   'Admin',
   'Block',
@@ -17,11 +19,12 @@ const boundaries = [
 interface LayersComponentProps {
   selectedLayer: string[];
   setSelectedLayer: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedMapStyle: SelectedMapStyle;
+  setSelectedMapStyle: React.Dispatch<React.SetStateAction<SelectedMapStyle>>;
 }
 
-const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer}) => {
+const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer, selectedMapStyle, setSelectedMapStyle}) => {
   const [lsg, setLSG] = useState(false);
-  const [satellite, setSatellite] = useState(false);
   
   const handleSelect = (label: string) => {
     setSelectedLayer((prev: string[]) =>
@@ -63,12 +66,12 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
               <Button 
               sx={{
                 textTransform: 'none',
-                color: satellite? '#2B4A54': '#97C7D6',
-                backgroundColor: satellite ? "#fff" : "transparent",
+                color: selectedMapStyle === 'satellite'? '#2B4A54': '#97C7D6',
+                backgroundColor: selectedMapStyle === "satellite" ? "#fff" : "transparent",
                 p: 0,
                 border: '0.5px solid rgba(208, 236, 245, 0.8)'
               }}
-              onClick={() => setSatellite (!satellite)} 
+              onClick={() => selectedMapStyle === "basic" ? setSelectedMapStyle("satellite"): setSelectedMapStyle("basic")} 
               >
                 Satellite
               </Button>

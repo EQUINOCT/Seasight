@@ -13,9 +13,11 @@ import { useConfig } from '../../ConfigContext';
 import { data } from "@maptiler/sdk";
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
+type SelectedMapStyle = "basic" | "satellite";
 
 const MapScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
+  const [selectedMapStyle, setSelectedMapStyle] = useState<SelectedMapStyle>('basic');
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [timeStampAtLevel, setTimeStampAtLevel] = useState<Date>(new Date());
@@ -118,6 +120,7 @@ const MapScreen: React.FC = () => {
         <ImpactMapComponent
           map = {map}
           setMap = {setMap}
+          selectedMapStyle={selectedMapStyle}
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
         />
@@ -128,6 +131,8 @@ const MapScreen: React.FC = () => {
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}
+            selectedMapStyle={selectedMapStyle}
+            setSelectedMapStyle={setSelectedMapStyle}
           />
       </div>
       <div className="absolute right-0 bottom-0 pr-[20px] pb-[5px]">
