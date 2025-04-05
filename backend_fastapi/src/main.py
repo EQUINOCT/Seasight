@@ -13,7 +13,7 @@ from sqlmodel import create_engine, select, and_, func
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, List, Optional
 from pydantic import BaseModel
-from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel, DailyPeakDataModel
+from models import ImpactDataModel, TimePeriodModel, RealTimeDataModel, PredictedDataModel, DailyPeakDataModel
 
 
 
@@ -111,6 +111,10 @@ def get_default_time_period():
 class MonthlyAverage(BaseModel):
     month: int
     avg: float
+
+class BuiltUpAreaToThreshold(BaseModel):
+    threshold: float
+    area: float
 
 @app.get("/api/analytics/realtime-data/by-date-range")
 async def read_realtime_data(
@@ -294,6 +298,24 @@ async def get_realtime_monthwise_frequency_means(
     ]
     
     # Return response model object instead of DataFrame
+    return results
+
+@app.get("/api/analytics/impact-data/threshold-area", response_model=List[BuiltUpAreaToThreshold])
+async def get_impact_threshold_area( 
+    session: SessionDep,
+    region_id: Optional[str] = Query(default=None, description="Valid region id"),
+):
+    query = select(ImpactDataModel.threshold, ImpactDataModel.area_built_up_sq_km).where(
+        ImpactDataModel.polygon_id == region_id
+    ).order_by(ImpactDataModel.threshold.asc())
+
+    threshold_area_data = session.execute(query)
+    print(threshold_area_data)
+    results = [
+        {"threshold": float(threshold), "area": float(area)} 
+        for threshold, area in threshold_area_data
+    ]
+
     return results
 
 
