@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 
 //Import Plots
@@ -15,7 +15,6 @@ import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import AnalyticsMapWidgetComponent from "../Maps/AnalyticsMapWidgetComponent";
-import { getPickersCalendarHeaderUtilityClass } from "@mui/x-date-pickers/PickersCalendarHeader/pickersCalendarHeaderClasses";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 

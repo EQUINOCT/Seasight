@@ -23,11 +23,11 @@ const CustomTooltip = ({ active, payload }) => {
             <div 
             className="custom-tooltip"
             style={{ 
-                    padding: '8px',
+                    padding: '5px',
                     paddingTop: '1px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    color: 'white', 
-                    borderRadius: '4px',
+                    // backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                    // color: 'white', 
+                    // borderRadius: '4px',
                     fontSize: "14px",
                     }}
             >
@@ -191,13 +191,11 @@ const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate})
 
 
     return (
-      <div 
-    //   style={{ 
+      <div style={{ 
     //   border: '1px solid #ccc', 
     //   borderRadius: '8px',
-    //   padding: '8px',
-    //   }}
-    >
+      padding: '5px',
+        }}>
       {/* Debugging log */}
             
             <ResponsiveContainer minWidth={150} width="100%" height={150} >

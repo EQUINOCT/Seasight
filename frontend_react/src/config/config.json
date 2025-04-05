@@ -9,10 +9,31 @@
         "MONITORING": "https://api.maptiler.com/maps/streets-v2/style.json?key=rOzi4RnlGlqlLc5ozKz4",
         "IMPACT": "https://api.maptiler.com/maps/0e036edf-b1a8-4625-bc5e-359515a1b5a8/style.json?key=rOzi4RnlGlqlLc5ozKz4"
     },
+    "MAP_STYLE": {
+        "BASIC": "https://api.maptiler.com/maps/0e036edf-b1a8-4625-bc5e-359515a1b5a8/style.json?key=rOzi4RnlGlqlLc5ozKz4",
+        "SATELLITE": "https://api.maptiler.com/maps/satellite/style.json?key=rOzi4RnlGlqlLc5ozKz4"
+    },
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
-    "LAYER_URL": "/shapefiles",
+    "REGION": {
+        "admin": { 
+            "LAYER_ID": "regions-layer",
+            "OUTLINE_LAYER_ID": "regions-outline",
+            "SOURCE_ID": "regions-data",
+            "URL": "/Regions/admin_regions.geojson",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "OUTLINE_LAYER_TYPE": "line",
+            "COLOR_PARAM": "fill-color",
+            "OUTLINE_COLOR_PARAM": "line-color",
+            "COLOR": "#E0B0FF",
+            "OUTLINE_COLOR": "#5D3FD3",
+            "OPACITY_PARAM": "fill-opacity",
+            "OPACITY": 0.3,
+            "OBJECT_NAME": "Type"
+        }
+    },
     "IMPACT": {
         "Buildings": { 
             "LAYER_ID": "buildings-layer",

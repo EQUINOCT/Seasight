@@ -20,8 +20,9 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
         new Date('2025-02-03'),
         new Date('2025-03-04'),
         dateToday,
-        new Date('2025-03-28')
-    ];
+        new Date('2025-04-07')
+    ]
+
 
     const daysToDisplay = [...highTideDays];
 
