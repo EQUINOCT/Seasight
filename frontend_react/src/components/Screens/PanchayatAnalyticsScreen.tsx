@@ -76,6 +76,8 @@ const AnalyticsScreen: React.FC = () => {
                       <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Frequency Area Chart</Typography>
                     </Grid>
                     {BuiltUpAreaToThresholdChart({regionId: 'AR0006'})}
+ 
+                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>
