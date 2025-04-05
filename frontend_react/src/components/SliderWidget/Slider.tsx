@@ -10,6 +10,7 @@ import TideCard from '../TideCard/TideCard';
 const min = 0.5;
 const max = 2.0;
 const step = 0.1;
+const MSL = 0.7;
 
 const marks = Array.from({ length: (max - min) / step + 1 }, (_, index) => ({
   value: min + index * step,
