@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine, select, text
+from sqlalchemy import column, create_engine, extract, select, text
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import yaml
@@ -11,8 +11,9 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlmodel import create_engine, select, and_, func
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Annotated, Optional
-from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel
+from typing import Annotated, List, Optional
+from pydantic import BaseModel
+from models import TimePeriodModel, RealTimeDataModel, PredictedDataModel, DailyPeakDataModel
 
 
 
@@ -105,6 +106,11 @@ def get_default_time_period():
     end_date = datetime.now()
     start_date = end_date - timedelta(days=7)  # Default to last 7 days
     return start_date, end_date
+
+# Define Pydantic response models
+class MonthlyAverage(BaseModel):
+    month: int
+    avg: float
 
 @app.get("/api/analytics/realtime-data/by-date-range")
 async def read_realtime_data(
@@ -242,12 +248,53 @@ async def get_monthly_means_historical():
     # Convert 'date_month' to datetime
     df['date_month'] = pd.to_datetime(df['date_month'])
     df['decade'] = (df['date_month'].dt.year // 10) * 10
-    current_year = datetime.now().year
-    df['decade'] = df['decade'].apply(lambda year: f"{year}-{year+9}" if year+9 < current_year else f"{year}-{current_year}")
+    final_year = df.loc[len(df) - 1, 'date_month'].year
+    df['decade'] = df['decade'].apply(lambda year: f"{year}-{year+9}" if year+9 < final_year else f"{year}-{final_year}")
     # Group by the decade and calculate the average for each group
     grouped_df = df.groupby('decade', as_index=False).agg({'mean_level': 'mean'})
     return grouped_df.to_dict(orient='records')
+
+@app.get("/api/analytics/realtime-data/monthwise/frequency-means", response_model=List[MonthlyAverage])
+async def get_realtime_monthwise_frequency_means(
+    session: SessionDep,
+    threshold_level: Optional[float] = Query(default=None, description="Valid threshold level value"),
+):
     
+    # This approach with a subquery is more reliable
+    subquery = (
+        select(
+            extract('year', DailyPeakDataModel.timestamp).label('year'),
+            extract('month', DailyPeakDataModel.timestamp).label('month'),
+            func.count().label('days_above_threshold')
+        )
+        .where(DailyPeakDataModel.tidal_level > threshold_level)
+        .group_by(
+            extract('year', DailyPeakDataModel.timestamp),
+            extract('month', DailyPeakDataModel.timestamp)
+        )
+        .subquery()
+    )
+    
+    final_query = (
+        select(
+            column('month'),
+            func.avg(column('days_above_threshold')).label('avg')
+        )
+        .select_from(subquery)
+        .group_by(column('month'))
+        .order_by(column('month'))
+    )
+    
+    monthly_averages = session.execute(final_query).all()
+    
+    # Convert to list of dictionaries (JSON-serializable)
+    results = [
+        {"month": int(month), "avg": float(avg)} 
+        for month, avg in monthly_averages
+    ]
+    
+    # Return response model object instead of DataFrame
+    return results
 
 
 if __name__ == "__main__":
