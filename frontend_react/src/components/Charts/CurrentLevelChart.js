@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload }) => {
             >
                 <p>{`Tidal Level: ${tidal_level} m`}</p>
                 <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
-                          {formattedDate} <br/> {formattedTime}
+                          {formattedDate} <br/> {formattedTime} IST
                 </p>
             </div>
         );
@@ -115,14 +115,6 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
         }
     };
 
-    const handleLoadMore = () => {
-        setPagination({
-        ...pagination,
-        offset: pagination.offset + pagination.limit
-        });
-    };
-
-
     const parseDate = (dateString) => {
     if (!dateString) return null;
     
@@ -150,7 +142,8 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
     };
 
     const timeFormatter = (unixTime) => {
-        return new Date(unixTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Customize this format
+        var options = {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}
+        return new Date(unixTime).toLocaleTimeString([], options); // Customize this format
     };
 
     const dateFormatter = (unixTime) => {
@@ -158,7 +151,7 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
     };
 
 
-    // Generate ticks at **3-hour intervals**
+    // Generate ticks at **2-hour intervals**
     const generateHourlyTicks = (timePeriod) => {
         const ticks = [];
 
@@ -167,7 +160,7 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
 
         while (tickTime.getTime() <= timePeriod[1]) {
             ticks.push(tickTime.getTime());
-            tickTime.setHours(tickTime.getHours() + 2); // Move forward by 2 hours
+            tickTime.setHours(tickTime.getHours() + 3); // Move forward by 3 hours
         }
 
         return ticks;
@@ -252,11 +245,11 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
                     type="monotone" 
                     data={predictedData}
                     dataKey="tidal_level" 
-                    stroke=" #7F5A83" 
+                    stroke=" #FFA630" 
                     dot={{
                         strokeWidth: 0.7, 
                         r: 2, 
-                        fill: " #7F5A83"
+                        fill: " #FFA630"
                     }}
                     xAxisId="timeAxis"
                 />

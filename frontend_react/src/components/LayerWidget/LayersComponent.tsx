@@ -8,6 +8,8 @@ import { FaRoad } from "react-icons/fa";
 import { Button, Typography } from "@mui/material";
 import { Water } from "@mui/icons-material";
 
+type SelectedMapStyle = "basic" | "satellite";
+
 const boundaries = [
   'Admin',
   'Block',
@@ -17,11 +19,13 @@ const boundaries = [
 interface LayersComponentProps {
   selectedLayer: string[];
   setSelectedLayer: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedMapStyle: SelectedMapStyle;
+  setSelectedMapStyle: React.Dispatch<React.SetStateAction<SelectedMapStyle>>;
+  ifRegion: boolean;
+  setIfRegion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer}) => {
-  const [lsg, setLSG] = useState(false);
-  const [satellite, setSatellite] = useState(false);
+const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSelectedLayer, selectedMapStyle, setSelectedMapStyle, ifRegion, setIfRegion}) => {
   
   const handleSelect = (label: string) => {
     setSelectedLayer((prev: string[]) =>
@@ -51,24 +55,24 @@ const LayersComponent: React.FC<LayersComponentProps> = ({selectedLayer, setSele
               <Button
               sx={{
                 textTransform: 'none',
-                color: lsg? '#2B4A54': '#97C7D6',
-                backgroundColor: lsg ? "#fff" : "transparent",
+                color: ifRegion? '#2B4A54': '#97C7D6',
+                backgroundColor: ifRegion ? "#fff" : "transparent",
                 p:0,
                 border: '0.5px solid rgba(208, 236, 245, 0.8)'
               }}
-              onClick={() => setLSG (!lsg)} 
+              onClick={() => setIfRegion(!ifRegion)} 
               >
                 LSG
               </Button>
               <Button 
               sx={{
                 textTransform: 'none',
-                color: satellite? '#2B4A54': '#97C7D6',
-                backgroundColor: satellite ? "#fff" : "transparent",
+                color: selectedMapStyle === 'satellite'? '#2B4A54': '#97C7D6',
+                backgroundColor: selectedMapStyle === "satellite" ? "#fff" : "transparent",
                 p: 0,
                 border: '0.5px solid rgba(208, 236, 245, 0.8)'
               }}
-              onClick={() => setSatellite (!satellite)} 
+              onClick={() => selectedMapStyle === "basic" ? setSelectedMapStyle("satellite"): setSelectedMapStyle("basic")} 
               >
                 Satellite
               </Button>

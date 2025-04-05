@@ -1,5 +1,5 @@
-import React from "react";
-import AnalyticsScreen from './GaugeAnalyticsScreen';
+import React, {useState} from "react";
+import AnalyticsScreen from './MainAnalytics';
 import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {
@@ -10,20 +10,30 @@ interface MainDisplayProps {
 }
 
 const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl, activeView, onWidgetToggle, visibleWidgets }) => {
+  const [regionId, setRegionId] = useState<string>('AR0001'); 
   // Render based on active control and active view
   if (activeControl === 'map') {
-     return <MapScreen/>;
+     return <MapScreen
+    //  regionId = {regionId}
+    //  setRegionId = {setRegionId}
+     />;
     // Add conditions for other views like analytics, settings, etc.
 }
 // if (activeControl === 'Forecast') {
 //     if (activeView === 'Visualization') return <ForecastScreen />;
 // }
 if (activeControl === 'analytics') {
-    return <AnalyticsScreen />;
+    return <AnalyticsScreen
+        // regionId = {regionId}
+        // setRegionId = {setRegionId}
+    />;
 }
 
 // Default to the Monitoring map if no matching case
-return <MapScreen/>;
+return <MapScreen
+    // regionId = {regionId}
+    // setRegionId = {setRegionId}
+/>;
 };
 
 export default MainDisplay;
