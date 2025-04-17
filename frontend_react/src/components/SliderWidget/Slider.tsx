@@ -10,7 +10,7 @@ import TideCard from '../TideCard/TideCard';
 const min = 0.5;
 const max = 2.0;
 const step = 0.1;
-const MSL = 0.7;
+const MSL = 0.8;
 
 const marks = Array.from({ length: (max - min) / step + 1 }, (_, index) => ({
   value: min + index * step,
@@ -120,6 +120,27 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
               },
             }}
           />
+        </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            left: '10%', // Position it just outside the slider
+            top: `${((max - MSL) / (max - min)) * 100}%`, // Position based on MSL
+            transform: 'translateY(50%)',
+            display: 'flex',
+            alignItems: 'center',
+            ml: 1
+          }}
+        >
+          <Box
+            sx={{
+              width: '25px',
+              height: '1px',
+              borderBottom: '1px dotted #fff',
+              mr: 0.25
+            }}
+          />
+          <Typography sx={{ fontSize: '10px', color: '#fff' }}>MSL</Typography>
         </Box>
       </div>
       <div style={{
