@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload }) => {
                     paddingTop: '1px',
                     backgroundColor: 'rgba(0, 0, 0, 0.8)', 
                     color: 'white', 
-                    borderRadius: '4px',
+                    // borderRadius: '4px',
                     fontSize: "14px",
                     }}
             >
@@ -83,15 +83,10 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
 
     if (loading) return <p className='text-black'>Loading...</p>;
     if (error) return <p className='text-black'>Error: {error}</p>;
+    const ticks = [0, 2, 4, 6, 8];
 
     return (
-      <div 
-      style={{ 
-      border: '1px solid #ccc', 
-      borderRadius: '8px',
-      padding: '8px',
-      }}
-        >
+      <div>
       {/* Debugging log */}
             
         <ResponsiveContainer width="100%" height={300}>
@@ -118,7 +113,7 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
                     type="number" 
                     tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
-                    axisLine={false}
+                    // axisLine={false}
                     height={25}
                     label={{value: 'Threshold Levels(m)',
                             position: 'bottom',
@@ -134,10 +129,14 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
                     label={{ 
                         value: 'Built Up Area (SQ KM)', 
                         angle: -90, 
+                        dx: 10,
                         position: 'insideLeft', 
                         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
                     }}
                 />
+                {ticks.map(tick => (
+                        <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="50%" strokeDasharray="5 5" />
+                    ))}
                 <Tooltip content={<CustomTooltip />} />
             </ScatterChart>
           {/* </ErrorBoundary> */}
