@@ -14,7 +14,7 @@ const MSL = 0.7;
 
 const marks = Array.from({ length: (max - min) / step + 1 }, (_, index) => ({
   value: min + index * step,
-  label: index === 0 || index === (max - min) / step ? `${min + index * step}m` : undefined,
+  label: index === 0 || index === (max - min) / step ? `${min + index * step}m - MSL` : undefined,
 }))
 
 function valuetext(value: number) {
