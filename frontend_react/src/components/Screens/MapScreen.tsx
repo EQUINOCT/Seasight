@@ -137,7 +137,7 @@ const MapScreen: React.FC = () => {
 
       {/* Widgets */}
       <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-row items-left gap-[10px]">
-          <CalendarWidget/>
+          {/* <CalendarWidget/> */}
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}
