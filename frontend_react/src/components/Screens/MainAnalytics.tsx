@@ -10,6 +10,11 @@ import PanchayatAnalyticsScreen from './PanchayatAnalyticsScreen';
 
 type Station= 'gauge' | 'panchayat' ;
 
+// interface AnalyticsScreenProps {
+//   regionId: string;
+//   setRegionId: (value: string) => void;
+// }
+
 const AnalyticsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
   const handleStationClick = (station: Station) => {
@@ -21,7 +26,10 @@ const AnalyticsScreen: React.FC = () => {
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen/>;
+       return <PanchayatAnalyticsScreen
+      //  regionId = {regionId}
+      //  setRegionId = {setRegionId}
+       />;
       default:
         return null;
     }
