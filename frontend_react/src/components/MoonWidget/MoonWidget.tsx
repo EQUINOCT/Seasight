@@ -44,7 +44,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
       var date;
       try {
         const response = await axios.get(`${dataServeUrl}${endPoint}`);
-        date = new Date(response.data);
+        date = new Date(response.data['timestamp']);
       } catch {
         date = new Date();
       }
