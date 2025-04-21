@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -10,9 +11,11 @@ interface DateSelectorComponentProps {
 }
 
 const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDate, setSelectedDate}) => {
+  const [futureDateOnWidget, setFutureDateOnWidget] = React.useState<Date>(new Date());
   const [moonPhaseData, setMoonPhaseData] = React.useState<{ [key: string]: string }>({});
   const canvasRef = React.useRef<HTMLDivElement | null>(null);
   const dateToday = new Date();
+  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
   dateToday.setHours(0, 0, 0, 0);
 
     const highTideDays = [
@@ -20,7 +23,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
         new Date('2025-02-03'),
         new Date('2025-03-04'),
         dateToday,
-        new Date('2025-03-16')
+        futureDateOnWidget
     ];
 
     const daysToDisplay = [...highTideDays];
@@ -35,6 +38,18 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
         'Last Quarter': 0.5,
         'Waning Crescent': 0.25,
     };
+
+    const fetchFutureDateOnWidget = async  () => {
+      const endPoint = '/api/map/predicted-data/date-on-max-level';
+      var date;
+      try {
+        const response = await axios.get(`${dataServeUrl}${endPoint}`);
+        date = new Date(response.data);
+      } catch {
+        date = new Date();
+      }
+      setFutureDateOnWidget(date);
+    }
 
     const fetchMoonPhaseData = async () => {
      const moonPhaseData = await Promise.all(
@@ -83,6 +98,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
     };
 
     React.useEffect(() => { 
+        fetchFutureDateOnWidget();
         fetchMoonPhaseData();
     }, []);
 
