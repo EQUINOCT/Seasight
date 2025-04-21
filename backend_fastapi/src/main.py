@@ -221,12 +221,14 @@ async def get_max_predicted_tidal_level_for_date(
         return {"timestamp": None, "tidal_level": None}
 
 @app.get("/api/map/predicted-data/date-on-max-level")
-async def get_max_predicted_tidal_level_for_date(
+async def get_date_for_max_predicted_level(
     session: SessionDep
 ) -> dict:
     
+    start_date = datetime.today()
     # order by tidal_level and take the first result
     query = select(PredictedDataModel.timestamp, PredictedDataModel.tidal_level).where(
+        func.date(PredictedDataModel.timestamp) > func.date(start_date),
         PredictedDataModel.tidal_level < 2.0
     ).order_by(PredictedDataModel.tidal_level.desc()).limit(1)
     
@@ -235,7 +237,7 @@ async def get_max_predicted_tidal_level_for_date(
     if result:
         return {"timestamp": result[0], "tidal_level": result[1]}
     else:
-        return {"timestamp": None, "tidal_level": None}
+        return {"timestamp": datetime.now() + timedelta(days=2), "tidal_level": None}
        
 
 async def get_historical_data():
