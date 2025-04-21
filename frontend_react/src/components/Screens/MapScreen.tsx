@@ -2,13 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { Map } from 'maplibre-gl';
 import axios from 'axios';
 
-import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import MapControlBar from "../MapControlBar/MapControl";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
 import MoonWidget from "../MoonWidget/MoonWidget";
+import CalendarWidget from "../Calendar/CalendarWidget";
 import { useConfig } from '../../ConfigContext';
 import { data } from "@maptiler/sdk";
 
@@ -136,7 +136,8 @@ const MapScreen: React.FC = () => {
       </div>
 
       {/* Widgets */}
-      <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-col items-center">
+      <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-row items-left gap-[10px]">
+          {/* <CalendarWidget/> */}
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}
@@ -165,6 +166,9 @@ const MapScreen: React.FC = () => {
           setSelectedDate={setSelectedDate}
         />
       </div>
+      {/* <div className="absolute top-1/2 right-0 mr-[50px] transform -translate-y-1/2">
+        <CalendarWidget/>
+      </div> */}
       {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
         <div style={{
           backgroundColor: '#18181b',
@@ -184,7 +188,7 @@ const MapScreen: React.FC = () => {
       {/*Map Controls*/}
       <div className="absolute top-0 right-0 mt-[62px] mr-[5px]">
         <MapControlBar
-          map={ map }
+          map={map}
         />
       </div>
     </div>

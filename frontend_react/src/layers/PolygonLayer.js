@@ -88,7 +88,11 @@ async function addLayerLocal(map, layer, configData, tidalLevel) {
     // };
 
     const loadGeoJSON = async () => {
-        const tidalLevelInFilename = tidalLevel.toString().replace(/\./g, '_')
+        // Custom logic to handle discrepancy in tidal levels in DEMs and observed values by mapping the level
+        // to the layer shapefiles
+        // Linear relationship: tidal level + 0.7 = tidal level in DEM
+        tidalLevel = (Number(tidalLevel) - Number(0.7)).toFixed(2);
+        const tidalLevelInFilename = (tidalLevel).toString().replace(/\./g, '_')
         const fileUrl = `${layerUrl}${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
         try {
             const response = await fetch(fileUrl);

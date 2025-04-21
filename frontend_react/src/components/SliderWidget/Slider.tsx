@@ -1,19 +1,20 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Slider from '@mui/material/Slider';
-import { Box, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useConfig } from '../../ConfigContext';
+import Grid from '@mui/material/Grid2';
 import MinimalRealtimeLevelChart from '../Charts/MinimalRealtimeLevelChart.js';
+import TideCard from '../TideCard/TideCard';
 
-
-
-const min = 0.5;
-const max = 2.0;
+const min = 0.7;
+const max = 2.2;
 const step = 0.1;
+const MSL = 0.7;
 
 const marks = Array.from({ length: (max - min) / step + 1 }, (_, index) => ({
   value: min + index * step,
-  label: index === 0 || index === (max - min) / step ? `${min + index * step}m` : undefined,
+  label: index === 0 || index === (max - min) / step ? `${min + index * step}m - MSL` : undefined,
 }))
 
 function valuetext(value: number) {
@@ -29,7 +30,6 @@ interface SliderWidgetProps {
 }
 
 const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, timeStampAtLevel, selectedDate, loading }) => {
-
 
   // Calculate the height percentage based on current value
   const getTrackHeight = () => {
@@ -128,22 +128,39 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'start',
         overflowWrap: 'break-word', // Allow long words to break
         wordWrap: 'break-word', // Fallback for older browsers
         padding: '20px',
+        paddingTop: '12px',
+        gap: '5px',
         textAlign: 'center',
         color: '#ebebeb'
       }}>
+        <Typography sx={{ fontSize: '15px', alignSelf: 'start'}}>Current Level</Typography>
         <MinimalRealtimeLevelChart
           tidalLevel={tidalLevel}
           timeStampAtLevel={timeStampAtLevel}
           selectedDate={selectedDate}
         />
-        <Typography>
-          Tidal level: {tidalLevel} m on {timeStampAtLevel.toDateString()} {timeStampAtLevel.toTimeString()}
-        </Typography>
+        <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', padding: 0}}>
+          <Typography sx={{ fontSize: '15px'}}>Tidal level: {tidalLevel} m </Typography>
+          <Typography sx={{ fontSize: '12px'}}>
+            {timeStampAtLevel.toLocaleDateString('en-IN', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}, {timeStampAtLevel.toLocaleTimeString('en-IN', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true,
+              timeZone: 'Asia/Kolkata'
+            }).toUpperCase()} IST
+          </Typography>          
+        </Grid>
+        <Grid sx={{justifyContent: 'center'}}>
+          <TideCard/>
+        </Grid>
       </div>
     </Box>
   );

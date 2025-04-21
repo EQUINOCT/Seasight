@@ -57,17 +57,16 @@ const AnalyticsScreen: React.FC = () => {
                     >
                         Gauge
                     </Link>
-                    <Tooltip title="Coming Soon!" arrow>
-                        <Link 
-                            underline="hover" 
-                            sx={{ maxWidth: 100, height: '25px' }} 
-                            href="#panchayat"
-                            color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
-                            bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}
-                        >
-                            Panchayat
-                        </Link>
-                    </Tooltip>
+                    <Link 
+                    underline="hover" 
+                    sx={{ maxWidth: 100, height: '25px'}} 
+                    href="#panchayat"
+                    onClick={() => handleStationClick('panchayat')}
+                    color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
+                    bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}
+                    >
+                        Panchayat
+                    </Link>
                   </Grid>
                 </Grid>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Box, Card, CardContent, ThemeProvider, Typography } from "@mui/material";
+import { Button, Box, Card, CardContent, ThemeProvider, Typography, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Menu } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import theme from "../theme";
 import { Map } from 'maplibre-gl';
@@ -15,8 +15,26 @@ import RealtimeAnalytics  from "../Charts/CurrentLevelChart";
 import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import AnalyticsMapWidgetComponent from "../Maps/AnalyticsMapWidgetComponent";
+import { propEach } from "@turf/turf";
+import ArrowDropDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
+
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
+
+const projectionOptions = [
+  'INCOIS',
+  'Bias corrected',
+];
 
 // Previously impact-visualization screen in Insight Gather
 const AnalyticsScreen: React.FC = () => {
@@ -26,9 +44,35 @@ const AnalyticsScreen: React.FC = () => {
   const [projected, setProjected]  = useState(false);
   const [threshold, setThreshold]  = useState(false);
   const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  
+  const [projections, setProjections] = useState({
+    projection1: false,
+    projection2: false,
+  });
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setProjections({
+      ...projections,
+      [name]: checked,
+    });
+
+    // Set projected to true if Projection 1 is checked
+    if (name === 'projection1') {
+      setProjected(checked);
+    }
+  };
 
   // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
-
   const chartOptions:  {
     [key in historicalChartTypes]: {
         name: string;
@@ -59,6 +103,17 @@ const AnalyticsScreen: React.FC = () => {
   const renderChart = () => {
     return chartOptions[historicalChartTypeSelect].component;
   };
+
+  // const handleChange = (event: SelectChangeEvent<typeof predictType>) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setPredictType(
+  //     // On autofill we get a stringified value.
+  //     typeof value === 'string' ? value.split(',') : value,
+  //   );
+  // };
+
 
   return (
     <div className="w-full h-full relative flex flex-col">
@@ -156,13 +211,110 @@ const AnalyticsScreen: React.FC = () => {
                             bgcolor: projected? '#488DA3':'#fff',
                             color: projected? '#fff':'#488DA3', 
                             borderWidth: '1px', 
-                            width: '80px',
+                            width: '90px',
                             height: '25px',
+                            display: 'flex',
+                            alignItems: 'center',
                           }}
-                          onClick={() => setProjected (!projected)} 
+                          onClick={handleClick}
                           >
                             Projection
+                            <ArrowDropDownIcon sx={{ width: '16px', height: '16px', padding: 0}} />
                           </Button>
+                          <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                            sx={{ 
+                              fontSize: '12px',
+                              textTransform: 'none', 
+                              borderColor: '#488DA3', 
+                              borderWidth: '1px', 
+                              display: 'flex',
+                              alignItems: 'start',
+                              paddingLeft: 0,
+                            }}
+                          >
+                            <MenuItem
+                            sx={{
+                              bgcolor: '#fff',
+                              color: '#488DA3', 
+                              paddingLeft: 1,
+                            }}>
+                              <Checkbox
+                                checked={projections.projection1}
+                                onChange={handleCheckboxChange}
+                                name="projection1"
+                                sx={{ 
+                                color: '#488DA3', 
+                                '&.Mui-checked': { color: '#488DA3' },
+                                width: '15px', // Set width to 10px
+                                height: '15px', 
+                                padding: 1,
+                                '& svg': {
+                                  width: '15px', // Set the icon width to 10px
+                                  height: '15px', // Set the icon height to 10px
+                                },
+                              }}
+                              />
+                              <ListItemText 
+                              primary="INCOIS"
+                              slotProps={{
+                                primary: { style: { fontSize: '12px' } } // Change font size of label
+                              }}    
+                              />
+                            </MenuItem>
+                            <MenuItem
+                            sx={{
+                              bgcolor: '#fff',
+                              color: '#488DA3', 
+                              padding: 1,
+                            }}>
+                              <Checkbox
+                                checked={projections.projection2}
+                                onChange={handleCheckboxChange}
+                                name="projection2"
+                                sx={{ 
+                                  color: '#488DA3', 
+                                  '&.Mui-checked': { 
+                                    color: '#488DA3',
+                                  },
+                                  width: '15px', // Set width to 10px
+                                  height: '15px', 
+                                  padding: 1,
+                                  '& svg': {
+                                    width: '15px', // Set the icon width to 10px
+                                    height: '15px', // Set the icon height to 10px
+                                  },
+                                }}
+                              />
+                              <ListItemText 
+                              primary="Bias Corrected" 
+                              slotProps={{
+                                primary: { style: { fontSize: '12px' } } // Change font size of label
+                              }} />
+                            </MenuItem>
+                          </Menu>
+                          {/* <FormControl sx={{ m: 1, width: 300 }}>
+                            <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+                            <Select
+                              labelId="demo-multiple-checkbox-label"
+                              id="demo-multiple-checkbox"
+                              multiple
+                              value={predictType}
+                              onChange={handleChange}
+                              input={<OutlinedInput label="Tag" />}
+                              renderValue={(selected) => selected.join(', ')}
+                              MenuProps={MenuProps}
+                            >
+                              {projectionOptions.map((projection) => (
+                                <MenuItem key={projection} value={projection}>
+                                  <Checkbox checked={predictType.includes(projection)} />
+                                  <ListItemText primary={projection} />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl> */}
                           <Button 
                           sx={{ 
                             fontSize: '12px',
