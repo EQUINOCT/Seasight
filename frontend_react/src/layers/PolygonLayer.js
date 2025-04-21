@@ -94,7 +94,6 @@ async function addLayerLocal(map, layer, configData, tidalLevel) {
         tidalLevel = (Number(tidalLevel) - Number(0.7)).toFixed(2);
         const tidalLevelInFilename = (tidalLevel).toString().replace(/\./g, '_')
         const fileUrl = `${layerUrl}${config.URL_PREFIX}${tidalLevelInFilename}.geojson`;
-        console.log(fileUrl);
         try {
             const response = await fetch(fileUrl);
             if (!response.ok) {

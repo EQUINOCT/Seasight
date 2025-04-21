@@ -21,7 +21,7 @@
             "LAYER_ID": "regions-layer",
             "OUTLINE_LAYER_ID": "regions-outline",
             "SOURCE_ID": "regions-data",
-            "URL": "/Regions/admin_regions.geojson",
+            "URL": "/Regions/coastal_lsg.geojson",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "OUTLINE_LAYER_TYPE": "line",
