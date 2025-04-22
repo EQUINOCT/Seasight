@@ -10,6 +10,11 @@ import PanchayatAnalyticsScreen from './PanchayatAnalyticsScreen';
 
 type Station= 'gauge' | 'panchayat' ;
 
+// interface AnalyticsScreenProps {
+//   regionId: string;
+//   setRegionId: (value: string) => void;
+// }
+
 const AnalyticsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
   const handleStationClick = (station: Station) => {
@@ -21,7 +26,10 @@ const AnalyticsScreen: React.FC = () => {
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen/>;
+       return <PanchayatAnalyticsScreen
+      //  regionId = {regionId}
+      //  setRegionId = {setRegionId}
+       />;
       default:
         return null;
     }
@@ -42,7 +50,7 @@ const AnalyticsScreen: React.FC = () => {
                     <Link 
                     underline="hover" 
                     sx={{ maxWidth: 80, height: '25px'}} 
-                    href="#reservoir"
+                    href="#gauge"
                     onClick={() => handleStationClick('gauge')}
                     color={selectedStation === 'gauge' ? '#fff' : '#488DA3'}
                     bgcolor={selectedStation === 'gauge' ? '#488DA3' : '#fff'}
@@ -52,7 +60,7 @@ const AnalyticsScreen: React.FC = () => {
                     <Link 
                     underline="hover" 
                     sx={{ maxWidth: 100, height: '25px'}} 
-                    href="#groundwater"
+                    href="#panchayat"
                     onClick={() => handleStationClick('panchayat')}
                     color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
                     bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}

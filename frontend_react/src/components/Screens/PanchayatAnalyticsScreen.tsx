@@ -11,6 +11,11 @@ import BuiltUpAreaToThresholdChart from "../Charts/BuiltupAreaToThresholdChart";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
+// interface PanchayatAnalyticsScreenProps {
+//   regionId: string;
+//   setRegionId: (value: string) => void;
+// }
+
 // Previously impact-visualization screen in Insight Gather
 const AnalyticsScreen: React.FC = () => {
   // const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
@@ -70,7 +75,7 @@ const AnalyticsScreen: React.FC = () => {
                     <Grid size={{xs: 12, md: 3}}>
                       <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Built Up Area VS Threshold Chart</Typography>
                     </Grid>
-                    {BuiltUpAreaToThresholdChart({regionId: 'AR0005'})}
+                    {BuiltUpAreaToThresholdChart({regionId: 'AR0006'})}
                   </Grid>
                 </CardContent>
               </Card>

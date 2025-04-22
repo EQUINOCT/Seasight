@@ -2,20 +2,28 @@ import React, { useRef, useState, useEffect } from "react";
 import { Map } from 'maplibre-gl';
 import axios from 'axios';
 
-import AlertWidgetComponent from "../AlertWidget/AlertWidgetComponent";
 import LayersComponent from "../LayerWidget/LayersComponent";
 import ImpactMapComponent from "../Maps/ImpactMapComponent";
 import MapControlBar from "../MapControlBar/MapControl";
 import EQLogo from './Logo.png';
 import SliderWidget from "../SliderWidget/Slider";
 import MoonWidget from "../MoonWidget/MoonWidget";
+import CalendarWidget from "../Calendar/CalendarWidget";
 import { useConfig } from '../../ConfigContext';
 import { data } from "@maptiler/sdk";
 
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
+type SelectedMapStyle = "basic" | "satellite";
+
+// interface MapScreenProps {
+//   regionId: string;
+//   setRegionId:(value: string) => void;
+// }
 
 const MapScreen: React.FC = () => {
   const [map, setMap] = useState<Map>();
+  const [selectedMapStyle, setSelectedMapStyle] = useState<SelectedMapStyle>('basic');
+  const [ifRegion, setIfRegion] = useState<boolean>(false);
   const [selectedLayer, setSelectedLayer] = useState<string[]>(['Inundation']);
   const [tidalLevel, setTidalLevel] = useState<number>(1);
   const [timeStampAtLevel, setTimeStampAtLevel] = useState<Date>(new Date());
@@ -118,16 +126,25 @@ const MapScreen: React.FC = () => {
         <ImpactMapComponent
           map = {map}
           setMap = {setMap}
+          selectedMapStyle={selectedMapStyle}
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
+          ifRegion = {ifRegion}
+          // regionId = {regionId}
+          // setRegionId = {setRegionId}
         />
       </div>
 
       {/* Widgets */}
-      <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-col items-center">
+      <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-row items-left gap-[10px]">
+          <CalendarWidget/>
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}
+            selectedMapStyle={selectedMapStyle}
+            setSelectedMapStyle={setSelectedMapStyle}
+            ifRegion={ifRegion}
+            setIfRegion={setIfRegion}
           />
       </div>
       <div className="absolute right-0 bottom-0 pr-[20px] pb-[5px]">
@@ -149,6 +166,9 @@ const MapScreen: React.FC = () => {
           setSelectedDate={setSelectedDate}
         />
       </div>
+      {/* <div className="absolute top-1/2 right-0 mr-[50px] transform -translate-y-1/2">
+        <CalendarWidget/>
+      </div> */}
       {/* <div className="absolute top-0 left-1/2 mt-[70px] transform -translate-x-1/2">
         <div style={{
           backgroundColor: '#18181b',
@@ -168,7 +188,7 @@ const MapScreen: React.FC = () => {
       {/*Map Controls*/}
       <div className="absolute top-0 right-0 mt-[62px] mr-[5px]">
         <MapControlBar
-          map={ map }
+          map={map}
         />
       </div>
     </div>

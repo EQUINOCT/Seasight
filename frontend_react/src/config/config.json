@@ -9,16 +9,37 @@
         "MONITORING": "https://api.maptiler.com/maps/streets-v2/style.json?key=rOzi4RnlGlqlLc5ozKz4",
         "IMPACT": "https://api.maptiler.com/maps/0e036edf-b1a8-4625-bc5e-359515a1b5a8/style.json?key=rOzi4RnlGlqlLc5ozKz4"
     },
+    "MAP_STYLE": {
+        "BASIC": "https://api.maptiler.com/maps/0e036edf-b1a8-4625-bc5e-359515a1b5a8/style.json?key=rOzi4RnlGlqlLc5ozKz4",
+        "SATELLITE": "https://api.maptiler.com/maps/satellite/style.json?key=rOzi4RnlGlqlLc5ozKz4"
+    },
     "MARKER_BASE": {
         "URL": "https://res.cloudinary.com/dmjyqylzz/image/upload/v1726639729/marker_base_nprbdu.svg"
     },
-    "LAYER_URL": "/shapefiles",
+    "REGION": {
+        "admin": { 
+            "LAYER_ID": "regions-layer",
+            "OUTLINE_LAYER_ID": "regions-outline",
+            "SOURCE_ID": "regions-data",
+            "URL": "/Regions/coastal_lsg.geojson",
+            "MAP_OBJECT": "geojson",
+            "LAYER_TYPE": "fill",
+            "OUTLINE_LAYER_TYPE": "line",
+            "COLOR_PARAM": "fill-color",
+            "OUTLINE_COLOR_PARAM": "line-color",
+            "COLOR": "#E0B0FF",
+            "OUTLINE_COLOR": "#5D3FD3",
+            "OPACITY_PARAM": "fill-opacity",
+            "OPACITY": 0.3,
+            "OBJECT_NAME": "Type"
+        }
+    },
     "IMPACT": {
         "Buildings": { 
             "LAYER_ID": "buildings-layer",
             "OUTLINE_LAYER_ID": "buildings-outline",
             "SOURCE_ID": "buildings-data",
-            "URL_PREFIX": "/Coastal_Buildings/coastal_buildings",
+            "URL_PREFIX": "/Coastal_Buildings/building_alp_",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
@@ -32,7 +53,7 @@
             "LAYER_ID": "roads-layer",
             "OUTLINE_LAYER_ID": "roads-outline",
             "SOURCE_ID": "roads-data",
-            "URL_PREFIX": "/Coastal_Roads/coastal_roads",
+            "URL_PREFIX": "/Coastal_Roads/roads_alp_",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "line",
             "COLOR_PARAM": "line-color",
@@ -46,7 +67,7 @@
             "LAYER_ID": "landcover-layer",
             "OUTLINE_LAYER_ID": "landcover-outline",
             "SOURCE_ID": "landcover-data",
-            "URL_PREFIX": "/Coastal_Landcover/coastal_landcover",
+            "URL_PREFIX": "/Coastal_Landcover/latest_alp_",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",
@@ -61,7 +82,7 @@
             "LAYER_ID": "inundation-layer",
             "OUTLINE_LAYER_ID": "inundation-outline",
             "SOURCE_ID": "inundation-boundary",
-            "URL_PREFIX": "/Flood_Inundation/flood_inundation",
+            "URL_PREFIX": "/Flood_Inundation/elevation_nowater_alp_",
             "MAP_OBJECT": "geojson",
             "LAYER_TYPE": "fill",
             "COLOR_PARAM": "fill-color",

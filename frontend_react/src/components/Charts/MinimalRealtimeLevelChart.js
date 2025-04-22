@@ -195,6 +195,7 @@ const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate})
     //   border: '1px solid #ccc', 
     //   borderRadius: '8px',
       padding: '5px',
+      paddingBottom: 0,
         }}>
       {/* Debugging log */}
             
