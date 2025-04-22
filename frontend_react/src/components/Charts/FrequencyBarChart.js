@@ -2,31 +2,31 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, Rectangle, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
+import { ErrorBar } from 'recharts';
 import dayjs, { Dayjs } from 'dayjs';
 import ErrorBoundary from '../errorBoundary';
 
-
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const level = payload[0].payload['mean_level']; // Access the level value
-        // const dateTime = new Date(timestamp);
-        // const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        // const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-
+        const level = payload[0].payload['avg'];
+        const error = payload[0].payload['error'];
         if (typeof level === 'number' && !isNaN(level)) {
             return (
                 <div 
-                className="custom-tooltip"
-                style={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    color: 'white', 
-                    padding: '8px', 
-                    borderRadius: '4px',
-                    fontSize: "14px",
+                    className="custom-tooltip"
+                    style={{ 
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                        color: 'white', 
+                        padding: '8px', 
+                        borderRadius: '4px',
+                        fontSize: "14px",
                     }}
                 >
-                    <p style={{ margin: 0 }}>{`Mean Level: ${level.toFixed(2)} m`}</p>
+                {/* add toFixed(2) here */}
+                    <p style={{ margin: 0 }}>{`Mean Flooded Days: ${level}`}</p>
+                    {error !== null && (
+                        <p style={{ margin: 0 }}>{`± ${error}`}</p>
+                    )}
                 </div>
             );
         }
@@ -57,7 +57,11 @@ const FrequencyBarChart = () => {
                 }
         });
 
-        const formattedData = await response.data;
+        const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formattedData = response.data.map(d => ({
+        ...d,
+        month: monthLabels[d.month - 1]  // if month is 1-based
+        }));
 
         setData(formattedData);
         } catch (error) {
@@ -69,23 +73,26 @@ const FrequencyBarChart = () => {
 
     if (loading) return <p className='text-black'>Loading...</p>;
     if (error) return <p className='text-black'>Error: {error}</p>;
+    const ticks = [0, 5, 10, 15, 20];
+    // const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
     let lastDisplayedYear = null;
     // const ticks=[0.5, 1.0, 1.5, 2];
     console.log(data);
 
     return (
-        <ResponsiveContainer width="100%" height={330}>
+        <ResponsiveContainer width="100%" height={300}>
              {/* <ErrorBoundary> */}
                 <BarChart 
                     width="100%"
                     height="100%"
                     data={data}
+                    paddingLeft={0}
                     margin={{
-                        top: 10,
+                        top: 20,
                         right: 30,
-                        left: 20,
-                        bottom: 30,
+                        left: 0,
+                        bottom: 10
                     }}
                 > 
                     
@@ -93,30 +100,40 @@ const FrequencyBarChart = () => {
                     <XAxis 
                     dataKey="month"
                     tick={{ fill: '#5E6664', fontSize: 12}}
+                    // ticks={months}
+                    tickLine={false}
                     label={{ 
-                        value: 'Years', 
+                        value: 'Months', 
                         position: 'center',
-                        dy: 35,
+                        dy: 20,
                         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
                     }}
                     /> 
                     <YAxis  
-                    // tickCount={3}
-                    // ticks={ticks} 
+                    tickCount={5}
+                    ticks={ticks} 
                     tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
-                    // label={{ 
-                    //         value: 'Frequency', 
-                    //         angle: -90, 
-                    //         position: 'insideLeft', 
-                    //         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 15 }
-                    //     }}
+                    label={{ 
+                            value: 'Flooded Days', 
+                            angle: -90, 
+                            dx: 10,
+                            position: 'insideLeft', 
+                            style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
+                        }}
                     />
-                    {/* {ticks.map(tick => (
+                    {ticks.map(tick => (
                         <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="30%" strokeDasharray="5 5" />
-                    ))} */}
+                    ))}
                     <Bar type="monotone" dataKey="avg" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
+                    <ErrorBar 
+                        dataKey="error" 
+                        width={4} 
+                        strokeWidth={1.5} 
+                        stroke="#333"
+                        direction="y" 
+                    />
                     <Tooltip 
                         cursor={{fill: 'transparent'}}
                         content={<CustomTooltip />} 
