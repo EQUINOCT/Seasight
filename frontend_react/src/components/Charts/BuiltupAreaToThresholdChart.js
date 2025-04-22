@@ -7,16 +7,8 @@ import { useConfig } from '../../ConfigContext';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const { tidal_level, timestamp } = payload[0].payload; // Access the level value
+        const { area, threshold} = payload[0].payload; // Access the level value
         
-        const dateTime = timestamp ? new Date(timestamp) : null;
-        const formattedDate = dateTime
-            ? dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-            : 'N/A';
-        const formattedTime = dateTime
-            ? dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})
-            : 'N/A';
-
         return (
             <div 
             className="custom-tooltip"
@@ -29,10 +21,8 @@ const CustomTooltip = ({ active, payload }) => {
                     fontSize: "14px",
                     }}
             >
-                <p>{`Tidal Level: ${tidal_level} m`}</p>
-                <p style={{ margin: "0px 0 0", fontSize: "12px", opacity: 0.8 }}>
-                          {formattedDate} <br/> {formattedTime} IST
-                </p>
+                <p>{`Threshold Level: ${threshold} m`}</p>
+                <p>{`Built Up Area: ${area} sq km`}</p>
             </div>
         );
     }
@@ -43,9 +33,6 @@ const CustomMarker = ({ cx, cy, size, fill }) => {
     return <circle cx={cx} cy={cy} r={size} fill={fill} />;
 };
 
-const CustomMarkerLast = ({ cx, cy, size }) => {
-    return <circle cx={cx} cy={cy} r={size} fill="red" stroke="red" strokeWidth={3} />;
-};
 
 const BuiltUpAreaToThresholdChart = ({ regionId }) => {
     const { config } = useConfig();
@@ -106,7 +93,7 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
             >
                 <Scatter 
                     name="Built Up Area" 
-                    dataKey="area" 
+                    dataKey="threshold" 
                     data={data} 
                     fill="#0081A7" 
                     shape={<CustomMarker size={4} fill={"#0081A7"}  />} 
@@ -114,13 +101,14 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
                     zAxis={12}
                 />
                 <XAxis 
-                    dataKey="threshold" 
+                    domain={[0, 5]}
+                    dataKey="area" 
                     type="number" 
                     tick={{ fill: '#5E6664', fontSize: 12 }}
                     tickLine={false}
                     axisLine={false}
-                    height={25}
-                    label={{value: 'Threshold Levels(m)',
+                    // height={25}
+                    label={{value: 'Builtup Area (SQ KM)',
                             position: 'bottom',
                             fontSize: 12
                     }}
@@ -132,7 +120,7 @@ const BuiltUpAreaToThresholdChart = ({ regionId }) => {
                     axisLine={false}
                     interval={0}  // Ensures all ticks are displayed 
                     label={{ 
-                        value: 'Built Up Area (SQ KM)', 
+                        value: 'Threshold Levels (m)', 
                         angle: -90, 
                         position: 'insideLeft', 
                         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }

@@ -68,7 +68,7 @@ const AnalyticsScreen: React.FC = () => {
                   <Grid size={{xs:12}} sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
                     
                     <Grid size={{xs: 12, md: 3}}>
-                      <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Frequency Area Chart</Typography>
+                      <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Built Up Area VS Threshold Chart</Typography>
                     </Grid>
                     {BuiltUpAreaToThresholdChart({regionId: 'AR0005'})}
                   </Grid>
