@@ -310,10 +310,11 @@ async def get_realtime_monthwise_frequency_means(
     
     monthly_averages = session.execute(final_query).all()
     
+    
     # Convert to list of dictionaries (JSON-serializable)
     results = [
         {"month": int(month), "avg": float(avg)} 
-        for month, avg in monthly_averages
+        for month, avg in monthly_averages if month not in [6, 7, 8, 9]
     ]
     
     # Return response model object instead of DataFrame
