@@ -2,31 +2,31 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, Rectangle, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Area } from 'recharts';
 import { useConfig } from '../../ConfigContext';
+import { ErrorBar } from 'recharts';
 import dayjs, { Dayjs } from 'dayjs';
 import ErrorBoundary from '../errorBoundary';
 
-
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-        const level = payload[0].payload['mean_level']; // Access the level value
-        // const dateTime = new Date(timestamp);
-        // const formattedDate = dateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        // const formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-
+        const level = payload[0].payload['avg'];
+        const error = payload[0].payload['error'];
         if (typeof level === 'number' && !isNaN(level)) {
             return (
                 <div 
-                className="custom-tooltip"
-                style={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    color: 'white', 
-                    padding: '8px', 
-                    borderRadius: '4px',
-                    fontSize: "14px",
+                    className="custom-tooltip"
+                    style={{ 
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                        color: 'white', 
+                        padding: '8px', 
+                        borderRadius: '4px',
+                        fontSize: "14px",
                     }}
                 >
-                    <p style={{ margin: 0 }}>{`Mean Level: ${level.toFixed(2)} m`}</p>
+                {/* add toFixed(2) here */}
+                    <p style={{ margin: 0 }}>{`Mean Flooded Days: ${level}`}</p>
+                    {error !== null && (
+                        <p style={{ margin: 0 }}>{`± ${error}`}</p>
+                    )}
                 </div>
             );
         }
@@ -127,6 +127,13 @@ const FrequencyBarChart = () => {
                         <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="30%" strokeDasharray="5 5" />
                     ))}
                     <Bar type="monotone" dataKey="avg" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
+                    <ErrorBar 
+                        dataKey="error" 
+                        width={4} 
+                        strokeWidth={1.5} 
+                        stroke="#333"
+                        direction="y" 
+                    />
                     <Tooltip 
                         cursor={{fill: 'transparent'}}
                         content={<CustomTooltip />} 
