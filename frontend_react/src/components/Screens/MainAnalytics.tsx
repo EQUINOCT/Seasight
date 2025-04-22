@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { ThemeProvider, Breadcrumbs, Link } from '@mui/material';
+import { ThemeProvider, Breadcrumbs, Link, Select, Box, FormControl, InputLabel, NativeSelect } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import theme from '../theme';
@@ -12,9 +12,20 @@ type Station= 'gauge' | 'panchayat' ;
 
 const AnalyticsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
+  const [panchayat, setPanchayat] = useState(false);
+
   const handleStationClick = (station: Station) => {
     setSelectedStation(station);
+    if(station === 'panchayat')
+    {
+      setPanchayat(true);
+    } else 
+    setPanchayat(false);
   }
+
+  // const handlePanchayat = (panchayat: boolean) => {
+  //   setPanchayat(true);
+  // }
 
   const renderTypeAnalytics = () => {
     switch (selectedStation) {
@@ -40,8 +51,15 @@ const AnalyticsScreen: React.FC = () => {
                 <Grid size={{xs: 12}} sx={{ height: '4%', pl: 1.5}}>  
                   <Grid className='flex flex-row font-inter gap-1'>
                     <Link 
-                    underline="hover" 
-                    sx={{ maxWidth: 80, height: '25px'}} 
+                    underline="none" 
+                    sx={{ 
+                      maxWidth: 80, 
+                      height: '25px',
+                      '&:hover': {
+                        bgcolor: selectedStation === 'gauge' ? '#3a7e91' : '#f0f9fb',
+                        textDecoration: 'none',
+                      },
+                    }} 
                     href="#gauge"
                     onClick={() => handleStationClick('gauge')}
                     color={selectedStation === 'gauge' ? '#fff' : '#488DA3'}
@@ -50,8 +68,15 @@ const AnalyticsScreen: React.FC = () => {
                         Gauge
                     </Link>
                     <Link 
-                    underline="hover" 
-                    sx={{ maxWidth: 100, height: '25px'}} 
+                    underline="none" 
+                    sx={{ 
+                      maxWidth: 100, 
+                      height: '25px',
+                      '&:hover': {
+                        bgcolor: selectedStation === 'panchayat' ? '#3a7e91' : '#f0f9fb',
+                        textDecoration: 'none',
+                      },
+                    }} 
                     href="#panchayat"
                     onClick={() => handleStationClick('panchayat')}
                     color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
@@ -59,6 +84,55 @@ const AnalyticsScreen: React.FC = () => {
                     >
                         Panchayat
                     </Link>
+                    {panchayat && (
+                     <Box sx={{
+                      minWidth: 120,
+                      height: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid #488DA3',
+                      borderRadius: '6px',
+                      px: 1,
+                      // bgcolor: '#fff',
+                      '&:hover': {
+                        bgcolor: '#488DA3',
+                      },
+                    }}>
+                     <FormControl fullWidth variant="standard">
+                       {/* <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                         Age
+                       </InputLabel> */}
+                       <NativeSelect
+                         disableUnderline
+                         defaultValue={1}
+                         inputProps={{
+                           name: 'panchayat',
+                           id: 'uncontrolled-native',
+                         }}
+                         sx={{
+                          fontSize: 14,
+                          color: '#f0f9fb',
+                          '&:focus': {
+                            backgroundColor: 'transparent',
+                          },
+                          '& .MuiNativeSelect-select': {
+                            color: '#f0f9fb',
+                            paddingRight: '12px'
+                          },
+                          '& svg': {
+                            color: '#f0f9fb', // icon color
+                            padding: 0,
+                          },
+                        }}
+                       >
+                         <option value={1}>Select Panchayat</option>
+                         <option value={10}>Panchayat 1</option>
+                         <option value={20}>Panchayat 2</option>
+                         <option value={30}>Panchayat 3</option>
+                       </NativeSelect>
+                     </FormControl>
+                   </Box>
+                    )}
                   </Grid>
                 </Grid>
 
