@@ -325,13 +325,22 @@ async def get_realtime_monthwise_frequency_means(
         )
     
     averages = session.execute(final_query).all()
-    
-    # return monthly_averages
-    # Convert to list of dictionaries (JSON-serializable)
-    results = [
-        {"stamp": int(temporal_stamp), "avg": float(avg)} 
-        for temporal_stamp, avg in averages 
-    ]
+
+    if month != 0:
+        # Create a dictionary from query results for easy lookup
+        year_averages = {int(year): float(avg) for year, avg in averages}
+
+        # Fill in gaps for all years from 2012 to 2024
+        results = []
+        for year in range(2012, 2025):  # 2025 is exclusive, so it goes up to 2024
+            avg_value = year_averages.get(year, 0)  # Default to 0 if year doesn't exist
+            results.append({"stamp": year, "avg": avg_value})
+    else:
+        # Convert to list of dictionaries (JSON-serializable)
+        results = [
+            {"stamp": int(temporal_stamp), "avg": float(avg)} 
+            for temporal_stamp, avg in averages 
+        ]
     
     # Return response model object instead of DataFrame
     return results
