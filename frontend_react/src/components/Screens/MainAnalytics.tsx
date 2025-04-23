@@ -13,6 +13,7 @@ type Station= 'gauge' | 'panchayat' ;
 const AnalyticsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
   const [panchayat, setPanchayat] = useState(false);
+  const [selectedPanchayatValue, setSelectedPanchayat] = useState('Ezhikkara');
 
   const handleStationClick = (station: Station) => {
     setSelectedStation(station);
@@ -32,7 +33,7 @@ const AnalyticsScreen: React.FC = () => {
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen/>;
+       return <PanchayatAnalyticsScreen selectedPanchayat={selectedPanchayatValue}/>;
       default:
         return null;
     }
@@ -104,7 +105,8 @@ const AnalyticsScreen: React.FC = () => {
                        </InputLabel> */}
                        <NativeSelect
                          disableUnderline
-                         defaultValue={1}
+                         defaultValue={'Ezhikkara'}
+                         onChange={(e) => setSelectedPanchayat(e.target.value)}
                          inputProps={{
                            name: 'panchayat',
                            id: 'uncontrolled-native',
@@ -125,10 +127,10 @@ const AnalyticsScreen: React.FC = () => {
                           },
                         }}
                        >
-                         <option value={1}>Select Panchayat</option>
-                         <option value={10}>Panchayat 1</option>
-                         <option value={20}>Panchayat 2</option>
-                         <option value={30}>Panchayat 3</option>
+                         <option value="Select Panchayat">Select Panchayat</option>
+                         <option value="Ezhikkara">Ezhikkara</option>
+                         <option value="Panchayat 2">Panchayat 2</option>
+                         <option value="Panchayat 3">Panchayat 3</option>
                        </NativeSelect>
                      </FormControl>
                    </Box>

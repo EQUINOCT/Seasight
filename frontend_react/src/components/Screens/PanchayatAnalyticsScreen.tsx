@@ -8,11 +8,16 @@ import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import FrequencyBarChart from "../Charts/FrequencyBarChart";
 import BuiltUpAreaToThresholdChart from "../Charts/BuiltupAreaToThresholdChart";
+import ExpandedCalendar from "../Calendar/ExpandedCalendar";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
+type Props = {
+  selectedPanchayat: string;
+};
+
 // Previously impact-visualization screen in Insight Gather
-const AnalyticsScreen: React.FC = () => {
+const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
   // const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
   // const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
   // const [loading, setLoading] = useState(true);
@@ -155,11 +160,7 @@ const AnalyticsScreen: React.FC = () => {
 
              {/*C2*/}
             <Grid size={{xs: 12, md: 3}}>
-              <Card sx={{ bgcolor: "#EBF9F5", height: '100%'}}>
-                <CardContent>
-                    <Typography  sx={{ fontSize: '18px', color: '#000', mb: 2}}>Calendar</Typography>
-                </CardContent>
-              </Card>
+              <ExpandedCalendar selectedPanchayat={selectedPanchayat}/>
             </Grid>
           </Grid>
         </Grid>
