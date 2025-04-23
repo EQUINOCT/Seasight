@@ -302,11 +302,12 @@ async def get_realtime_monthwise_frequency_means(
     if month == 0:
         final_query = (
             select(
-                func.cast(column('month'), String).label('month'),
+                column('month'),
+                # func.cast(column('month'), String).label('month'),
                 func.avg(column('days_above_threshold')).label('avg')
             )            
             .select_from(subquery)
-            .where(column('month').not_in(['6', '7', '8', '9']))
+            .where(column('month').not_in([6, 7, 8, 9]))
             .group_by(column('month'))
             .order_by(column('month'))
         )
