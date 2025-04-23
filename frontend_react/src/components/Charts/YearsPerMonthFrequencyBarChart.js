@@ -9,7 +9,6 @@ import ErrorBoundary from '../errorBoundary';
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const level = payload[0].payload['avg'];
-        const error = payload[0].payload['error'];
         if (typeof level === 'number' && !isNaN(level)) {
             return (
                 <div 
@@ -24,9 +23,6 @@ const CustomTooltip = ({ active, payload }) => {
                 >
                 {/* add toFixed(2) here */}
                     <p style={{ margin: 0 }}>{`Mean Flooded Days: ${level}`}</p>
-                    {error !== null && (
-                        <p style={{ margin: 0 }}>{`± ${error}`}</p>
-                    )}
                 </div>
             );
         }
@@ -57,6 +53,7 @@ const YearsPerMonthFrequencyBarChart = ({month}) => {
                     month: temporalValue
                 }
         });
+
 
         setData(response.data);
         } catch (error) {
@@ -92,9 +89,8 @@ const YearsPerMonthFrequencyBarChart = ({month}) => {
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
-                    dataKey="year"
+                    dataKey="stamp"
                     tick={{ fill: '#5E6664', fontSize: 12}}
-                    // ticks={months}
                     tickLine={false}
                     label={{ 
                         value: 'Years', 

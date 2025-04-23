@@ -65,7 +65,7 @@ const FrequencyBarChart = ({setMonth}) => {
         const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const formattedData = response.data.map(d => ({
         ...d,
-        month: monthLabels[d.month - 1]  // if month is 1-based
+        month: monthLabels[d.stamp - 1]  // if month is 1-based
         }));
 
         setData(formattedData);
@@ -79,10 +79,10 @@ const FrequencyBarChart = ({setMonth}) => {
     if (loading) return <p className='text-black'>Loading...</p>;
     if (error) return <p className='text-black'>Error: {error}</p>;
     const ticks = [0, 5, 10, 15, 20];
-    // const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
     let lastDisplayedYear = null;
     // const ticks=[0.5, 1.0, 1.5, 2];
+    
 
     return (
         <ResponsiveContainer width="100%" height={300}>
