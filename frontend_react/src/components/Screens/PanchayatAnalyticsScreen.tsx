@@ -8,6 +8,7 @@ import HistoricalMeanChart  from "../Charts/HistoricalMeanChart";
 import DecadalMeanChart from "../Charts/DecadalMeanChart";
 import FrequencyBarChart from "../Charts/FrequencyBarChart";
 import BuiltUpAreaToThresholdChart from "../Charts/BuiltupAreaToThresholdChart";
+import YearsPerMonthFrequencyBarChart from "../Charts/YearsPerMonthFrequencyBarChart";
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
@@ -23,6 +24,7 @@ const AnalyticsScreen: React.FC = () => {
   // const [loading, setLoading] = useState(true);
   // const [projected, setProjected]  = useState(false);
   // const [threshold, setThreshold]  = useState(false);
+  const [month, setMonth] = useState(1);
   const [historicalChartTypeSelect, setHistoricalChartTypeSelect] = useState<historicalChartTypes>('monthlymean');
 
   // const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
@@ -126,7 +128,7 @@ const AnalyticsScreen: React.FC = () => {
                         <Typography sx={{ fontSize: '18px', color: '#000', whiteSpace: 'nowrap' }}>
                           Average Flooded Days
                         </Typography>
-                        {FrequencyBarChart()}
+                        {FrequencyBarChart({setMonth: setMonth})}
                       </Box>
                       {/* {renderChart()} */}
                     </CardContent>
@@ -150,6 +152,7 @@ const AnalyticsScreen: React.FC = () => {
                         <Typography sx={{ fontSize: '18px', color: '#000', whiteSpace: 'nowrap' }}>
                           Month-wise
                         </Typography>
+                        {YearsPerMonthFrequencyBarChart({month: month})}
                       </Box>
                       {/* {renderChart()} */}
                     </CardContent>

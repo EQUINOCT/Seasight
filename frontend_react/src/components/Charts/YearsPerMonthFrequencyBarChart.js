@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-const FrequencyBarChart = ({setMonth}) => {
+const YearsPerMonthFrequencyBarChart = ({month}) => {
     const { config } = useConfig();
     const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
 
@@ -43,13 +43,9 @@ const FrequencyBarChart = ({setMonth}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const handleBarClick = (data) => {
-        setMonth(data.stamp);
-    }
-
     useEffect(() => {
-        fetchData('/api/analytics/realtime-data/monthwise/frequency-means', 2, 0);
-    }, [dataServeUrl]);
+        fetchData('/api/analytics/realtime-data/monthwise/frequency-means', 2, month);
+    }, [dataServeUrl, month]);
 
     const fetchData = async (endPoint, thresholdLevel, temporalValue) => {
         setLoading(true);
@@ -62,13 +58,7 @@ const FrequencyBarChart = ({setMonth}) => {
                 }
         });
 
-        const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const formattedData = response.data.map(d => ({
-        ...d,
-        month: monthLabels[d.month - 1]  // if month is 1-based
-        }));
-
-        setData(formattedData);
+        setData(response.data);
         } catch (error) {
         console.error('Error fetching analytics data:', error);
         } finally {
@@ -79,10 +69,10 @@ const FrequencyBarChart = ({setMonth}) => {
     if (loading) return <p className='text-black'>Loading...</p>;
     if (error) return <p className='text-black'>Error: {error}</p>;
     const ticks = [0, 5, 10, 15, 20];
-    // const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-
+   
     let lastDisplayedYear = null;
     // const ticks=[0.5, 1.0, 1.5, 2];
+    console.log(data);
 
     return (
         <ResponsiveContainer width="100%" height={300}>
@@ -102,12 +92,12 @@ const FrequencyBarChart = ({setMonth}) => {
                     
                     {/* <CartesianGrid vertical={false} /> */}
                     <XAxis 
-                    dataKey="month"
+                    dataKey="year"
                     tick={{ fill: '#5E6664', fontSize: 12}}
                     // ticks={months}
                     tickLine={false}
                     label={{ 
-                        value: 'Months', 
+                        value: 'Years', 
                         position: 'center',
                         dy: 20,
                         style: { textAnchor: 'middle', fill: '#5E6664', fontSize: 12 }
@@ -130,12 +120,7 @@ const FrequencyBarChart = ({setMonth}) => {
                     {ticks.map(tick => (
                         <ReferenceLine key={tick} y={tick} stroke="#5E6664"  strokeOpacity="30%" strokeDasharray="5 5" />
                     ))}
-                    <Bar 
-                        type="monotone" 
-                        dataKey="avg" 
-                        fill='#488DA3' 
-                        activeBar={<Rectangle fill="#54F2F2"/>}
-                        onClick={handleBarClick}/>
+                    <Bar type="monotone" dataKey="avg" fill='#488DA3' activeBar={<Rectangle fill="#54F2F2"/>}/>
                     <ErrorBar 
                         dataKey="error" 
                         width={4} 
@@ -153,4 +138,4 @@ const FrequencyBarChart = ({setMonth}) => {
     );
 };
 
-export default FrequencyBarChart;
+export default YearsPerMonthFrequencyBarChart;
