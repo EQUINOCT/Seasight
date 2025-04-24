@@ -140,7 +140,7 @@ const SliderWidget: React.FC<SliderWidgetProps> = ({ tidalLevel, setTidalLevel, 
               mr: 0.25
             }}
           />
-          <Typography sx={{ fontSize: '10px', color: '#fff' }}>MSL</Typography>
+          {/* <Typography sx={{ fontSize: '10px', color: '#fff' }}>MSL</Typography> */}
         </Box>
       </div>
       <div style={{
