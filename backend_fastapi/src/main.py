@@ -9,7 +9,7 @@ import uvicorn
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from sqlmodel import create_engine, select, and_, func
+from sqlmodel import create_engine, select, and_, func, String
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, List, Optional
 from pydantic import BaseModel
@@ -277,10 +277,11 @@ async def get_monthly_means_historical():
     grouped_df = df.groupby('decade', as_index=False).agg({'mean_level': 'mean'})
     return grouped_df.to_dict(orient='records')
 
-@app.get("/api/analytics/realtime-data/monthwise/frequency-means", response_model=List[MonthlyAverage])
+@app.get('/api/analytics/realtime-data/monthwise/frequency-means')
 async def get_realtime_monthwise_frequency_means(
     session: SessionDep,
     threshold_level: Optional[float] = Query(default=None, description="Valid threshold level value"),
+    month: int = Query(default=0, description='Enter valid month number')
 ):
     
     # This approach with a subquery is more reliable
@@ -298,26 +299,53 @@ async def get_realtime_monthwise_frequency_means(
         .subquery()
     )
     
-    final_query = (
-        select(
-            column('month'),
-            func.avg(column('days_above_threshold')).label('avg')
+    if month == 0:
+        final_query = (
+            select(
+                column('month'),
+                # func.cast(column('month'), String).label('month'),
+                func.avg(column('days_above_threshold')).label('avg')
+            )            
+            .select_from(subquery)
+            .where(column('month').not_in([6, 7, 8, 9]))
+            .group_by(column('month'))
+            .order_by(column('month'))
         )
-        .select_from(subquery)
-        .group_by(column('month'))
-        .order_by(column('month'))
-    )
+
+    else:
+        final_query = (
+            select(
+                column('year'),
+                func.avg(column('days_above_threshold'))
+            )
+            .where(column('month') == month)
+            .select_from(subquery)
+            .group_by(column('year'))
+            .order_by(column('year'))
+        )
     
-    monthly_averages = session.execute(final_query).all()
-    
-    # Convert to list of dictionaries (JSON-serializable)
-    results = [
-        {"month": int(month), "avg": float(avg)} 
-        for month, avg in monthly_averages
-    ]
+    averages = session.execute(final_query).all()
+
+    if month != 0:
+        # Create a dictionary from query results for easy lookup
+        year_averages = {int(year): float(avg) for year, avg in averages}
+
+        # Fill in gaps for all years from 2012 to 2024
+        results = []
+        for year in range(2012, 2025):  # 2025 is exclusive, so it goes up to 2024
+            avg_value = year_averages.get(year, 0)  # Default to 0 if year doesn't exist
+            results.append({"stamp": year, "avg": avg_value})
+    else:
+        # Convert to list of dictionaries (JSON-serializable)
+        results = [
+            {"stamp": int(temporal_stamp), "avg": float(avg)} 
+            for temporal_stamp, avg in averages 
+        ]
     
     # Return response model object instead of DataFrame
     return results
+
+
 
 @app.get("/api/analytics/impact-data/threshold-area", response_model=List[BuiltUpAreaToThreshold])
 async def get_impact_builtup_area_to_threshold_levels( 

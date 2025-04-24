@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ReferenceArea, ResponsiveContainer } from 'recharts';
 import { useConfig } from '../../ConfigContext';
 import dayjs from 'dayjs';
-import { Button } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -134,7 +134,7 @@ const HistoricalMeanChart = () => {
     // console.log(data.map(d => d.timestamp));
 
     return ( 
-        <div style={{ userSelect: "none", display: 'flex', flexDirection: 'column' }}>
+        <Grid2 style={{ userSelect: "none", display: 'flex', flexDirection: 'column' }}>
             <Button
                 style={{
                 textTransform: 'none',
@@ -151,7 +151,7 @@ const HistoricalMeanChart = () => {
                 Zoom Out
             </Button>
 
-            <ResponsiveContainer width="100%" height={290}>
+            <ResponsiveContainer width="100%" height={250} >
              {/* <ErrorBoundary> */}
                 <LineChart 
                     // key={`${left}-${right}`}
@@ -210,7 +210,7 @@ const HistoricalMeanChart = () => {
                 </LineChart>
             {/* </ErrorBoundary> */}
         </ResponsiveContainer>
-    </div>
+    </Grid2>
     );
 };
 

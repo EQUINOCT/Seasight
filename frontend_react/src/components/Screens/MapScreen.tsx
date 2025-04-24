@@ -15,12 +15,12 @@ import { data } from "@maptiler/sdk";
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 type SelectedMapStyle = "basic" | "satellite";
 
-// interface MapScreenProps {
-//   regionId: string;
-//   setRegionId:(value: string) => void;
-// }
+interface MapScreenProps {
+  regionId: string;
+  setRegionId:(value: string) => void;
+}
 
-const MapScreen: React.FC = () => {
+const MapScreen: React.FC<MapScreenProps> = ({regionId, setRegionId}) => {
   const [map, setMap] = useState<Map>();
   const [selectedMapStyle, setSelectedMapStyle] = useState<SelectedMapStyle>('basic');
   const [ifRegion, setIfRegion] = useState<boolean>(false);
@@ -39,7 +39,6 @@ const MapScreen: React.FC = () => {
 
 
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
-
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)
@@ -130,8 +129,8 @@ const MapScreen: React.FC = () => {
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
           ifRegion = {ifRegion}
-          // regionId = {regionId}
-          // setRegionId = {setRegionId}
+          regionId = {regionId}
+          setRegionId = {setRegionId}
         />
       </div>
 
