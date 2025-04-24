@@ -130,13 +130,7 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({regionId, tidalLevel}) =
               }
       });
 
-      const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const formattedData = response.data.map(d => ({
-      ...d,
-      month: monthLabels[d.stamp - 1]  // if month is 1-based
-      }));
-
-      setData(formattedData);
+      setData(response.data);
       } catch (error) {
       console.error('Error fetching analytics data:', error);
       } finally {
