@@ -65,7 +65,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
                     // image: getMoonPhaseImage(phase),
                 };
             }
-            console.log('Logging moon phase data:',data);
+     
             return{
                 date: date.toDateString(),
                 phase: 'Unknown',
@@ -78,7 +78,7 @@ const DateSelectorComponent: React.FC<DateSelectorComponentProps> = ({selectedDa
      moonPhaseData.forEach((item) => {
         phaseData[item.date] = item.phase;
      });
-     console.log('Phase Data:', phaseData);
+
      setMoonPhaseData(phaseData);
     };
 

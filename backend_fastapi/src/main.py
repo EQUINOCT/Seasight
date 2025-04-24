@@ -9,11 +9,11 @@ import uvicorn
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from sqlmodel import create_engine, select, and_, func
+from sqlmodel import create_engine, select, and_, func, String
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Annotated, List, Optional
 from pydantic import BaseModel
-from models import ImpactDataModel, TimePeriodModel, RealTimeDataModel, PredictedDataModel, DailyPeakDataModel
+from models import ImpactDataModel, TimePeriodModel, RealTimeDataModel, PredictedDataModel, HistoricalDailyPeakDataModel, LSGDataModel, CurrentDailyPeakDataModel
 
 
 
@@ -238,7 +238,83 @@ async def get_date_for_max_predicted_level(
         return {"timestamp": result[0], "tidal_level": result[1]}
     else:
         return {"timestamp": datetime.now() + timedelta(days=2), "tidal_level": None}
-       
+    
+@app.get("/api/lsg-data/lsg-name", response_model=None)
+async def get_lsg_name(
+    session: SessionDep,
+    region_id: Optional[str] = Query(default=None, description='Valid region ID')
+) -> dict:
+    query = select(LSGDataModel.polygon_name).where(
+        LSGDataModel.region_id == region_id
+    )
+    result = session.execute(query).scalar()
+    print(result)
+    return {'lsg_name': result}
+
+
+@app.get("/api/impact-data/lsg/area", response_model=None)
+async def get_lsg_level_impact_data(
+    session: SessionDep,
+    region_id: Optional[str] = Query(default=None, description="Valid region ID"),
+    tidal_level: Optional[float] = Query(default=None, description="Valid tidal level value"),
+):
+    query = select(
+        ImpactDataModel.area_built_up_sq_km,
+        ImpactDataModel.area_agriculture_aquaculture_sq_km,
+        ImpactDataModel.area_agriculture_plantation_sq_km
+    ).where(
+        and_(
+            ImpactDataModel.polygon_id == region_id,
+            ImpactDataModel.threshold <= tidal_level
+        )
+    ).order_by(ImpactDataModel.threshold.desc()).limit(1)
+    
+    result = session.execute(query).first()
+    print(result)
+    if result:
+        return {
+            'urban': result[0],
+            'water': result[1],
+            'agriculture': result[2]
+        }
+    else:
+        return {
+            'urban': 0,
+            'water': 0,
+            'agriculture': 0
+        }
+    
+@app.get("/api/daily-peak-data/flood-days", response_model=None)
+async def get_tidal_flooded_days(
+    session: SessionDep,
+    region_id: Optional[str] = Query(default=None, description="Valid Region ID value"),
+    start_date: Optional[datetime] = Query(default=None, description="Start date in ISO format"),
+    end_date: Optional[datetime] = Query(default=None, description="End date in ISO format")
+) -> List:
+    
+    query = select(
+        LSGDataModel.threshold_level).where(
+            LSGDataModel.region_id == region_id)
+    
+    threshold_level = session.execute(query).scalar()
+    
+    query = select(CurrentDailyPeakDataModel.timestamp, CurrentDailyPeakDataModel.tidal_level).where(
+        and_(
+            CurrentDailyPeakDataModel.timestamp >= start_date,
+            CurrentDailyPeakDataModel.timestamp <= end_date
+        )
+    )
+
+    daily_peaks = session.execute(query).all()
+
+    result = []
+    for timestamp, peak in daily_peaks:
+        if peak > threshold_level:
+            result.append(datetime.strftime(timestamp, '%Y-%m-%d'))
+    if result:
+        return result
+    else:
+        return ['No dates available']
 
 async def get_historical_data():
     with engine.connect() as conn:
@@ -277,47 +353,75 @@ async def get_monthly_means_historical():
     grouped_df = df.groupby('decade', as_index=False).agg({'mean_level': 'mean'})
     return grouped_df.to_dict(orient='records')
 
-@app.get("/api/analytics/realtime-data/monthwise/frequency-means", response_model=List[MonthlyAverage])
+@app.get('/api/analytics/realtime-data/monthwise/frequency-means', response_model=None)
 async def get_realtime_monthwise_frequency_means(
     session: SessionDep,
     threshold_level: Optional[float] = Query(default=None, description="Valid threshold level value"),
+    month: int = Query(default=0, description='Enter valid month number')
 ):
     
     # This approach with a subquery is more reliable
     subquery = (
         select(
-            extract('year', DailyPeakDataModel.timestamp).label('year'),
-            extract('month', DailyPeakDataModel.timestamp).label('month'),
+            extract('year', HistoricalDailyPeakDataModel.timestamp).label('year'),
+            extract('month', HistoricalDailyPeakDataModel.timestamp).label('month'),
             func.count().label('days_above_threshold')
         )
-        .where(DailyPeakDataModel.tidal_level > threshold_level)
+        .where(HistoricalDailyPeakDataModel.tidal_level > threshold_level)
         .group_by(
-            extract('year', DailyPeakDataModel.timestamp),
-            extract('month', DailyPeakDataModel.timestamp)
+            extract('year', HistoricalDailyPeakDataModel.timestamp),
+            extract('month', HistoricalDailyPeakDataModel.timestamp)
         )
         .subquery()
     )
     
-    final_query = (
-        select(
-            column('month'),
-            func.avg(column('days_above_threshold')).label('avg')
+    if month == 0:
+        final_query = (
+            select(
+                column('month'),
+                # func.cast(column('month'), String).label('month'),
+                func.avg(column('days_above_threshold')).label('avg')
+            )            
+            .select_from(subquery)
+            .where(column('month').not_in([6, 7, 8, 9]))
+            .group_by(column('month'))
+            .order_by(column('month'))
         )
-        .select_from(subquery)
-        .group_by(column('month'))
-        .order_by(column('month'))
-    )
+
+    else:
+        final_query = (
+            select(
+                column('year'),
+                func.avg(column('days_above_threshold'))
+            )
+            .where(column('month') == month)
+            .select_from(subquery)
+            .group_by(column('year'))
+            .order_by(column('year'))
+        )
     
-    monthly_averages = session.execute(final_query).all()
-    
-    # Convert to list of dictionaries (JSON-serializable)
-    results = [
-        {"month": int(month), "avg": float(avg)} 
-        for month, avg in monthly_averages
-    ]
+    averages = session.execute(final_query).all()
+
+    if month != 0:
+        # Create a dictionary from query results for easy lookup
+        year_averages = {int(year): float(avg) for year, avg in averages}
+
+        # Fill in gaps for all years from 2012 to 2024
+        results = []
+        for year in range(2012, 2025):  # 2025 is exclusive, so it goes up to 2024
+            avg_value = year_averages.get(year, 0)  # Default to 0 if year doesn't exist
+            results.append({"stamp": year, "avg": avg_value})
+    else:
+        # Convert to list of dictionaries (JSON-serializable)
+        results = [
+            {"stamp": int(temporal_stamp), "avg": float(avg)} 
+            for temporal_stamp, avg in averages 
+        ]
     
     # Return response model object instead of DataFrame
     return results
+
+
 
 @app.get("/api/analytics/impact-data/threshold-area", response_model=List[BuiltUpAreaToThreshold])
 async def get_impact_builtup_area_to_threshold_levels( 

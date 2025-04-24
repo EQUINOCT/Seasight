@@ -25,7 +25,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   onWidgetToggle,
   visibleWidgets,
  }) => {
-  //console.log(activeControl, activeView);
+
   //const [activeControl, setActiveControl] = useState('monitor');
 
   return (

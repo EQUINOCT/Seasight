@@ -315,7 +315,7 @@ const AnalyticsScreen: React.FC = () => {
                               ))}
                             </Select>
                           </FormControl> */}
-                          <Button 
+                          {/* <Button 
                           sx={{ 
                             fontSize: '12px',
                             textTransform: 'none', 
@@ -329,7 +329,7 @@ const AnalyticsScreen: React.FC = () => {
                           onClick={() => setThreshold (!threshold)} 
                           >
                             Threshold
-                          </Button>
+                          </Button> */}
                         </Grid>
                         <RealtimeAnalytics
                           startDate={startDate}
