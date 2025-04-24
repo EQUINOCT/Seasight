@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {Map, NavigationControl, MapMouseEvent} from 'maplibre-gl';
+import {Map, NavigationControl, MapMouseEvent, LngLatBounds} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '../styles.css';
 import { useConfig } from "../../ConfigContext";
@@ -16,12 +16,12 @@ interface ImpactMapComponentProps {
   selectedLayer: string[];
   tidalLevel: number;
   ifRegion: boolean;
-  // regionId: string;
-  // setRegionId: (value: string) => void;
+  regionId: string;
+  setRegionId: (value: string) => void;
 }
 
 
-const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, selectedLayer, tidalLevel, selectedMapStyle, ifRegion}) => {
+const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, selectedLayer, tidalLevel, selectedMapStyle, ifRegion, regionId, setRegionId}) => {
   const { config } = useConfig();
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -81,7 +81,6 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
         layers: [layerId], // Replace with your layer name
       });
 
-      console.log(features);
 
       if (features.length) {
         const feature = features[0];
@@ -100,28 +99,45 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
       }
     };
 
-    // const handleClick = (e: MapMouseEvent) => {
-    //   const features = map.queryRenderedFeatures(e.point, {
-    //     layers: [layerId], // Replace with your layer name
-    //   });
+    const handleClick = (e: MapMouseEvent) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: [layerId], // Replace with your layer name
+      });
 
-    //   if (features.length) {
-    //     const feature = features[0];
-    //     // Display additional information or perform actions based on the clicked feature
-    //     alert(`You clicked on: ${feature.properties.name}`); // Example action
-    //   }
-    // };
+      if (features.length) {
+        const feature = features[0];
+        console.log(feature);
+        const geometry = feature.geometry as GeoJSON.Polygon;
+        let bounds = new LngLatBounds();
+    
+        geometry.coordinates[0].forEach(coord => {
+          bounds.extend(coord as [number, number]);
+        });
+        console.log(geometry.coordinates, bounds);
+      
+        // Fly to the bounds with some padding
+        map.fitBounds(bounds, {
+          padding: { top: 300, bottom: 300, left: 300, right: 300 },
+          // minZoom: 8,
+          maxZoom: 15,
+          duration: 1000
+        });
+        // Display additional information or perform actions based on the clicked feature
+        // alert(`You clicked on: ${feature.properties.region_id}`); // Example action
+        setRegionId(feature.properties.region_id);
+      }
+    };
 
     // Add event listeners
     map.on('mousemove', layerId, showTooltip);
     map.on('mouseleave', layerId, hideTooltip);
-    // map.on('click', layerId, handleClick);
+    map.on('click', layerId, handleClick);
 
     // Clean up event listeners on unmount
     return ()=> {
       map.off('mousemove', layerId, showTooltip);
       map.off('mouseleave', layerId, hideTooltip);
-      // map.off('click', layerId, handleClick);
+      map.off('click', layerId, handleClick);
     };
 
   }, [map]);
