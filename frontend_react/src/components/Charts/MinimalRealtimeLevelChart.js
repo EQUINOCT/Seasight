@@ -75,7 +75,7 @@ const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate})
             } else {
                 startDate.setDate(selectedDate.getDate() - 1);
             }
-            console.log(selectedDate, startDate, endDate);
+
             fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
         }
         else {

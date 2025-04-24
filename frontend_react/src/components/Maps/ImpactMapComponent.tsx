@@ -106,14 +106,13 @@ const ImpactMapComponent: React.FC<ImpactMapComponentProps> = ({map, setMap, sel
 
       if (features.length) {
         const feature = features[0];
-        console.log(feature);
         const geometry = feature.geometry as GeoJSON.Polygon;
         let bounds = new LngLatBounds();
     
         geometry.coordinates[0].forEach(coord => {
           bounds.extend(coord as [number, number]);
         });
-        console.log(geometry.coordinates, bounds);
+
       
         // Fly to the bounds with some padding
         map.fitBounds(bounds, {

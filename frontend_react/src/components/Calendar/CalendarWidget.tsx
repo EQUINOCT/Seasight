@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import Draggable from "react-draggable";
 import Stack from '@mui/material/Stack';
 import { Button, Card, CardContent, IconButton, Typography } from "@mui/material";
@@ -102,7 +103,47 @@ const DayCardScroller = () => {
   );
 };
 
-const CalendarWidget = () => {
+interface CalendarWidgetProps {
+  regionId: string;
+  tidalLevel: number;
+}
+
+const CalendarWidget: React.FC<CalendarWidgetProps> = ({regionId, tidalLevel}) => {
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState([]);
+  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+
+  useEffect(() => {
+        fetchData('/api/analytics/realtime-data/monthwise/frequency-means', regionId, tidalLevel);
+    }, [dataServeUrl]);
+
+  const fetchData = async (endPoint: string, regionId: string, tidalLevel: number) => {
+      setLoading(true);
+      try {
+          
+          const response = await axios.get(`${dataServeUrl}${endPoint}`, {
+              params: {
+                  region_id: regionId,
+                  tidal_level: tidalLevel
+              }
+      });
+
+      const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const formattedData = response.data.map(d => ({
+      ...d,
+      month: monthLabels[d.stamp - 1]  // if month is 1-based
+      }));
+
+      setData(formattedData);
+      } catch (error) {
+      console.error('Error fetching analytics data:', error);
+      } finally {
+      setLoading(false);
+      }
+  };
+
   return (
   <Draggable>
    <section className="flex flex-col text-white font-inter rounded-[18px] w-[300px] max-w-[300px] p-0 m-0 min-h-0 h-auto leading-tight overflow-hidden">

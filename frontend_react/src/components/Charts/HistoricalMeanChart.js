@@ -92,7 +92,7 @@ const HistoricalMeanChart = () => {
         return [(bottom | 0) - offset, (top | 0) + offset];
       };
 
-    // console.log("Sample data:", data[0]);
+
 
     const zoom = () => {
         if (zoomState.refAreaLeft === zoomState.refAreaRight || zoomState.refAreaRight === "") {
@@ -131,7 +131,7 @@ const HistoricalMeanChart = () => {
     if (error) return <p className='text-black'>Error: {error}</p>;
     const ticks = [-2, -1, 0, 1, 2, 3, 4];
 
-    // console.log(data.map(d => d.timestamp));
+
 
     return ( 
         <Grid2 style={{ userSelect: "none", display: 'flex', flexDirection: 'column' }}>

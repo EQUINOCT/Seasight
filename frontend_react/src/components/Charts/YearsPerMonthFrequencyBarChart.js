@@ -69,7 +69,7 @@ const YearsPerMonthFrequencyBarChart = ({month}) => {
    
     let lastDisplayedYear = null;
     // const ticks=[0.5, 1.0, 1.5, 2];
-    console.log(data);
+
 
     return (
         <ResponsiveContainer width="100%" height={300}>
