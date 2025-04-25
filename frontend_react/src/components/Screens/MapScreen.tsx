@@ -91,7 +91,6 @@ const MapScreen: React.FC<MapScreenProps> = ({regionId, setRegionId}) => {
     const result: TidalLevelResponse = await response.data;
     const maxTidalLevelOnDate = result.tidal_level;
     const timeStampAtMaxLevel: Date = new Date(result.timestamp);
-    console.log(result);
 
     if(typeof maxTidalLevelOnDate === 'number' && !isNaN(maxTidalLevelOnDate)) {
       setTidalLevel(Number(maxTidalLevelOnDate.toFixed(1)));
@@ -118,7 +117,6 @@ const MapScreen: React.FC<MapScreenProps> = ({regionId, setRegionId}) => {
     height: '100px', // Set the height to 100px
     objectFit: 'contain', // Maintain aspect ratio
    };
-  console.log(tidalLevel, timeStampAtLevel);
   return (
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <div className="absolute w-full h-full overflow-hidden">
@@ -136,7 +134,10 @@ const MapScreen: React.FC<MapScreenProps> = ({regionId, setRegionId}) => {
 
       {/* Widgets */}
       <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-row items-left gap-[10px]">
-          {/* <CalendarWidget/> */}
+          <CalendarWidget
+            regionId={regionId}
+            tidalLevel={tidalLevel}
+          />
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}
