@@ -15,12 +15,12 @@ import { data } from "@maptiler/sdk";
 type SelectedMapType = "flood-inundation" | "population" | "households" | "agriculture";
 type SelectedMapStyle = "basic" | "satellite";
 
-// interface MapScreenProps {
-//   regionId: string;
-//   setRegionId:(value: string) => void;
-// }
+interface MapScreenProps {
+  regionId: string;
+  setRegionId:(value: string) => void;
+}
 
-const MapScreen: React.FC = () => {
+const MapScreen: React.FC<MapScreenProps> = ({regionId, setRegionId}) => {
   const [map, setMap] = useState<Map>();
   const [selectedMapStyle, setSelectedMapStyle] = useState<SelectedMapStyle>('basic');
   const [ifRegion, setIfRegion] = useState<boolean>(false);
@@ -39,7 +39,6 @@ const MapScreen: React.FC = () => {
 
 
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
-
 
   useEffect(() => {
     fetch(`${dataServeUrl}/api/current-level`)
@@ -92,7 +91,6 @@ const MapScreen: React.FC = () => {
     const result: TidalLevelResponse = await response.data;
     const maxTidalLevelOnDate = result.tidal_level;
     const timeStampAtMaxLevel: Date = new Date(result.timestamp);
-    console.log(result);
 
     if(typeof maxTidalLevelOnDate === 'number' && !isNaN(maxTidalLevelOnDate)) {
       setTidalLevel(Number(maxTidalLevelOnDate.toFixed(1)));
@@ -119,7 +117,6 @@ const MapScreen: React.FC = () => {
     height: '100px', // Set the height to 100px
     objectFit: 'contain', // Maintain aspect ratio
    };
-  console.log(tidalLevel, timeStampAtLevel);
   return (
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <div className="absolute w-full h-full overflow-hidden">
@@ -130,14 +127,17 @@ const MapScreen: React.FC = () => {
           selectedLayer = {selectedLayer}
           tidalLevel = {tidalLevel}
           ifRegion = {ifRegion}
-          // regionId = {regionId}
-          // setRegionId = {setRegionId}
+          regionId = {regionId}
+          setRegionId = {setRegionId}
         />
       </div>
 
       {/* Widgets */}
       <div className="absolute top-1/2 right-0 mr-[20px] pb-5 transform -translate-y-1/2 flex flex-row items-left gap-[10px]">
-          {/* <CalendarWidget/> */}
+          <CalendarWidget
+            regionId={regionId}
+            tidalLevel={tidalLevel}
+          />
           <LayersComponent
             selectedLayer={selectedLayer}
             setSelectedLayer={setSelectedLayer}

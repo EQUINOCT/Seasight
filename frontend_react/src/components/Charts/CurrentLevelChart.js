@@ -61,7 +61,6 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
     offset: 0,
     limit: 5000
     });
-    console.log(predictedData);
     useEffect(() => {
         if (startDate && endDate) {
             fetchData('/api/analytics/realtime-data/by-date-range', startDate, endDate);
@@ -198,7 +197,6 @@ const RealtimeAnalytics = ({ startDate, endDate, projected }) => {
         (dataMax) => dataMax + 0.04 * (xAxisTimeTicks[xAxisTimeTicks.length - 1] - xAxisTimeTicks[0])
       ]
     : ['dataMin', 'dataMax']; // Fallback if xAxisTimeTicks is empty    
-    console.log('last', lastRealtimePoint);
     return (
       <div 
     //   style={{ 

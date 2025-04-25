@@ -4,18 +4,18 @@ import MapScreen from "./MapScreen";
 
 interface MainDisplayProps {
     activeControl: string;
-    activeView: string;
-    visibleWidgets: { alerts: boolean; layers: boolean; legend: boolean };
-    onWidgetToggle: (widget: "alerts" | "layers" | "legend", isVisible: boolean) => void;  
+    // activeView: string;
+    // visibleWidgets: { alerts: boolean; layers: boolean; legend: boolean };
+    // onWidgetToggle: (widget: "alerts" | "layers" | "legend", isVisible: boolean) => void;  
 }
 
-const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl, activeView, onWidgetToggle, visibleWidgets }) => {
-  const [regionId, setRegionId] = useState<string>('AR0001'); 
+const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl }) => {
+  const [regionId, setRegionId] = useState<string>('LSG000001'); 
   // Render based on active control and active view
   if (activeControl === 'map') {
      return <MapScreen
-    //  regionId = {regionId}
-    //  setRegionId = {setRegionId}
+     regionId = {regionId}
+     setRegionId = {setRegionId}
      />;
     // Add conditions for other views like analytics, settings, etc.
 }
@@ -24,15 +24,15 @@ const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl, activeView, on
 // }
 if (activeControl === 'analytics') {
     return <AnalyticsScreen
-        // regionId = {regionId}
-        // setRegionId = {setRegionId}
+        regionId = {regionId}
+        setRegionId = {setRegionId}
     />;
 }
 
 // Default to the Monitoring map if no matching case
 return <MapScreen
-    // regionId = {regionId}
-    // setRegionId = {setRegionId}
+    regionId = {regionId}
+    setRegionId = {setRegionId}
 />;
 };
 
