@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ThemeProvider, Breadcrumbs, Link, InputLabel, FormControl, Select, MenuItem } from '@mui/material';
+import { ThemeProvider, Breadcrumbs, Link, InputLabel, FormControl, Select, MenuItem, Box, NativeSelect } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import theme from '../theme';
@@ -61,7 +61,9 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen/>;
+       return <PanchayatAnalyticsScreen
+        regionId = {regionId}
+       />;
       default:
         return null;
     }
@@ -76,7 +78,7 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen selectedPanchayat={selectedPanchayatValue}/>;
+       return <PanchayatAnalyticsScreen regionId={regionId}/>;
       default:
         return null;
     }

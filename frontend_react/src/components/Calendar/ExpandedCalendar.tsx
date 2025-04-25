@@ -10,8 +10,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 
 
-type Props = {
-    selectedPanchayat: string;
+interface ExpandedCalendarProps {
+    regionId: string;
   };
 
   const daysShort = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -134,7 +134,7 @@ type Props = {
     '2025-04-18': 2.4,
   };
 
-  const ExpandedCalendar: React.FC<Props> = ({selectedPanchayat}) => {     
+  const ExpandedCalendar: React.FC<ExpandedCalendarProps> = ({regionId}) => {     
     const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
 
     const CustomDay = (props: PickersDayProps<Dayjs>) => {
@@ -174,7 +174,7 @@ type Props = {
                 alignItems: 'start',
                 gap: 1.5
             }}>
-                <Typography sx={{ fontSize: '24px', color: '#2B4A54', mb: -1.5}}> {selectedPanchayat} Panchayat </Typography>
+                <Typography sx={{ fontSize: '24px', color: '#2B4A54', mb: -1.5}}> {regionId} Panchayat </Typography>
                 <Typography sx={{  fontSize: '14px', color: '#2B4A54'}}> Tidal Calendar </Typography>
                 <DayCardScroller/>
                 <Box

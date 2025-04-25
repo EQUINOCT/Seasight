@@ -13,12 +13,12 @@ import YearsPerMonthFrequencyBarChart from "../Charts/YearsPerMonthFrequencyBarC
 
 type historicalChartTypes = 'monthlymean' | 'decadalmean' | 'monthwisedecadalmean';
 
-type Props = {
-  selectedPanchayat: string;
+interface PanchayatAnalyticsScreenProps {
+  regionId: string;
 };
 
 // Previously impact-visualization screen in Insight Gather
-const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
+const AnalyticsScreen: React.FC<PanchayatAnalyticsScreenProps> = ({regionId}) => {
   // const [startDate, setStartDate] = useState<Date | null>(new Date((new Date()).valueOf() - 2*1000*60*60*24));
   // const [endDate, setEndDate] = useState<Date | null>(new Date((new Date()).valueOf() + 2*1000*60*60*24));
   // const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
           
           <Grid size={{xs: 12}} sx={{ height: '100%', display: 'flex', flexDirection: 'row', gap: 1 }}>
             <Grid size={{xs: 12, md: 3}}>
-              <ExpandedCalendar selectedPanchayat={selectedPanchayat}/>
+              <ExpandedCalendar regionId={regionId}/>
             </Grid>
 
              {/*C2*/}
