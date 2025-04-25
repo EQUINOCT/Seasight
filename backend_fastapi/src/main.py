@@ -251,6 +251,13 @@ async def get_lsg_name(
     print(result)
     return {'lsg_name': result}
 
+@app.get("/api/lsg-data/all-stations", response_model=None)
+async def get_all_stations(
+    session: SessionDep
+) -> List:
+    query = select(LSGDataModel.polygon_name, LSGDataModel.region_id)
+    result = session.execute(query).all()
+    return [{'id': lsg_row[1], 'name': lsg_row[0]} for lsg_row in result] 
 
 @app.get("/api/impact-data/lsg/area", response_model=None)
 async def get_lsg_level_impact_data(
