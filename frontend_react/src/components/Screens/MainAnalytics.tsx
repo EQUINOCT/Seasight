@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { ThemeProvider, Breadcrumbs, Link } from '@mui/material';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { ThemeProvider, Breadcrumbs, Link, InputLabel, FormControl, Select, MenuItem } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import theme from '../theme';
@@ -9,6 +10,7 @@ import PanchayatAnalyticsScreen from './PanchayatAnalyticsScreen';
 
 
 type Station= 'gauge' | 'panchayat' ;
+
 
 // interface AnalyticsScreenProps {
 //   regionId: string;
@@ -21,19 +23,55 @@ const AnalyticsScreen: React.FC = () => {
     setSelectedStation(station);
   }
 
+  const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      fetchData("/api/lsg-data/all-stations");
+    });
+
+    const fetchData = async (endPoint: string) => {
+        setLoading(true);
+        try {        
+          const response = await axios.get(`${dataServeUrl}${endPoint}`)
+          const stationData = await response.data;
+          setData(stationData)
+
+        } catch (error) {
+        console.error('Error fetching station data:', error);
+        } finally {
+        setLoading(false);
+        }
+    };
+
+  const renderStationDropdown = () => {
+    switch (selectedStation) {
+      case 'gauge':
+        return <GaugeAnalyticsScreen/>;
+      case 'panchayat':
+       return <PanchayatAnalyticsScreen/>;
+      default:
+        return null;
+    }
+  };
+
   const renderTypeAnalytics = () => {
     switch (selectedStation) {
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen
-      //  regionId = {regionId}
-      //  setRegionId = {setRegionId}
-       />;
+       return <PanchayatAnalyticsScreen/>;
       default:
         return null;
     }
   };
+
+  const handleStationChange = () => {
+    console.log('station changed');
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -66,7 +104,22 @@ const AnalyticsScreen: React.FC = () => {
                     bgcolor={selectedStation === 'panchayat' ? '#488DA3' : '#fff'}
                     >
                         Panchayat
+                    
                     </Link>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={12}
+                        label="Age"
+                        onChange={handleStationChange}
+                      >
+                        <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
 
