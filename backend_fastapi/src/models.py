@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, String
 from datetime import datetime
 
 
@@ -16,17 +16,25 @@ class RealTimeDataModel(SQLModel, table=True):
     tidal_level: float = Field(default=None)
 
 class PredictedDataModel(SQLModel, table=True):
-    __tablename__ = "xx_predicted"
+    __tablename__ = "predicted_incois"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     timestamp: datetime = Field(default=None)
     tidal_level: float = Field(default=None)
 
-class DailyPeakDataModel(SQLModel, table=True):
+class HistoricalDailyPeakDataModel(SQLModel, table=True):
     __tablename__ = 'ioc_historical'
 
     timestamp: datetime = Field(default=None, primary_key=True)
     tidal_level: float = Field(default=None)
+
+class CurrentDailyPeakDataModel(SQLModel, table=True):
+    __tablename__ = 'peaks_daily'
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    timestamp: datetime = Field(default=None, primary_key=True)
+    tidal_level: float = Field(default=None)
+
 
 class ImpactDataModel(SQLModel, table=True):
     __tablename__ = 'impact_data'
@@ -41,8 +49,15 @@ class ImpactDataModel(SQLModel, table=True):
     area_other_classes_sq_km: float = Field(default=None)
     land_area_sq_km: float = Field(default=None)
     area_built_up_sq_km: float = Field(default=None)
+    district: str = Field(default=None)
     polygon_id: str = Field(default=None)
 
+class LSGDataModel(SQLModel, table=True):
+    __tablename__='coastal_lsg'
+
+    region_id: str = Field(default=None, primary_key=True)
+    polygon_name: str = Field(default=None)
+    threshold_level: float = Field(default=None)
 
 
 

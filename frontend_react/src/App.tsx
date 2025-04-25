@@ -7,6 +7,7 @@ import AnalyticsScreen from './components/Screens/MainAnalytics';
 // import AboutScreen from './components/Screens/AboutScreen';
 // import SettingScreen from './components/Screens/SettingScreen';
 import MainLayout from './MainLayout';
+import MainDisplay from './components/Screens/MainDisplay';
 
 
 const App: React.FC = () => {
@@ -37,15 +38,11 @@ const App: React.FC = () => {
    return (
       <Routes>
          <Route path="/" element={<MainLayout onWidgetToggle={onWidgetToggle} visibleWidgets={visibleWidgets}/>} >
-            <Route index element={<Navigate to="map" />} /> {/* Default route */}
-            <Route path="map" element={<MapScreen/>} />
-            {/* <Route path="monitor-analytics" element={<MonitorAnalyticsScreen />} /> */}
-            {/* <Route path="forecast-visualization" element={<ForecastScreen/>} /> */}
-            {/* <Route path="forecast-analytics" element={<ForecastAnalyticsScreen/>} /> */}
-            <Route path="analytics" element={<AnalyticsScreen/>} />
-            {/* <Route path="impact-analytics" element={<ImpactAnalyticsScreen/>} /> */}
-            {/* <Route path="about" element={<AboutScreen />} />
-            <Route path="settings" element={<SettingScreen />} /> */}
+            <Route index element={<Navigate to="map" />} /> Default route
+            <Route path="map" element={<MainDisplay activeControl='map'/>} />
+            <Route path="analytics" element={<AnalyticsScreen regionId={'LSG000001'} setRegionId={function (value: string): void {
+               throw new Error('Function not implemented.');
+            } }/>} />
          </Route>
       </Routes>
    );
