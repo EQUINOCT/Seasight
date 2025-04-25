@@ -89,7 +89,7 @@ const AnalyticsScreen: React.FC<PanchayatAnalyticsScreenProps> = ({regionId}) =>
                         </Typography>
                         <Grid size={{xs: 12}} style={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                           <Grid size={{xs: 12, md: 8}}>
-                          {BuiltUpAreaToThresholdChart({regionId: 'AR0005'})}
+                          {BuiltUpAreaToThresholdChart({regionId: regionId})}
                           </Grid>
                           <Grid size={{xs: 12, md: 4}} style={{marginLeft: '50px', display: 'flex', flexDirection: 'column', gap: 1 }}>
                             <Typography 
@@ -100,14 +100,14 @@ const AnalyticsScreen: React.FC<PanchayatAnalyticsScreenProps> = ({regionId}) =>
                             }}>
                               Information
                             </Typography>
-                            <Typography 
+                            {/* <Typography 
                             sx={{
                               fontSize: '12px', 
                               color: '#2B4A54', 
                               mb: 2
                             }}>
                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </Typography>
+                            </Typography> */}
                           </Grid>
                         </Grid>
                   </CardContent>

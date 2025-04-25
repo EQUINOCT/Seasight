@@ -11,17 +11,21 @@ import PanchayatAnalyticsScreen from './PanchayatAnalyticsScreen';
 
 type Station= 'gauge' | 'panchayat' ;
 
-
-
-interface AnalyticsScreenProps {
-  regionId: string;
-  setRegionId: (value: string) => void;
+interface StationData {
+  id: string;
+  name: string
 }
 
-const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}) => {
+// interface AnalyticsScreenProps {
+//   regionId: string;
+//   setRegionId: (value: string) => void;
+// }
+
+const AnalyticsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
   const [panchayat, setPanchayat] = useState(false);
   const [selectedPanchayatValue, setSelectedPanchayat] = useState('Ezhikkara');
+  const [regionId, setRegionId] = useState('LSG000001');
 
   const handleStationClick = (station: Station) => {
     setSelectedStation(station);
@@ -39,39 +43,23 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
   const [error, setError] = useState(null);
 
   useEffect(() => {
-      fetchData("/api/lsg-data/all-stations");
-    });
+    fetchData("/api/lsg-data/all-stations");
+  }, [dataServeUrl]);
 
-    const fetchData = async (endPoint: string) => {
-        setLoading(true);
-        try {        
-          const response = await axios.get(`${dataServeUrl}${endPoint}`)
-          const stationData = await response.data;
-          setData(stationData)
+  const fetchData = async (endPoint: string) => {
+      setLoading(true);
+      try {        
+        const response = await axios.get(`${dataServeUrl}${endPoint}`)
+        const stationData = await response.data;
+        setData(stationData);
 
-        } catch (error) {
-        console.error('Error fetching station data:', error);
-        } finally {
-        setLoading(false);
-        }
-    };
-
-  const renderStationDropdown = () => {
-    switch (selectedStation) {
-      case 'gauge':
-        return <GaugeAnalyticsScreen/>;
-      case 'panchayat':
-       return <PanchayatAnalyticsScreen
-        regionId = {regionId}
-       />;
-      default:
-        return null;
-    }
+      } catch (error) {
+      console.error('Error fetching station data:', error);
+      } finally {
+      setLoading(false);
+      }
   };
 
-  // const handlePanchayat = (panchayat: boolean) => {
-  //   setPanchayat(true);
-  // }
 
   const renderTypeAnalytics = () => {
     switch (selectedStation) {
@@ -84,9 +72,10 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
     }
   };
 
-  const handleStationChange = () => {
-    console.log('station changed');
-  }
+  // const setRegionIdForAnalytics = (value: string) => {
+  //   setRegionId(value);
+  // }
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -156,7 +145,7 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
                        <NativeSelect
                          disableUnderline
                          defaultValue={'Ezhikkara'}
-                         onChange={(e) => setSelectedPanchayat(e.target.value)}
+                         onChange={(e) => setRegionId(e.target.value)}
                          inputProps={{
                            name: 'panchayat',
                            id: 'uncontrolled-native',
@@ -177,10 +166,11 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
                           },
                         }}
                        >
-                         <option value="Select Panchayat">Select Panchayat</option>
-                         <option value="Ezhikkara">Ezhikkara</option>
-                         <option value="Panchayat 2">Panchayat 2</option>
-                         <option value="Panchayat 3">Panchayat 3</option>
+                      {data.map((station: StationData) => (
+                        <option key={station.id} value={station.id}>
+                          {station.name}
+                        </option>
+                      ))}
                        </NativeSelect>
                      </FormControl>
                    </Box>
