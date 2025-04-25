@@ -66,6 +66,11 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
         <Grid size={{xs: 12}} container spacing={1.5} sx={{ height: '100%', p: 1.5, pt: 0 }}>
           
           <Grid size={{xs: 12}} sx={{ height: '100%', display: 'flex', flexDirection: 'row', gap: 1 }}>
+            <Grid size={{xs: 12, md: 3}}>
+              <ExpandedCalendar selectedPanchayat={selectedPanchayat}/>
+            </Grid>
+
+             {/*C2*/}
             <Grid size={{xs: 12, md: 9}} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {/*C1*/}
               <Grid size={{xs:12}} sx={{ height: '49%' }}>
@@ -75,7 +80,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                         <Typography  
                         sx={{ 
                           fontSize: '18px', 
-                          color: '#000', 
+                          color: '#2B4A54', 
                           mb: 1
                         }}>
                           Frequency Area Chart
@@ -88,7 +93,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                             <Typography 
                             sx={{
                               fontSize: '16px', 
-                              color: '#000', 
+                              color: '#2B4A54', 
                               mb: 2
                             }}>
                               Information
@@ -96,7 +101,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                             <Typography 
                             sx={{
                               fontSize: '12px', 
-                              color: '#000', 
+                              color: '#2B4A54', 
                               mb: 2
                             }}>
                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -123,7 +128,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                           mb: 1
                         }}
                       >
-                        <Typography sx={{ fontSize: '18px', color: '#000', whiteSpace: 'nowrap' }}>
+                        <Typography sx={{ fontSize: '18px', color: '#2B4A54', whiteSpace: 'nowrap' }}>
                           Average Flooded Days
                         </Typography>
                         {FrequencyBarChart()}
@@ -147,7 +152,7 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                           mb: 2
                         }}
                       >
-                        <Typography sx={{ fontSize: '18px', color: '#000', whiteSpace: 'nowrap' }}>
+                        <Typography sx={{ fontSize: '18px', color: '#2B4A54', whiteSpace: 'nowrap' }}>
                           Month-wise
                         </Typography>
                       </Box>
@@ -156,11 +161,6 @@ const AnalyticsScreen: React.FC<Props> = ({selectedPanchayat}) => {
                   </Card>
                 </Grid>
               </Grid>
-            </Grid>
-
-             {/*C2*/}
-            <Grid size={{xs: 12, md: 3}}>
-              <ExpandedCalendar selectedPanchayat={selectedPanchayat}/>
             </Grid>
           </Grid>
         </Grid>
