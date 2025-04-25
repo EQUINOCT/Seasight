@@ -20,8 +20,16 @@ interface AnalyticsScreenProps {
 
 const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}) => {
   const [selectedStation, setSelectedStation] = useState<Station>('gauge');
+  const [panchayat, setPanchayat] = useState(false);
+  const [selectedPanchayatValue, setSelectedPanchayat] = useState('Ezhikkara');
+
   const handleStationClick = (station: Station) => {
     setSelectedStation(station);
+    if(station === 'panchayat')
+    {
+      setPanchayat(true);
+    } else 
+    setPanchayat(false);
   }
 
   const dataServeUrl = process.env.REACT_APP_DATA_SERVE_ENDPOINT;
@@ -59,12 +67,16 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
     }
   };
 
+  // const handlePanchayat = (panchayat: boolean) => {
+  //   setPanchayat(true);
+  // }
+
   const renderTypeAnalytics = () => {
     switch (selectedStation) {
       case 'gauge':
         return <GaugeAnalyticsScreen/>;
       case 'panchayat':
-       return <PanchayatAnalyticsScreen/>;
+       return <PanchayatAnalyticsScreen selectedPanchayat={selectedPanchayatValue}/>;
       default:
         return null;
     }
@@ -87,8 +99,15 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
                 <Grid size={{xs: 12}} sx={{ height: '4%', pl: 1.5}}>  
                   <Grid className='flex flex-row font-inter gap-1'>
                     <Link 
-                    underline="hover" 
-                    sx={{ maxWidth: 80, height: '25px'}} 
+                    underline="none" 
+                    sx={{ 
+                      maxWidth: 80, 
+                      height: '25px',
+                      '&:hover': {
+                        bgcolor: selectedStation === 'gauge' ? '#3a7e91' : '#f0f9fb',
+                        textDecoration: 'none',
+                      },
+                    }} 
                     href="#gauge"
                     onClick={() => handleStationClick('gauge')}
                     color={selectedStation === 'gauge' ? '#fff' : '#488DA3'}
@@ -97,8 +116,15 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
                         Gauge
                     </Link>
                     <Link 
-                    underline="hover" 
-                    sx={{ maxWidth: 100, height: '25px'}} 
+                    underline="none" 
+                    sx={{ 
+                      maxWidth: 100, 
+                      height: '25px',
+                      '&:hover': {
+                        bgcolor: selectedStation === 'panchayat' ? '#3a7e91' : '#f0f9fb',
+                        textDecoration: 'none',
+                      },
+                    }} 
                     href="#panchayat"
                     onClick={() => handleStationClick('panchayat')}
                     color={selectedStation === 'panchayat' ? '#fff' : '#488DA3'}
@@ -107,20 +133,56 @@ const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({regionId, setRegionId}
                         Panchayat
                     
                     </Link>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={12}
-                        label="Age"
-                        onChange={handleStationChange}
-                      >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl>
+                    {panchayat && (
+                     <Box sx={{
+                      minWidth: 120,
+                      height: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid #488DA3',
+                      borderRadius: '6px',
+                      px: 1,
+                      // bgcolor: '#fff',
+                      '&:hover': {
+                        bgcolor: '#488DA3',
+                      },
+                    }}>
+                     <FormControl fullWidth variant="standard">
+                       {/* <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                         Age
+                       </InputLabel> */}
+                       <NativeSelect
+                         disableUnderline
+                         defaultValue={'Ezhikkara'}
+                         onChange={(e) => setSelectedPanchayat(e.target.value)}
+                         inputProps={{
+                           name: 'panchayat',
+                           id: 'uncontrolled-native',
+                         }}
+                         sx={{
+                          fontSize: 14,
+                          color: '#f0f9fb',
+                          '&:focus': {
+                            backgroundColor: 'transparent',
+                          },
+                          '& .MuiNativeSelect-select': {
+                            color: '#f0f9fb',
+                            paddingRight: '12px'
+                          },
+                          '& svg': {
+                            color: '#f0f9fb', // icon color
+                            padding: 0,
+                          },
+                        }}
+                       >
+                         <option value="Select Panchayat">Select Panchayat</option>
+                         <option value="Ezhikkara">Ezhikkara</option>
+                         <option value="Panchayat 2">Panchayat 2</option>
+                         <option value="Panchayat 3">Panchayat 3</option>
+                       </NativeSelect>
+                     </FormControl>
+                   </Box>
+                    )}
                   </Grid>
                 </Grid>
 
