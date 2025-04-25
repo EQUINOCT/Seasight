@@ -40,9 +40,7 @@ const App: React.FC = () => {
          <Route path="/" element={<MainLayout onWidgetToggle={onWidgetToggle} visibleWidgets={visibleWidgets}/>} >
             <Route index element={<Navigate to="map" />} /> Default route
             <Route path="map" element={<MainDisplay activeControl='map'/>} />
-            <Route path="analytics" element={<AnalyticsScreen regionId={'LSG000001'} setRegionId={function (value: string): void {
-               throw new Error('Function not implemented.');
-            } }/>} />
+            <Route path="analytics" element={<AnalyticsScreen />} />
          </Route>
       </Routes>
    );

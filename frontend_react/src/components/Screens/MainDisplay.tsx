@@ -23,10 +23,7 @@ const MainDisplay: React.FC<MainDisplayProps> = ({ activeControl }) => {
 //     if (activeView === 'Visualization') return <ForecastScreen />;
 // }
 if (activeControl === 'analytics') {
-    return <AnalyticsScreen
-        regionId = {regionId}
-        setRegionId = {setRegionId}
-    />;
+    return <AnalyticsScreen/>;
 }
 
 // Default to the Monitoring map if no matching case
