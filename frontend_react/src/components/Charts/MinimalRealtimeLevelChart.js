@@ -201,7 +201,8 @@ const MinimalRealtimeLevelChart = ({tidalLevel, timeStampAtLevel, selectedDate})
             
             <ResponsiveContainer minWidth={150} width="100%" height={150} >
           {/* <ErrorBoundary> */}
-            <ComposedChart>
+            <ComposedChart
+          >
                 <Line 
                     type="cardinal"
                     name="Tidal Level" 
